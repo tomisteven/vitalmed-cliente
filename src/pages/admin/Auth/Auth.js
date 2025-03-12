@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import "./Auth.scss";
 import "./Auth.css";
 import doctora from "../../../assets/vitalmed/Dra.Imag.png";
@@ -7,43 +9,58 @@ import logo from "../../../assets/vitalmed/LogoJGIcon.png";
 import { Icon } from "semantic-ui-react";
 import { AuthAPI } from "../../../api/auth";
 import { ToastContainer, toast } from "react-toastify";
+import ToastMessage from "../../../utils/ToastMessage";
 
 const AuthController = new AuthAPI();
 
 export function Auth({ notificacion }) {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Hook para navegar
+  const navigate = useNavigate();
 
-  const login = async () => {
-    try {
-      setLoading(true);
-      const response = await AuthController.loginForm(formData);
+  const [toast, setToast] = useState(null);
 
-      response.ok
-        ? toast.success("Inicio de sesión exitoso")
-        : toast.error("Credenciales incorrectas");
-
-      const user = {
-        usuario: response.usuario,
-        rol: response.rol,
-      };
-
-      localStorage.setItem("userLog", JSON.stringify(user));
-
-      if (user.rol === "paciente") {
-        navigate("/admin/paciente/" + user.usuario._id);
-        window.location.reload();
-      } else {
-        navigate("/admin/pacientes");
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error al iniciar sesión", error);
-    } finally {
-      setLoading(false);
-    }
+  const showToast = (message, type) => {
+    setToast({ message, type });
   };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Correo inválido").required("Requerido"),
+      password: Yup.string().required("Requerido"),
+    }),
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await AuthController.loginForm(values);
+
+        if (!response.ok) {
+          showToast(response.message, "error");
+          return;
+        }
+
+        const user = {
+          usuario: response.usuario,
+          rol: response.rol,
+        };
+
+        localStorage.setItem("userLog", JSON.stringify(user));
+        showToast("Inicio de sesión exitoso", "success");
+
+        if (user.rol === "paciente") {
+          navigate("/admin/paciente/" + user.usuario._id);
+        } else {
+          navigate("/admin/pacientes");
+        }
+        window.location.reload();
+      } catch (error) {
+        console.error("Error al iniciar sesión", error);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <div className="login-container">
@@ -51,7 +68,7 @@ export function Auth({ notificacion }) {
         <div className="login-left">
           <div className="cont-header-logo-text">
             <div className="img-text">
-              <img className="doc-logo" src={logo} alt="" />
+              <img className="doc-logo" src={logo} alt="Logo" />
             </div>
             <div className="login-header">
               <h1>Dra. Jeremmy Gutierrez</h1>
@@ -64,37 +81,35 @@ export function Auth({ notificacion }) {
         <div className="login-right">
           <h2>BIENVENIDO (a) a Doctoraecos</h2>
           <p>Inicio de sesión</p>
-          <form
-            className="login-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              login();
-            }}
-          >
+          <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="input-group">
               <label>Nombre de usuario o Email</label>
               <input
                 type="text"
                 className="input-field"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                {...formik.getFieldProps("email")}
               />
+              {formik.touched.email && formik.errors.email ? (
+                <div className="error-text">{formik.errors.email}</div>
+              ) : null}
             </div>
             <div className="input-group">
               <label>Contraseña</label>
               <input
                 type="password"
                 className="input-field"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                {...formik.getFieldProps("password")}
               />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="error-text">{formik.errors.password}</div>
+              ) : null}
             </div>
-            <button className="login-button" type="submit" disabled={loading}>
-              {loading ? "Cargando..." : "Acceso"}
+            <button
+              className="login-button"
+              type="submit"
+              disabled={formik.isSubmitting}
+            >
+              {formik.isSubmitting ? "Cargando..." : "Acceso"}
             </button>
             <div className="remember-me">
               <input type="checkbox" id="remember" />
@@ -107,7 +122,7 @@ export function Auth({ notificacion }) {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }
