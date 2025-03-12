@@ -1,0 +1,70 @@
+@import "../../scss/index.scss";
+
+$widthLeftMenu: 150px;
+
+.admin-layout {
+  overflow-x: hidden;
+  display: flex;
+  min-height: 100vh; // Esto asegura que el layout ocupe toda la altura de la pantalla
+  max-height: auto;
+  background: linear-gradient(to bottom, #892b73bc, #ba498fb1);
+  color: white;
+
+  &__left {
+    width: $widthLeftMenu;
+    background-color: #892b73;
+    overflow: hidden;
+
+    height: 100%; // Esto asegura que el menú ocupe todo el alto disponible
+  }
+
+  .icon {
+    color: white;
+  }
+
+  .logo {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-top: 25px;
+    height: 80px;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  &__right {
+    width: calc(
+      100% - #{$widthLeftMenu}
+    ); // Ajuste del ancho según el menú izquierdo
+    overflow-x: hidden;
+    z-index: 1;
+
+    &-header {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    &-content {
+      position: relative;
+      margin: 20px;
+      z-index: 1;
+      flex-grow: 1; // Esto permite que el contenido ocupe todo el espacio disponible
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-layout {
+    flex-direction: column; // Cambiar la disposición a columna en pantallas pequeñas
+    .logo {
+      width: 13%;
+      height: 70px;
+      margin: 20px auto;
+    }
+    &__right {
+      width: 100%;
+    }
+  }
+}

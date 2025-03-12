@@ -1,0 +1,156 @@
+.detalle-cliente-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
+p {
+  color: #000000;
+}
+
+.detalle-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.compra-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.compra-info {
+  display: flex;
+  align-items: flex-start;
+}
+
+.compra-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.compra-servicio,
+.compra-cuentas {
+  font-size: 14px;
+  color: #555;
+}
+
+.compra-cuentas ul {
+  padding-left: 20px;
+}
+
+.compra-cuentas li {
+  font-size: 13px;
+  color: #777;
+}
+
+.compra-email,
+.compra-username {
+  font-size: 14px;
+  color: #555;
+}
+
+.compra-detalle {
+  text-align: right;
+}
+
+.banco {
+  font-weight: bold;
+  color: #333;
+}
+
+.cuenta,
+.precio {
+  font-size: 14px;
+  color: #777;
+}
+
+.total-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.agregar-servicio-link {
+  display: block;
+  margin: 20px auto; 
+  margin-bottom: 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.agregar-servicio-link:hover {
+  background-color: #218838;
+}
+
+.compras-realizadas {
+  display: flex;
+  justify-content: space-between; 
+  margin-top: 20px;
+}
+
+.compras-column {
+  flex: 1;  
+  margin: 0 10px;  
+  max-height: 300px; 
+  overflow-y: auto;  
+}
+
+
+.compras-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.compra-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.compra-info {
+  display: flex;
+  align-items: flex-start;
+}
+
+.compra-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.compra-servicio,
+.compra-cuentas {
+  font-size: 14px;
+  color: #555;
+}
+
+.compra-cuentas ul {
+  padding-left: 20px;
+}
+
+.compra-cuentas li {
+  font-size: 13px;
+  color: #777;
+}
+
+h4 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}

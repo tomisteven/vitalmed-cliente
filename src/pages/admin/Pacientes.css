@@ -1,0 +1,348 @@
+.container-pacientes {
+  max-width: 1400px;
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #000;
+  text-align: center;
+}
+/* Estilos generales */
+.container-pacientes {
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.search-input-pacientes {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.icon-reload{
+  font-size: 25px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+/* Botón para agregar paciente */
+.add-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  height: 40px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+/* Tabla de pacientes */
+.pacientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.pacientes-table th,
+.pacientes-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.pacientes-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Botones de acción */
+.btn-ver {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-ver:hover {
+  background-color: #0056b3;
+}
+
+.btn-editar {
+  background-color: #ffc107;
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #e0a800;
+}
+
+/* Estilos del modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-container h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.modal-container input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-guardar {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-guardar:hover {
+  background-color: #218838;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: #c82333;
+}
+
+.title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.search-input-pacientes {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #ff69b4;
+  border-radius: 5px;
+  outline: none;
+}
+
+.pacientes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pacientes-table th,
+.pacientes-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.pacientes-table th {
+  background: #ff69b4;
+  color: white;
+}
+
+.pacientes-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-button {
+  background: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-ver {
+  background: #ff69b4;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-editar {
+  background: #4caf50;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+}
+.btn-credenciales {
+  background: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-crear {
+  background: #007bff;
+  color: white;
+  display: block;
+  margin: 20px auto;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Estilos del modal */
+.paciente-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.paciente-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.paciente-modal h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.paciente-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paciente-modal input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border 0.3s;
+}
+
+.paciente-modal input:focus {
+  border-color: #ff69b4;
+  outline: none;
+}
+
+.paciente-modal button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.paciente-modal button[type="submit"] {
+  background: #4caf50;
+  color: white;
+}
+
+.paciente-modal button.cancel-button {
+  background: #dc3545;
+  color: white;
+}
+
+.paciente-modal button:hover {
+  opacity: 0.8;
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

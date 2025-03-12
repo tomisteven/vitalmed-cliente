@@ -1,0 +1,179 @@
+/* Estilos generales */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #9b287b, #cf589e);
+}
+
+.login-box {
+  display: flex;
+  width: 900px;
+  height: 700px;
+  background: rgba(198, 198, 198, 0.354);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 50px;
+}
+
+/* Sección izquierda (imagen y logo) */
+.login-left {
+  width: 50%;
+  background: linear-gradient(to bottom, #892b73, #ba498f);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.cont-header-logo-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 80%;
+  padding-top: 95px;
+  position: relative;
+  top: 45px;
+}
+.login-header {
+  text-align: start;
+}
+
+.login-header h1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.login-header p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.login-image {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: cover;
+
+  position: relative;
+}
+
+/* Sección derecha (formulario) */
+.login-right {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom, #892b73, #ba498f);
+}
+
+.login-right h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.login-right p {
+  font-size: 19px;
+  margin: 10px 0 20px;
+  color: #ffffff;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #e3e3e325;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  margin-top: 25px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid #ccc;
+  color: white;
+  font-size: 14px;
+}
+.input-field:focus {
+  outline: none;
+  border-bottom: 2px solid #ffffff;
+}
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background: #444;
+}
+
+/* Recordar contraseña */
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.remember-me label {
+  color: white;
+}
+
+.remember-me input {
+  margin-right: 5px;
+}
+
+/* Iconos sociales */
+.social-icons {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons .icon {
+  font-size: 20px;
+  color: white;
+}
+
+.social-icons a {
+  font-size: 20px;
+  color: #333;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  color: #555;
+}
+
+.doc-logo {
+  width: 80px;
+  height: auto;
+  object-fit: cover;
+}

@@ -1,0 +1,283 @@
+.paciente-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 20px auto;
+  background: rgba(20, 20, 20, 0.211);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-doc {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.btn-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  position: absolute;
+  right: 50px;
+}
+.btn-actions-editar {
+  background: #456ddc;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 10px 0;
+}
+.btn-actions-editar:hover {
+  background: #0056b3;
+}
+
+.btn-actions-eliminar {
+  background: #e55656;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100px;
+  margin: 10px 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.paciente-header {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+  border-bottom: 2px solid #f1f1f1;
+  padding-bottom: 15px;
+}
+
+.paciente-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.paciente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.paciente-info h2 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.paciente-info p {
+  margin: 2px 0;
+  color: #ffffff;
+}
+
+.contact-info p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0;
+  color: rgb(255, 255, 255);
+}
+
+.visit-info,
+.emergency-contact {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9f9f969;
+  border-radius: 8px;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.vital-signs {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9f9f969;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 700;
+}
+
+h3 {
+  color: white;
+
+  margin-bottom: 10px;
+}
+
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.vital-card {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin-top: 50px;
+}
+
+/* Tabla de Documentos */
+.documentos {
+  margin-top: 25px;
+  background: #f9f9f969;
+  padding: 10px;
+  border-radius: 8px;
+}
+.document-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+}
+
+.document-table th,
+.document-table td {
+  padding: 10px;
+  text-align: left;
+  color: #000;
+  border-bottom: 1px solid #ddd;
+  background-color: rgb(221, 224, 225);
+}
+
+.document-table th {
+  background: #007bff;
+  color: rgb(255, 255, 255);
+  background-color: rgb(70, 152, 219);
+}
+
+.document-table tr:hover {
+  background: #f1f1f1;
+}
+
+.download-icon {
+  color: #007bff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/*  */
+
+.btn-upload {
+  background: #029429;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.btn-upload:hover {
+  background: #0056b3;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.close-icon {
+  cursor: pointer;
+  color: #666;
+  font-size: 20px;
+}
+
+.modal-body input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.btn-submit {
+  width: 100%;
+  background: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background: #218838;
+}
+
+.file-preview {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  background: #f3f3f3;
+  padding: 8px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.btn-descargar {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 2px 0;
+}
