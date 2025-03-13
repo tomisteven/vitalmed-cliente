@@ -49,7 +49,7 @@ export function Auth({ notificacion }) {
         showToast("Inicio de sesión exitoso", "success");
 
         if (user.rol === "paciente") {
-          navigate("/admin/paciente/" + user.usuario._id);
+          navigate("/admin/pacientes/" + user.usuario._id);
         } else {
           navigate("/admin/pacientes");
         }
@@ -79,11 +79,11 @@ export function Auth({ notificacion }) {
         </div>
 
         <div className="login-right">
-          <h2>BIENVENIDO (a) a Doctoraecos</h2>
+          <h2 className="text-bienvenida">Bienvenidos (a) DoctoraEcos  Jeremmy Guterrez</h2>
           <p>Inicio de sesión</p>
           <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="input-group">
-              <label>Nombre de usuario o Email</label>
+              <label>Cedula de Identidad</label>
               <input
                 type="text"
                 className="input-field"
@@ -117,8 +117,8 @@ export function Auth({ notificacion }) {
             </div>
           </form>
           <div className="social-icons">
-            <Icon className="icon" name="whatsapp" size="big" />
-            <Icon className="icon" name="instagram" size="big" />
+            <a href="https://wa.link/kwo2pr"><Icon className="icon" name="whatsapp" size="big" /></a>
+            <a href="https://www.instagram.com/vitalmed.ve?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><Icon className="icon" name="instagram" size="big" /></a>
           </div>
         </div>
       </div>

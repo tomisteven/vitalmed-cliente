@@ -55,6 +55,17 @@ $widthLeftMenu: 150px;
   }
 }
 
+@media screen and (max-width: 768px) {
+  .admin-layout {
+    &__right-content {
+      width: 99%;
+      margin-top: 50px;
+      margin-left: auto ;
+      margin-right: auto;
+    }
+  }
+}
+
 @media (max-width: 560px) {
   .admin-layout {
     flex-direction: column; // Cambiar la disposición a columna en pantallas pequeñas
@@ -63,6 +74,7 @@ $widthLeftMenu: 150px;
       height: 70px;
       margin: 20px auto;
     }
+
     &__right {
       width: 100%;
     }

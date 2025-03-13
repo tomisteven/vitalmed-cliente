@@ -56,6 +56,8 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .pacientes-table th,
@@ -63,6 +65,7 @@
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+  white-space: nowrap;
 }
 
 .pacientes-table th {
@@ -344,5 +347,59 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .container-pacientes {
+    padding: 10px;
+    width: 99%;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .search-input-pacientes {
+    max-width: 100%;
+  }
+  .pacientes-table{
+    display: block;
+  }
+
+  .pacientes-table th,
+  .pacientes-table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+
+  .modal-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .btn-ver,
+  .btn-editar {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .pacientes-table th,
+  .pacientes-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .modal-container {
+    padding: 15px;
   }
 }

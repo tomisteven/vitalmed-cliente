@@ -14,6 +14,9 @@ export default function App() {
   return (
     <HashRouter>
       <AdminRoutes notificacion={notificacion} />
+      <p className="copyrigth">
+          Copyrigth &copy; {new Date().getFullYear()} - Dra. Jeremmy Gutierrez
+        </p>
     </HashRouter>
   );
 }
