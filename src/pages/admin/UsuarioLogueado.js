@@ -5,7 +5,7 @@ import "./UsuarioLogueado.css";
 export default function UsuarioLogueado() {
   const usuario = JSON.parse(localStorage.getItem("userLog"));
 
-  const { nombre, email, password} = usuario.usuario;
+  const { nombre, email, password } = usuario.usuario;
   console.log(usuario);
 
   if (!usuario) {
@@ -20,7 +20,16 @@ export default function UsuarioLogueado() {
         <p>Email: {email}</p>
         <strong>Contraseña: {password}</strong>
       </div>
-
+      {/* logout */}
+      <button
+        className="btn-logout"
+        onClick={() => {
+          localStorage.removeItem("userLog");
+          window.location.reload();
+        }}
+      >
+        Cerrar Sesión
+      </button>
     </div>
   );
 }
