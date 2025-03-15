@@ -17,6 +17,7 @@ export function Auth({ notificacion }) {
   const navigate = useNavigate();
 
   const [toast, setToast] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const showToast = (message, type) => {
     setToast({ message, type });
@@ -79,11 +80,13 @@ export function Auth({ notificacion }) {
         </div>
 
         <div className="login-right">
-          <h2 className="text-bienvenida">Bienvenidos (a) DoctoraEcos  Jeremmy Guterrez</h2>
+          <h2 className="text-bienvenida">
+            Bienvenidos (a) DoctoraEcos Jeremmy Guterrez
+          </h2>
           <p>Inicio de sesión</p>
           <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="input-group">
-              <label>Cedula de Identidad</label>
+              <label>Usuario</label>
               <input
                 type="text"
                 className="input-field"
@@ -95,11 +98,21 @@ export function Auth({ notificacion }) {
             </div>
             <div className="input-group">
               <label>Contraseña</label>
-              <input
-                type="password"
+             <div class="contra-group">
+             <input
+                type={showPassword ? "text" : "password"}
                 className="input-field"
                 {...formik.getFieldProps("password")}
               />
+              <button
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+                className="show-password"
+              >
+                <Icon className="icon" name="eye" size="large" />
+              </button>
+             </div>
               {formik.touched.password && formik.errors.password ? (
                 <div className="error-text">{formik.errors.password}</div>
               ) : null}
@@ -117,12 +130,22 @@ export function Auth({ notificacion }) {
             </div>
           </form>
           <div className="social-icons">
-            <a href="https://wa.link/kwo2pr"><Icon className="icon" name="whatsapp" size="big" /></a>
-            <a href="https://www.instagram.com/vitalmed.ve?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><Icon className="icon" name="instagram" size="big" /></a>
+            <a href="https://wa.me/qr/NGJUQHKJKLDWC1">
+              <Icon className="icon" name="whatsapp" size="big" />
+            </a>
+            <a href="https://www.instagram.com/doctoraecos?igsh=MXVnbGZzaXg3YzJxdQ==">
+              <Icon className="icon" name="instagram" size="big" />
+            </a>
           </div>
         </div>
       </div>
-      {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {toast && (
+        <ToastMessage
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

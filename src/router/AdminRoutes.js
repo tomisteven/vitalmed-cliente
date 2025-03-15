@@ -74,6 +74,7 @@ export function AdminRoutes({ notificacion }) {
             element={loadLayout(AdminLayout, Secretarias, {
               loading,
               setLoading,
+              notificacion,
             })}
           />
           <Route
@@ -81,6 +82,7 @@ export function AdminRoutes({ notificacion }) {
             element={loadLayout(AdminLayout, Doctores, {
               loading,
               setLoading,
+              notificacion,
             })}
           />
           <Route
@@ -88,6 +90,7 @@ export function AdminRoutes({ notificacion }) {
             element={loadLayout(AdminLayout, UsuarioLogueado, {
               loading,
               setLoading,
+              notificacion,
             })}
           />
           {/* Página 404 para rutas inexistentes */}

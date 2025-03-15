@@ -4,19 +4,23 @@ import "./Secretarias.css"; // Importa los estilos
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../utils/Breadcums";
 import { ClipLoader } from "react-spinners"; // Importa el loader
+import { useSecretaria } from "../../hooks/useSecretaria";
 
-const secretariaApi = new SecretariaApi();
 
-const Secretarias = () => {
-  const [secretarias, setSecretarias] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para el loader
+const Secretarias = ({ notificacion }) => {
+  const {
+    secretarias,
+    loading,
+    saveSecretaria,
+    deleteSecretaria,
+  } = useSecretaria({ notificacion });
+  const [selectSecretaria, setSelectSecretaria] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingSecretaria, setEditingSecretaria] = useState(null);
-  const [statusChange, setStatusChange] = useState(false);
   const [secretariaData, setSecretariaData] = useState({
     nombre: "",
     email: "",
     password: "",
+    id: "",
   });
 
   const navigate = useNavigate();
@@ -30,70 +34,31 @@ const Secretarias = () => {
     navigate("/admin/paciente/" + user.usuario._id);
   }
 
-  useEffect(() => {
-    const secretariasCache = sessionStorage.getItem("secretarias");
-    if (secretariasCache) {
-      setSecretarias(JSON.parse(secretariasCache));
-      setLoading(false);
-    } else {
-      fetchSecretarias();
-    }
-  }, [statusChange]);
+  const handleSubmit = async (e) => {
+    console.log(secretariaData);
 
-  const changeStatus = () => {
-    setStatusChange(!statusChange);
-  };
-
-  const fetchSecretarias = async () => {
-    setLoading(true); // Activa el loader antes de la petición
-    try {
-      const response = await secretariaApi.getSecretarias();
-      setSecretarias(response);
-      sessionStorage.setItem("secretarias", JSON.stringify(response)); // Guardar en caché
-    } catch (error) {
-      console.error("Error al obtener las secretarias", error);
-    }
-    setLoading(false); // Desactiva el loader después de obtener los datos
-  };
-
-  const handleInputChange = (e) => {
-    setSecretariaData({ ...secretariaData, [e.target.name]: e.target.value });
-  };
-
-  const handleSaveSecretaria = async () => {
-    try {
-      if (editingSecretaria) {
-        await secretariaApi.updateSecretaria(
-          editingSecretaria._id,
-          secretariaData
-        );
-      } else {
-        await secretariaApi.createSecretaria(secretariaData);
-      }
-
-      setModalOpen(false);
-      setSecretariaData({ nombre: "", email: "", password: "" });
-      setEditingSecretaria(null);
-      fetchSecretarias();
-    } catch (error) {
-      console.error("Error al guardar la secretaria", error);
-    }
+    e.preventDefault();
+    await saveSecretaria(secretariaData, !!selectSecretaria);
+    setModalOpen(false);
+    setSecretariaData({ nombre: "", email: "", password: "", id: "" });
+    setSelectSecretaria(null);
   };
 
   const handleEdit = (secretaria) => {
-    setEditingSecretaria(secretaria);
     setSecretariaData({
       nombre: secretaria.nombre,
       email: secretaria.email,
       password: secretaria.password,
+      id: secretaria._id,
     });
+    setSelectSecretaria(secretaria);
     setModalOpen(true);
   };
 
   return (
     <div className="container-secretarias">
       <Breadcrumbs />
-      <h2 className="title-secretarias">Lista de Secretarias</h2>
+      <h2 className="title-secretarias">Cantidad de Secretarias: {secretarias.length}</h2>
       <button className="btn-add" onClick={() => setModalOpen(true)}>
         + Agregar Secretaria
       </button>
@@ -131,6 +96,12 @@ const Secretarias = () => {
                   >
                     ✏️ Editar
                   </button>
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => deleteSecretaria(secretaria._id)}
+                  >
+                    🗑️ Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -143,42 +114,62 @@ const Secretarias = () => {
         <div className="modal-overlay">
           <div className="modal">
             <h3>
-              {editingSecretaria
+              {selectSecretaria
                 ? "Editar Secretaria"
                 : "Agregar Nueva Secretaria"}
             </h3>
             <label>Nombre</label>
-            <input
-              type="text"
-              name="nombre"
-              placeholder="Nombre"
-              value={secretariaData.nombre}
-              onChange={handleInputChange}
-            />
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={secretariaData.email}
-              onChange={handleInputChange}
-            />
-            <label>Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Contraseña"
-              value={secretariaData.password}
-              onChange={handleInputChange}
-            />
-            <div className="modal-buttons">
-              <button className="btn-save" onClick={handleSaveSecretaria}>
-                {editingSecretaria ? "Actualizar" : "Guardar"}
-              </button>
-              <button className="btn-close" onClick={() => setModalOpen(false)}>
-                Cancelar
-              </button>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Nombre"
+                value={secretariaData.nombre}
+                onChange={(e) =>
+                  setSecretariaData({
+                    ...secretariaData,
+                    nombre: e.target.value,
+                  })
+                }
+              />
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={secretariaData.email}
+                onChange={(e) =>
+                  setSecretariaData({
+                    ...secretariaData,
+                    email: e.target.value,
+                  })
+                }
+              />
+              <label>Contraseña</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Contraseña"
+                value={secretariaData.password}
+                onChange={(e) =>
+                  setSecretariaData({
+                    ...secretariaData,
+                    password: e.target.value,
+                  })
+                }
+              />
+              <div className="modal-buttons">
+                <button className="btn-save" type="submit">
+                  {loading ? "Guardando... Aguarde" : "Guardar"}
+                </button>
+                <button
+                  className="btn-close"
+                  onClick={() => setModalOpen(false)}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

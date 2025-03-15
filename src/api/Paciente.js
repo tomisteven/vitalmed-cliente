@@ -1,7 +1,7 @@
-import {ENV} from "../utils/constants"
+import { ENV } from "../utils/constants";
 
 export class PacienteApi {
-  url =  ENV.URL + "/api/";
+  url = ENV.URL + "/api/";
 
   async updatePaciente(id, data) {
     try {
@@ -112,6 +112,25 @@ export class PacienteApi {
       });
       const result = await response.json();
 
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async deletePaciente(id) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+      const result = await response.json();
       if (response.status !== 200) {
         console.log(result.message);
       }

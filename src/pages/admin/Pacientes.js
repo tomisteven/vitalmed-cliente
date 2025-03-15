@@ -1,139 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PacienteApi } from "../../api/Paciente";
-import "./Pacientes.css";
+import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
-import ClipLoader from "react-spinners/ClipLoader"; // Importamos el loader
+import ClipLoader from "react-spinners/ClipLoader";
 import { Icon } from "semantic-ui-react";
-
-const PacienteController = new PacienteApi();
+import "./Pacientes.css";
 
 export default function Pacientes({ notificacion }) {
-  const [pacientes, setPacientes] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para el loader
+  const {
+    pacientes,
+    loading,
+    refreshPacientes,
+    savePaciente,
+    deletePaciente,
+    searchPaciente,
+  } = usePacientes({ notificacion });
   const [modalOpen, setModalOpen] = useState(false);
-  const [statusChange, setStatusChange] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
-  const [formData, setFormData] = useState({ nombre: "", dni: "", email: "" });
-  const [create, setCreate] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    dni: "",
+    email: "",
+    id: "",
+  });
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userLog"));
 
-  if (!user) {
-    navigate("/admin/login");
-  }
-
-  if (user.rol === "paciente") {
-    navigate("/admin/paciente/" + user.usuario._id);
-  }
-
-
-
-  useEffect(() => {
-    const fetchPacientes = async () => {
-      setLoading(true);
-      try {
-        const response = await PacienteController.getPacientes();
-        setPacientes(response.reverse());
-        sessionStorage.setItem("pacientes", JSON.stringify(response.reverse())); // Guardar en caché
-      } catch (error) {
-        console.error("Error al obtener los pacientes", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const cachedPacientes = sessionStorage.getItem("pacientes");
-    if (cachedPacientes) {
-      setPacientes(JSON.parse(cachedPacientes));
-      setLoading(false);
-    } else {
-      fetchPacientes();
-    }
-  }, [statusChange]);
-
-  const changeStatus = () => {
-    setStatusChange(!statusChange);
-  };
-
-  const searchPaciente = async (e) => {
-    try {
-      const response = await PacienteController.getPacientes();
-      const filteredPacientes = response.filter((paciente) =>
-        paciente.nombre.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setPacientes(filteredPacientes);
-    } catch (error) {
-      console.error("Error al buscar pacientes", error);
-    }
-  };
+  if (!user) navigate("/admin/login");
+  if (user.rol === "paciente") navigate(`/admin/paciente/${user.usuario._id}`);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (selectedPaciente) {
-        const paciente = await PacienteController.updatePaciente(
-          selectedPaciente._id,
-          formData
-        );
-      } else {
-        const paciente = await PacienteController.createPaciente(formData);
-      }
-      setModalOpen(false);
-      setFormData({ nombre: "", dni: "", email: "" });
-      setSelectedPaciente(null);
-      changeStatus();
-      setPacientes(
-        selectedPaciente
-          ? pacientes.map((paciente) =>
-              paciente._id === selectedPaciente._id
-                ? { ...paciente, ...formData }
-                : paciente
-            )
-          : [...pacientes, paciente]
-      );
-    } catch (error) {
-      console.error("Error al guardar paciente", error);
-    }
-  };
-
-  const openEditModal = (paciente) => {
-    setSelectedPaciente(paciente);
-    setFormData({
-      nombre: paciente.nombre,
-      dni: paciente.dni,
-      email: paciente.email,
-    });
-    setModalOpen(true);
+    await savePaciente(formData, !!selectedPaciente);
+    setModalOpen(false);
+    setFormData({ nombre: "", dni: "", email: "", id: "" });
+    setSelectedPaciente(null);
   };
 
   return (
     <div className="container-pacientes">
       <Breadcrumbs />
-      <h2 className="title">Lista de Pacientes</h2>{" "}
-      <Icon
-        name="redo"
-        className="icon-reload"
-        color="blue"
-        onClick={() => fetchPacientes()}
-      />
+      <h2 className="title">
+        Lista de Pacientes {pacientes.length + " (Pacientes)"}
+      </h2>
+
       <input
         type="text"
         placeholder="Buscar por nombre"
-        onChange={searchPaciente}
+        onChange={(e) => searchPaciente(e.target.value)}
         className="search-input-pacientes"
       />
-      <button
-        className="add-button"
-        onClick={() => {
-          setModalOpen(true);
-          setSelectedPaciente(null);
-          setFormData({ nombre: "", dni: "", email: "" });
-        }}
-      >
+      <button className="add-button" onClick={() => setModalOpen(true)}>
         Crear Paciente
       </button>
+
       {loading ? (
-        <div className="container-pacientes">
+        <div className="pacientes-container">
           <ClipLoader color="#36d7b7" size={50} />
         </div>
       ) : (
@@ -163,9 +85,24 @@ export default function Pacientes({ notificacion }) {
                   </button>
                   <button
                     className="btn-editar"
-                    onClick={() => openEditModal(paciente)}
+                    onClick={() => {
+                      setSelectedPaciente(paciente);
+                      setFormData({
+                        nombre: paciente.nombre,
+                        dni: paciente.dni,
+                        email: paciente.email,
+                        id: paciente._id,
+                      }); // 👈 Ahora se llena el formulario con los datos del paciente
+                      setModalOpen(true);
+                    }}
                   >
                     Editar
+                  </button>
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => deletePaciente(paciente._id)}
+                  >
+                    Eliminar
                   </button>
                 </td>
               </tr>
@@ -173,6 +110,7 @@ export default function Pacientes({ notificacion }) {
           </tbody>
         </table>
       )}
+
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
