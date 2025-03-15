@@ -22,6 +22,17 @@
   margin-right: 15px;
   margin-bottom: 15px;
 }
+.btn-logout-user {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+  margin: 5px;
+}
 
 .usuario-info h2 {
   margin: 0;
@@ -43,4 +54,3 @@
     margin-top: 50px;
   }
 }
-

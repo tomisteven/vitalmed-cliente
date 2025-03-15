@@ -19,10 +19,8 @@ export default function UsuarioLogueado() {
         <h2>Nombre: {nombre}</h2>
         <p>Email: {email}</p>
         <strong>Contraseña: {password}</strong>
-      </div>
-      {/* logout */}
-      <button
-        className="btn-logout"
+        <button
+        className="btn-logout-user"
         onClick={() => {
           localStorage.removeItem("userLog");
           window.location.reload();
@@ -30,6 +28,9 @@ export default function UsuarioLogueado() {
       >
         Cerrar Sesión
       </button>
+      </div>
+      {/* logout */}
+
     </div>
   );
 }
