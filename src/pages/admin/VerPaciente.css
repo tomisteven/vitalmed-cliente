@@ -15,7 +15,7 @@
   margin-bottom: 40px;
 }
 
-.loader-icon{
+.loader-icon {
   font-size: 50px;
   color: #ffffff;
   margin: auto;
@@ -151,40 +151,148 @@ h3 {
 
 /* Tabla de Documentos */
 .documentos {
+  padding: 20px;
   margin-top: 25px;
-  background: #f9f9f969;
-  padding: 10px;
+  background-color: #c1c1c124;
   border-radius: 8px;
 }
-.document-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 25px;
+
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.document-table th,
-.document-table td {
+.titulo-doc {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.btn-upload {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.carpetas {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.carpeta {
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nombre-carpeta {
+  font-size: 15px;
+  margin-bottom: 5px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: #000000;
+}
+
+.archivos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.archivo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
-  text-align: left;
-  color: #000;
-  border-bottom: 1px solid #ddd;
-  background-color: rgb(221, 224, 225);
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  background-color: #f1f1f1;
 }
 
-.document-table th {
-  background: #007bff;
-  color: rgb(255, 255, 255);
-  background-color: rgb(70, 152, 219);
+.archivo-nombre {
+  flex: 1;
+  color: #000000;
 }
 
-.document-table tr:hover {
-  background: #f1f1f1;
+.archivo-fecha {
+  color: #888;
+  margin: 0 15px;
 }
 
-.download-icon {
+.btn-descargar {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.btn-descargar:hover {
+  text-decoration: underline;
+}
+/* carpeta */
+.carpeta {
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.carpeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.btn-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
   color: #007bff;
   font-size: 18px;
-  cursor: pointer;
+}
+
+.archivos {
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 2px solid #007bff;
+}
+
+.archivo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  margin-bottom: 5px;
+}
+
+.archivo-nombre {
+  flex: 1;
+  color: #333;
+}
+
+.archivo-fecha {
+  color: #888;
+  margin: 0 15px;
+}
+
+.btn-descargar {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.btn-descargar:hover {
+  text-decoration: underline;
 }
 
 /*  */

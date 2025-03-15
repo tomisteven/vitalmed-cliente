@@ -67,6 +67,7 @@ export function AdminRoutes({ notificacion }) {
             element={loadLayout(AdminLayout, VerPaciente, {
               loading,
               setLoading,
+              notificacion,
             })}
           />
           <Route

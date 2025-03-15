@@ -16,8 +16,8 @@ const AuthController = new AuthAPI();
 export function Auth({ notificacion }) {
   const navigate = useNavigate();
 
-  const [toast, setToast] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const showToast = (message, type) => {
     setToast({ message, type });

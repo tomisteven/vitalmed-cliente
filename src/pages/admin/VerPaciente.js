@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaPhone,
   FaEnvelope,
@@ -7,18 +7,26 @@ import {
   FaCalendarAlt,
   FaUserMd,
   FaTimes,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import avatar from "../../assets/vitalmed/avatar.png";
-import { toast } from "react-toastify";
+import ToastMessage from "../../utils/ToastMessage";
 import Loader from "../../utils/Loader";
 import Breadcrumbs from "../../utils/Breadcums";
 import { usePaciente } from "../../hooks/usePacienteIndividual";
 import "./VerPaciente.css";
 import { LoaderIcon } from "react-hot-toast";
+import { Icon } from "semantic-ui-react";
 
-export default function VerPaciente() {
-  const { state, dispatch, user, handleUpload, setNombreArchivo, setArchivo } =
-    usePaciente();
+export default function VerPaciente({ notificacion }) {
+  const showToast = (message, type) => {
+    setToast({ message, type });
+  };
+  const { state, dispatch, user, handleUpload, setNombreArchivo, setArchivos } =
+    usePaciente({ showToast });
+
+  const [toast, setToast] = useState(null);
 
   if (!state.paciente) return <Loader />;
 
@@ -82,32 +90,11 @@ export default function VerPaciente() {
           )}
         </div>
         {state.documentos.length > 0 ? (
-          <table className="document-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Fecha</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.documentos.map((doc, index) => (
-                <tr key={index}>
-                  <td>{doc.nombreArchivo || "Sin nombre"}</td>
-                  <td>
-                    {doc.fechaSubida
-                      ? new Date(doc.fechaSubida).toLocaleDateString()
-                      : "No especifica"}
-                  </td>
-                  <td>
-                    <a href={doc.urlArchivo} target="_blank" rel="noreferrer">
-                      <FaDownload /> Descargar
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="carpetas">
+            {state.documentos.map((doc, index) => (
+              <Carpeta key={index} doc={doc} />
+            ))}
+          </div>
         ) : (
           <p>No hay documentos disponibles</p>
         )}
@@ -117,7 +104,7 @@ export default function VerPaciente() {
         <div className="modal-overlay">
           <div className="modal">
             <div className="modal-header">
-              <h3>Subir Documento</h3>
+              <h3>Subir Documentos</h3>
               <FaTimes
                 className="close-icon"
                 onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
@@ -126,28 +113,90 @@ export default function VerPaciente() {
             <div className="modal-body">
               <input
                 type="text"
-                placeholder="Nombre del archivo"
+                placeholder="Nombre del archivo (general)"
                 value={state.nombreArchivo}
                 onChange={(e) => setNombreArchivo(e.target.value)}
               />
               <input
                 type="file"
-                onChange={(e) => setArchivo(e.target.files[0])}
+                multiple
+                onChange={(e) => setArchivos(Array.from(e.target.files))}
               />
 
-              {state.archivo && (
-                <p className="file-preview">
-                  <strong>Archivo seleccionado:</strong> {state.archivo.name}
-                </p>
+              {state.archivos.length > 0 && (
+                <div className="file-preview">
+                  <strong>Archivos seleccionados:</strong>
+                  <ul>
+                    {state.archivos.map((file, index) => (
+                      <li key={index}>{file.name}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
 
               <button className="btn-submit" onClick={handleUpload}>
-                {state.loadingFile ? <LoaderIcon className="loader-icon"/> : "Subir Archivo"}
+                {state.loadingFile ? (
+                  <LoaderIcon className="loader-icon" />
+                ) : (
+                  "Subir Archivos"
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {toast && (
+        <ToastMessage
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
+
+// Componente para el acordeón de carpetas
+const Carpeta = ({ doc }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleFiles = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className="carpeta">
+      <div className="carpeta-header" onClick={toggleFiles}>
+        <p className="nombre-carpeta">
+          <Icon className="icon" name="folder" color="black" size="large" />
+          {"   "}
+          {doc.nombreArchivo || "Sin nombre"}
+        </p>
+        <button className="btn-toggle">
+          {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+        </button>
+      </div>
+      {isOpen && (
+        <div className="archivos">
+          {doc.archivos.map((archivo) => (
+            <div className="archivo" key={archivo._id}>
+              <span className="archivo-nombre">{archivo.originalFilename}</span>
+              <span className="archivo-fecha">
+                {new Date(archivo.fechaSubida).toLocaleDateString()}
+              </span>
+              <a
+                href={archivo.urlArchivo}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-descargar"
+              >
+                <FaDownload /> Descargar
+              </a>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
