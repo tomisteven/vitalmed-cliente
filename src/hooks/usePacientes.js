@@ -93,18 +93,19 @@ export const usePacientes = ({ notificacion }) => {
   const savePaciente = useCallback(
     async (paciente, isEdit = false) => {
       try {
+        dispatch({ type: "SET_LOADING", payload: true });
         if (isEdit) {
           await PacienteController.updatePaciente(paciente.id, paciente);
           notificacion("Paciente actualizado correctamente", "success");
         } else {
           await PacienteController.createPaciente(paciente);
+          notificacion("Paciente creado correctamente", "success  ");
         }
         refreshPacientes();
       } catch (error) {
         console.error("Error al guardar paciente", error);
       } finally {
         dispatch({ type: "SET_LOADING", payload: false });
-        notificacion("Paciente creado correctamente", "success");
       }
     },
     [refreshPacientes]

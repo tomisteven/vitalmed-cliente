@@ -14,7 +14,7 @@
   padding: 20px;
 }
 
-.show-password{
+.show-password {
   cursor: pointer;
   background-color: transparent;
   border: none;
@@ -169,6 +169,13 @@
   cursor: pointer;
 }
 
+.paciente-crear-titulo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #000;
+}
+
 .btn-cancelar:hover {
   background-color: #c82333;
 }
@@ -183,6 +190,7 @@
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
+  margin-right: 10px;
   border: 2px solid #ff69b4;
   border-radius: 5px;
   outline: none;
@@ -191,22 +199,27 @@
 .pacientes-table {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 10px;
 }
 
 .pacientes-table th,
 .pacientes-table td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 5px;
   text-align: left;
 }
 
 .pacientes-table th {
-  background: #ff69b4;
+  background: #e89b3c;
   color: white;
+  padding: 10px;
 }
 
 .pacientes-table tr:nth-child(even) {
-  background: #f9f9f9;
+  background: #ffeaea;
+}
+.pacientes-table tr:hover {
+  background: #ffdfdf;
 }
 
 .action-buttons {
@@ -223,7 +236,7 @@
 }
 
 .add-button {
-  background: #007bff;
+  background: #d79e2c;
   color: white;
   padding: 5px 10px;
   border-radius: 5px;

@@ -71,10 +71,18 @@
   color: #ffffff;
 }
 .doctores-table td {
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #ddd;
   text-align: left;
   color: #000000;
+}
+
+.doctores-table tr:nth-child(even) {
+  background-color: #ffeded;
+}
+
+.doctores-table tr:hover {
+  background: #ffe5e5;
 }
 
 .doctores-table th {

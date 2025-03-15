@@ -114,7 +114,7 @@ export default function Pacientes({ notificacion }) {
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal-container">
-            <h3>
+            <h3 className="paciente-crear-titulo">
               {selectedPaciente ? "Editar Paciente" : "Crear Nuevo Paciente"}
             </h3>
             <form onSubmit={handleSubmit}>

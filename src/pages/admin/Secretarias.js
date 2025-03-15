@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { SecretariaApi } from "../../api/Secretaria";
+import React, { useState } from "react";
+
 import "./Secretarias.css"; // Importa los estilos
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../utils/Breadcums";
-import { ClipLoader } from "react-spinners"; // Importa el loader
 import { useSecretaria } from "../../hooks/useSecretaria";
-
+import { LoaderIcon } from "react-hot-toast";
 
 const Secretarias = ({ notificacion }) => {
-  const {
-    secretarias,
-    loading,
-    saveSecretaria,
-    deleteSecretaria,
-  } = useSecretaria({ notificacion });
+  const { secretarias, loading, saveSecretaria, deleteSecretaria } =
+    useSecretaria({ notificacion });
   const [selectSecretaria, setSelectSecretaria] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [secretariaData, setSecretariaData] = useState({
@@ -58,7 +53,9 @@ const Secretarias = ({ notificacion }) => {
   return (
     <div className="container-secretarias">
       <Breadcrumbs />
-      <h2 className="title-secretarias">Cantidad de Secretarias: {secretarias.length}</h2>
+      <h2 className="title-secretarias">
+        Cantidad de Secretarias: {secretarias.length}
+      </h2>
       <button className="btn-add" onClick={() => setModalOpen(true)}>
         + Agregar Secretaria
       </button>
@@ -66,7 +63,7 @@ const Secretarias = ({ notificacion }) => {
       {loading ? (
         // Muestra el loader mientras carga la data
         <div className="container-secretarias">
-          <ClipLoader size={50} color={"#007bff"} loading={loading} />
+          <LoaderIcon loading={loading} />
           <p className="p-cargando">Cargando secretarias...</p>
         </div>
       ) : secretarias.length === 0 ? (
@@ -160,7 +157,7 @@ const Secretarias = ({ notificacion }) => {
               />
               <div className="modal-buttons">
                 <button className="btn-save" type="submit">
-                  {loading ? "Guardando... Aguarde" : "Guardar"}
+                  {loading ? <LoaderIcon className="loader-icon" /> : "Guardar"}
                 </button>
                 <button
                   className="btn-close"
