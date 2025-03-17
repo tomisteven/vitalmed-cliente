@@ -50,7 +50,11 @@ export default function Pacientes({ notificacion }) {
         onChange={(e) => searchPaciente(e.target.value)}
         className="search-input-pacientes"
       />
-      <button className="add-button" onClick={() => setModalOpen(true)}>
+      <button
+        hidden={user.rol === "paciente" || user.rol === "doctor"}
+        className="add-button"
+        onClick={() => setModalOpen(true)}
+      >
         Crear Paciente
       </button>
 
@@ -84,6 +88,7 @@ export default function Pacientes({ notificacion }) {
                     Ver
                   </button>
                   <button
+                    hidden={user.rol === "paciente" || user.rol === "doctor"}
                     className="btn-editar"
                     onClick={() => {
                       setSelectedPaciente(paciente);
@@ -99,6 +104,7 @@ export default function Pacientes({ notificacion }) {
                     Editar
                   </button>
                   <button
+                    hidden={user.rol === "paciente" || user.rol === "doctor"}
                     className="btn-eliminar"
                     onClick={() => deletePaciente(paciente._id)}
                   >
@@ -129,7 +135,7 @@ export default function Pacientes({ notificacion }) {
               />
               <input
                 type="text"
-                placeholder="DNI"
+                placeholder="Cedula de Identidad"
                 value={formData.dni}
                 onChange={(e) =>
                   setFormData({ ...formData, dni: e.target.value })
@@ -142,6 +148,15 @@ export default function Pacientes({ notificacion }) {
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
+                }
+                required
+              />
+              <input
+                type="telefono"
+                placeholder="Telefono"
+                value={formData.telefono}
+                onChange={(e) =>
+                  setFormData({ ...formData, telefono: e.target.value })
                 }
                 required
               />

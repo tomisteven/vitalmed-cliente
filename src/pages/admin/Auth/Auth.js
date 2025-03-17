@@ -98,21 +98,22 @@ export function Auth({ notificacion }) {
             </div>
             <div className="input-group">
               <label>Contraseña</label>
-             <div class="contra-group">
-             <input
-                type={showPassword ? "text" : "password"}
-                className="input-field"
-                {...formik.getFieldProps("password")}
-              />
-              <button
-                onClick={() => {
-                  setShowPassword(!showPassword);
-                }}
-                className="show-password"
-              >
-                <Icon className="icon" name="eye" size="large" />
-              </button>
-             </div>
+              <div className="contra-group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="input-field"
+                  {...formik.getFieldProps("password")}
+                />
+                <button
+                  type="button" // Asegúrate de que el botón no dispare el submit
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                  className="show-password"
+                >
+                  <Icon className="icon" name="eye" size="large" />
+                </button>
+              </div>
               {formik.touched.password && formik.errors.password ? (
                 <div className="error-text">{formik.errors.password}</div>
               ) : null}

@@ -1,0 +1,7 @@
+Cambios a realizar 17/03/2025
+- Agregar boton para sumar otro archivo a la lista de archivos a subir
+- Agregar boton para eliminar un archivo de la lista de archivos a subir
+- Agregar una Visualizacion previa de los archivos que tiene el paciente
+
+**En Doctor**:
+- Agregar input para ESPECIALIDAD

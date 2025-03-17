@@ -43,13 +43,13 @@ export default function AdminMenu({ onLoad }) {
       key: "/admin/secretarias",
       path: "/admin/secretarias",
       label: "SECRETARIAS",
-      roles: ["doctor", "secretaria"],
+      roles: ["secretaria"],
     },
     {
       key: "/admin/doctores",
       path: "/admin/doctores",
       label: "DOCTORES",
-      roles: ["doctor", "secretaria"],
+      roles: ["secretaria"],
     },
   ];
 
