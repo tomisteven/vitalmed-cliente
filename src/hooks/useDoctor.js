@@ -87,6 +87,8 @@ export const useDoctor = ({ notificacion }) => {
 
   // Guardar o actualizar doctor
   const handleSaveDoctor = useCallback(async () => {
+    console.log(doctorData);
+
     dispach({ type: "SET_LOADING", payload: true });
     try {
       if (editingDoctor) {

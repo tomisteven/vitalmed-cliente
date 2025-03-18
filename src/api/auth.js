@@ -12,7 +12,7 @@ export class AuthAPI {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: data.email,
+          usuario: data.usuario,
           password: data.password,
         }),
       };

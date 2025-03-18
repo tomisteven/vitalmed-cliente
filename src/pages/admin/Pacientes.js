@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Icon } from "semantic-ui-react";
+
 import "./Pacientes.css";
 
 export default function Pacientes({ notificacion }) {
@@ -30,6 +30,8 @@ export default function Pacientes({ notificacion }) {
   if (user.rol === "paciente") navigate(`/admin/paciente/${user.usuario._id}`);
 
   const handleSubmit = async (e) => {
+    console.log(formData);
+
     e.preventDefault();
     await savePaciente(formData, !!selectedPaciente);
     setModalOpen(false);
@@ -67,8 +69,10 @@ export default function Pacientes({ notificacion }) {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>DNI</th>
+              <th>Cedula Identidad</th>
               <th>Email</th>
+              <th>Usuario</th>
+              <th>Contraseña</th>
               <th>Fecha de Creación</th>
               <th>Acciones</th>
             </tr>
@@ -79,6 +83,8 @@ export default function Pacientes({ notificacion }) {
                 <td>{paciente.nombre}</td>
                 <td>{paciente.dni}</td>
                 <td>{paciente.email}</td>
+                <td>{paciente.usuario || "No Especifica"}</td>
+                <td>{paciente.password || "No Especifica"}</td>
                 <td>{new Date(paciente.created_at).toLocaleDateString()}</td>
                 <td>
                   <button
@@ -96,6 +102,9 @@ export default function Pacientes({ notificacion }) {
                         nombre: paciente.nombre,
                         dni: paciente.dni,
                         email: paciente.email,
+                        usuario: paciente.usuario,
+                        password: paciente.password,
+                        telefono: paciente.telefono,
                         id: paciente._id,
                       }); // 👈 Ahora se llena el formulario con los datos del paciente
                       setModalOpen(true);
@@ -124,15 +133,27 @@ export default function Pacientes({ notificacion }) {
               {selectedPaciente ? "Editar Paciente" : "Crear Nuevo Paciente"}
             </h3>
             <form onSubmit={handleSubmit}>
+
+              <label className="label-paciente" for="">Nombre y Apellido</label>
               <input
                 type="text"
-                placeholder="Nombre"
+                placeholder="Nombre y Apellido"
                 value={formData.nombre}
                 onChange={(e) =>
                   setFormData({ ...formData, nombre: e.target.value })
                 }
                 required
               />
+               <label className="label-paciente" for="">Telefono</label>
+              <input
+                type="text"
+                placeholder="Numero de Telefono"
+                value={formData.telefono}
+                onChange={(e) =>
+                  setFormData({ ...formData, telefono: e.target.value })
+                }
+              />
+               <label className="label-paciente" for="">Cedula Identidad</label>
               <input
                 type="text"
                 placeholder="Cedula de Identidad"
@@ -142,24 +163,36 @@ export default function Pacientes({ notificacion }) {
                 }
                 required
               />
+               <label className="label-paciente" for="">Email</label>
               <input
-                type="email"
+                type="text"
                 placeholder="Email"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                required
               />
+              <span className="divisor"></span>
+              <label  className="label-paciente" for="">Usuario</label>
               <input
-                type="telefono"
-                placeholder="Telefono"
-                value={formData.telefono}
+                type="text"
+                placeholder="Usuario"
+                value={formData.usuario}
                 onChange={(e) =>
-                  setFormData({ ...formData, telefono: e.target.value })
+                  setFormData({ ...formData, usuario: e.target.value })
                 }
                 required
               />
+               <label   className="label-paciente" for="">Contraseña</label>
+              <input
+                type="text"
+                placeholder="Contraseña (Opcional)"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+              />
+
               <div className="modal-actions">
                 <button type="submit" className="btn-guardar">
                   Guardar

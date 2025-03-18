@@ -7,6 +7,12 @@ import { Icon } from "semantic-ui-react";
 export const Breadcrumbs = () => {
   const navigate = useNavigate();
 
+  const rol = JSON.parse(localStorage.getItem("userLog")).rol;
+
+  if (rol === "paciente") {
+    return null;
+  }
+
   const handleBack = () => {
     navigate(-1); // Navega a la ruta anterior
   };

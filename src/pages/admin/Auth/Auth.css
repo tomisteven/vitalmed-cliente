@@ -7,11 +7,20 @@
   background: linear-gradient(to right, #9b287b, #cf589e);
 }
 
-.contra-group{
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 95px;
+  position: relative;
+}
+
+.contra-group {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .text-bienvenida {

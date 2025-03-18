@@ -38,8 +38,9 @@ const Doctores = ({ notificacion }) => {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Email</th>
+              <th>Usuario</th>
               <th>Contraseña</th>
+              <th>Especialidad</th>
               <th>Fecha de Creación</th>
               <th>Acciones</th>
             </tr>
@@ -48,8 +49,9 @@ const Doctores = ({ notificacion }) => {
             {doctores.map((doctor) => (
               <tr key={doctor._id}>
                 <td>{doctor.nombre}</td>
-                <td>{doctor.email}</td>
+                <td>{doctor.usuario}</td>
                 <td>{doctor.password}</td>
+                <td>{doctor.especialidad}</td>
                 <td>{new Date(doctor.created_at).toLocaleDateString()}</td>
                 <td>
                   <button
@@ -83,12 +85,20 @@ const Doctores = ({ notificacion }) => {
               value={doctorData.nombre}
               onChange={handleInputChange}
             />
-            <label>Email</label>
+            <label>Especialidad</label>
             <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={doctorData.email}
+              type="text"
+              name="especialidad"
+              placeholder="Especialidad"
+              value={doctorData.especialidad}
+              onChange={handleInputChange}
+            />
+            <label>Usuario</label>
+            <input
+              type="usuario"
+              name="usuario"
+              placeholder="Usuario"
+              value={doctorData.usuario}
               onChange={handleInputChange}
             />
             <label>Contraseña</label>
@@ -99,6 +109,7 @@ const Doctores = ({ notificacion }) => {
               value={doctorData.password}
               onChange={handleInputChange}
             />
+
             <div className="modal-buttons">
               <button className="btn-save" onClick={handleSaveDoctor}>
                 {loading ? (

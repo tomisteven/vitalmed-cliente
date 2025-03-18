@@ -35,14 +35,14 @@ const Secretarias = ({ notificacion }) => {
     e.preventDefault();
     await saveSecretaria(secretariaData, !!selectSecretaria);
     setModalOpen(false);
-    setSecretariaData({ nombre: "", email: "", password: "", id: "" });
+    setSecretariaData({ nombre: "", usuario: "", password: "", id: "" });
     setSelectSecretaria(null);
   };
 
   const handleEdit = (secretaria) => {
     setSecretariaData({
       nombre: secretaria.nombre,
-      email: secretaria.email,
+      usuario: secretaria.usuario,
       password: secretaria.password,
       id: secretaria._id,
     });
@@ -73,7 +73,7 @@ const Secretarias = ({ notificacion }) => {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Email</th>
+              <th>Usuario</th>
               <th>Contraseña</th>
               <th>Fecha de Creación</th>
               <th>Acciones</th>
@@ -83,7 +83,7 @@ const Secretarias = ({ notificacion }) => {
             {secretarias.map((secretaria) => (
               <tr key={secretaria._id}>
                 <td>{secretaria.nombre}</td>
-                <td>{secretaria.email}</td>
+                <td>{secretaria.usuario}</td>
                 <td>{secretaria.password}</td>
                 <td>{new Date(secretaria.created_at).toLocaleDateString()}</td>
                 <td>
@@ -115,12 +115,13 @@ const Secretarias = ({ notificacion }) => {
                 ? "Editar Secretaria"
                 : "Agregar Nueva Secretaria"}
             </h3>
-            <label>Nombre</label>
+
             <form onSubmit={handleSubmit}>
+              <label>Nombre y Apellido</label>
               <input
                 type="text"
                 name="nombre"
-                placeholder="Nombre"
+                placeholder="Nombre y Apellido"
                 value={secretariaData.nombre}
                 onChange={(e) =>
                   setSecretariaData({
@@ -131,14 +132,14 @@ const Secretarias = ({ notificacion }) => {
               />
               <label>Email</label>
               <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={secretariaData.email}
+                type="usuario"
+                name="usuario"
+                placeholder="Usuario"
+                value={secretariaData.usuario}
                 onChange={(e) =>
                   setSecretariaData({
                     ...secretariaData,
-                    email: e.target.value,
+                    usuario: e.target.value,
                   })
                 }
               />

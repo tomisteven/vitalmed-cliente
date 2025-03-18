@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import "./Auth.scss";
 import "./Auth.css";
 import doctora from "../../../assets/vitalmed/Dra.Imag.png";
+import doctoraMovil from "../../../assets/vitalmed/doctoraMovil.png";
+import textlogo from "../../../assets/vitalmed/Logotext.png";
 import logo from "../../../assets/vitalmed/LogoJGIcon.png";
 import { Icon } from "semantic-ui-react";
 import { AuthAPI } from "../../../api/auth";
@@ -25,12 +27,12 @@ export function Auth({ notificacion }) {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
       password: "",
+      usuario: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Correo inválido").required("Requerido"),
       password: Yup.string().required("Requerido"),
+      usuario: Yup.string(),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -63,20 +65,27 @@ export function Auth({ notificacion }) {
     },
   });
 
+  const width = window.innerWidth;
+
   return (
     <div className="login-container">
       <div className="login-box">
         <div className="login-left">
           <div className="cont-header-logo-text">
-            <div className="img-text">
+            <img className="logo-text" src={textlogo} alt=""/>
+            {/* <div className="img-text">
               <img className="doc-logo" src={logo} alt="Logo" />
             </div>
             <div className="login-header">
               <h1>Dra. Jeremmy Gutierrez</h1>
               <p>Ultrasonografía</p>
-            </div>
+            </div> */}
           </div>
-          <img src={doctora} alt="Dra. Jeremmy" className="login-image" />
+          <img src={
+            width < 768
+              ? doctoraMovil
+              : doctora
+          } alt="Dra. Jeremmy" className="login-image" />
         </div>
 
         <div className="login-right">
@@ -90,10 +99,10 @@ export function Auth({ notificacion }) {
               <input
                 type="text"
                 className="input-field"
-                {...formik.getFieldProps("email")}
+                {...formik.getFieldProps("usuario")}
               />
-              {formik.touched.email && formik.errors.email ? (
-                <div className="error-text">{formik.errors.email}</div>
+              {formik.touched.usuario && formik.errors.usuario ? (
+                <div className="error-text">{formik.errors.usuario}</div>
               ) : null}
             </div>
             <div className="input-group">
