@@ -19,7 +19,7 @@ export default function AdminMenuMobile() {
       key: "/",
       path: "/",
       icon: <FaHouseUser />,
-      roles: ["doctor", "secretaria"],
+      roles: ["doctor", "secretaria", "paciente"],
     },
     {
       key: "/admin/pacientes",
