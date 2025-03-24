@@ -7,15 +7,13 @@ import "./Auth.css";
 import doctora from "../../../assets/vitalmed/Dra.Imag.png";
 import doctoraMovil from "../../../assets/vitalmed/doctoraMovil.png";
 import textlogo from "../../../assets/vitalmed/Logotext.png";
-import logo from "../../../assets/vitalmed/LogoJGIcon.png";
 import { Icon } from "semantic-ui-react";
 import { AuthAPI } from "../../../api/auth";
-import { ToastContainer, toast } from "react-toastify";
 import ToastMessage from "../../../utils/ToastMessage";
 
 const AuthController = new AuthAPI();
 
-export function Auth({ notificacion }) {
+export function Auth() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -73,13 +71,6 @@ export function Auth({ notificacion }) {
         <div className="login-left">
           <div className="cont-header-logo-text">
             <img className="logo-text" src={textlogo} alt=""/>
-            {/* <div className="img-text">
-              <img className="doc-logo" src={logo} alt="Logo" />
-            </div>
-            <div className="login-header">
-              <h1>Dra. Jeremmy Gutierrez</h1>
-              <p>Ultrasonografía</p>
-            </div> */}
           </div>
           <img src={
             width < 768

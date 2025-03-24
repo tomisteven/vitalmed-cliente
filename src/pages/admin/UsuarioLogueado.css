@@ -2,14 +2,16 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-
-  background: #1e1e1e;
+  justify-content: center;
+  margin: auto;
+  margin-top: 100px;
+  background: #bb7171;
   color: #ffffff;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-  max-width: 350px;
-  height: 200px;
+  max-width:650px;
+  height: 550px;
 }
 .usuario-info {
   display: flex;

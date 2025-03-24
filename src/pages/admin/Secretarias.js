@@ -130,7 +130,7 @@ const Secretarias = ({ notificacion }) => {
                   })
                 }
               />
-              <label>Email</label>
+              <label>Usuario</label>
               <input
                 type="usuario"
                 name="usuario"
