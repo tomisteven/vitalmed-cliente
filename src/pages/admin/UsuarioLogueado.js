@@ -9,7 +9,7 @@ export default function UsuarioLogueado() {
   const { nombre, email, password, usuario } = usuario$.usuario;
   console.log(usuario$);
 
-  if (!usuario) {
+  if (!usuario$) {
     return (
       <div className="container-pacientes-loader">
         <LoaderIcon
