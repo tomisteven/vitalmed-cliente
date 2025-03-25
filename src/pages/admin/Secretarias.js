@@ -31,9 +31,10 @@ const Secretarias = ({ notificacion }) => {
 
   const handleSubmit = async (e) => {
     console.log(secretariaData);
-
+  
     e.preventDefault();
-    await saveSecretaria(secretariaData, !!selectSecretaria);
+    const sec = await saveSecretaria(secretariaData, !!selectSecretaria);
+    notificacion(sec.message, "success")
     setModalOpen(false);
     setSecretariaData({ nombre: "", usuario: "", password: "", id: "" });
     setSelectSecretaria(null);
