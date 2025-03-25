@@ -1,15 +1,27 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import "./UsuarioLogueado.css";
+import { LoaderIcon } from "react-hot-toast";
 
 export default function UsuarioLogueado() {
   const usuario$ = JSON.parse(localStorage.getItem("userLog"));
 
   const { nombre, email, password, usuario } = usuario$.usuario;
-  console.log(usuario);
+  console.log(usuario$);
 
   if (!usuario) {
-    return <div className="usuario-container">Cargando usuario...</div>;
+    return (
+      <div className="container-pacientes-loader">
+        <LoaderIcon
+          style={{
+            width: "30px",
+            height: "30px",
+            color: "#ff7e67",
+            marginTop: "50px",
+          }}
+        />
+      </div>
+    );
   }
   return (
     <div className="usuario-container">

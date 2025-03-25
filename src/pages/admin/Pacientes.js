@@ -2,19 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
-import ClipLoader from "react-spinners/ClipLoader";
 
 import "./Pacientes.css";
+import { LoaderIcon } from "react-hot-toast";
 
 export default function Pacientes({ notificacion }) {
-  const {
-    pacientes,
-    loading,
-    refreshPacientes,
-    savePaciente,
-    deletePaciente,
-    searchPaciente,
-  } = usePacientes({ notificacion });
+  const { pacientes, loading, savePaciente, deletePaciente, searchPaciente } =
+    usePacientes({ notificacion });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
   const [formData, setFormData] = useState({
@@ -23,6 +17,7 @@ export default function Pacientes({ notificacion }) {
     email: "",
     id: "",
   });
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userLog"));
 
@@ -61,8 +56,15 @@ export default function Pacientes({ notificacion }) {
       </button>
 
       {loading ? (
-        <div className="pacientes-container">
-          <ClipLoader color="#36d7b7" size={50} />
+        <div className="container-pacientes-loader">
+          <LoaderIcon
+            style={{
+              width: "30px",
+              height: "30px",
+              color: "#ff7e67",
+              marginTop: "50px",
+            }}
+          />
         </div>
       ) : (
         <table className="pacientes-table">
@@ -133,8 +135,9 @@ export default function Pacientes({ notificacion }) {
               {selectedPaciente ? "Editar Paciente" : "Crear Nuevo Paciente"}
             </h3>
             <form onSubmit={handleSubmit}>
-
-              <label className="label-paciente" for="">Nombre y Apellido</label>
+              <label className="label-paciente" for="">
+                Nombre y Apellido
+              </label>
               <input
                 type="text"
                 placeholder="Nombre y Apellido"
@@ -144,7 +147,9 @@ export default function Pacientes({ notificacion }) {
                 }
                 required
               />
-               <label className="label-paciente" for="">Telefono</label>
+              <label className="label-paciente" for="">
+                Telefono
+              </label>
               <input
                 type="text"
                 placeholder="Numero de Telefono"
@@ -153,7 +158,9 @@ export default function Pacientes({ notificacion }) {
                   setFormData({ ...formData, telefono: e.target.value })
                 }
               />
-               <label className="label-paciente" for="">Cedula Identidad</label>
+              <label className="label-paciente" for="">
+                Cedula Identidad
+              </label>
               <input
                 type="text"
                 placeholder="Cedula de Identidad"
@@ -163,7 +170,9 @@ export default function Pacientes({ notificacion }) {
                 }
                 required
               />
-               <label className="label-paciente" for="">Email</label>
+              <label className="label-paciente" for="">
+                Email
+              </label>
               <input
                 type="text"
                 placeholder="Email"
@@ -173,7 +182,9 @@ export default function Pacientes({ notificacion }) {
                 }
               />
               <span className="divisor"></span>
-              <label  className="label-paciente" for="">Usuario</label>
+              <label className="label-paciente" for="">
+                Usuario
+              </label>
               <input
                 type="text"
                 placeholder="Usuario"
@@ -183,7 +194,9 @@ export default function Pacientes({ notificacion }) {
                 }
                 required
               />
-               <label   className="label-paciente" for="">Contraseña</label>
+              <label className="label-paciente" for="">
+                Contraseña
+              </label>
               <input
                 type="text"
                 placeholder="Contraseña (Opcional)"

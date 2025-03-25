@@ -7,7 +7,7 @@ import { useSecretaria } from "../../hooks/useSecretaria";
 import { LoaderIcon } from "react-hot-toast";
 
 const Secretarias = ({ notificacion }) => {
-  const { secretarias, loading, saveSecretaria, deleteSecretaria } =
+  const { secretarias, saveSecretaria, deleteSecretaria, loading } =
     useSecretaria({ notificacion });
   const [selectSecretaria, setSelectSecretaria] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -62,9 +62,15 @@ const Secretarias = ({ notificacion }) => {
 
       {loading ? (
         // Muestra el loader mientras carga la data
-        <div className="container-secretarias">
-          <LoaderIcon loading={loading} />
-          <p className="p-cargando">Cargando secretarias...</p>
+        <div className="container-pacientes-loader">
+          <LoaderIcon
+            style={{
+              width: "30px",
+              height: "30px",
+              color: "#ff7e67",
+              marginTop: "50px",
+            }}
+          />
         </div>
       ) : secretarias.length === 0 ? (
         <p className="empty-message">No hay secretarias registradas.</p>

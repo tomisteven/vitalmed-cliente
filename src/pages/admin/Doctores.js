@@ -1,6 +1,6 @@
 import React from "react";
 import { useDoctor } from "../../hooks/useDoctor";
-import ClipLoader from "react-spinners/ClipLoader";
+import { LoaderIcon } from "react-hot-toast";
 import Breadcrumbs from "../../utils/Breadcums";
 import "./Doctores.css";
 
@@ -28,8 +28,15 @@ const Doctores = ({ notificacion }) => {
       </button>
 
       {loading ? (
-        <div className="container-doctores">
-          <ClipLoader size={50} color={"#123abc"} loading={loading} />
+        <div className="container-pacientes-loader">
+          <LoaderIcon
+            style={{
+              width: "30px",
+              height: "30px",
+              color: "#ff7e67",
+              marginTop: "50px",
+            }}
+          />
         </div>
       ) : doctores.length === 0 ? (
         <p className="empty-message">No hay doctores registrados.</p>

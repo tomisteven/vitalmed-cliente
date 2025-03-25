@@ -1,7 +1,7 @@
 .container-pacientes {
   max-width: 1400px;
   width: 100%;
-  margin: 20px auto;
+  margin: auto;
   padding: 20px;
   background: #fff;
   border-radius: 8px;
@@ -9,6 +9,18 @@
   color: #000;
   text-align: center;
 }
+
+.container-pacientes-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.loader {
+  width: 120px;
+  height: 120px;
+}
+
 .label-paciente {
   font-size: 13px;
   text-align: start;
