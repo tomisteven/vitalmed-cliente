@@ -120,7 +120,7 @@ const Doctores = ({ notificacion }) => {
             <div className="modal-buttons">
               <button className="btn-save" onClick={handleSaveDoctor}>
                 {loading ? (
-                  <ClipLoader size={15} color={"#123abc"} loading={loading} />
+                  <LoaderIcon />
                 ) : editingDoctor ? (
                   "Guardar Cambios"
                 ) : (
