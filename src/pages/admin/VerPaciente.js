@@ -17,6 +17,7 @@ import PdfViewer from "../../utils/PdfViewer";
 import ModalAsignarDoctor from "../../Components/ModalAsignarDoctor";
 import { LoaderIcon } from "react-hot-toast";
 import "./VerPaciente.css";
+import ModalNota from "../../Components/ModalNota";
 
 export default function VerPaciente() {
   const [toast, setToast] = useState(null);
@@ -208,6 +209,8 @@ export default function VerPaciente() {
 
       {notaModalOpen && (
         <ModalNota
+          onClose={() => setNotaModalOpen(false)}
+          showToast={showToast}
           setNotaModalOpen={setNotaModalOpen}
           nuevaNota={nuevaNota}
           setNuevaNota={setNuevaNota}

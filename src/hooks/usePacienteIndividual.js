@@ -132,8 +132,7 @@ export function usePaciente({ showToast }) {
       console.error("Error al actualizar la nota", error);
       toast.error("Error al actualizar la nota");
     } finally {
-      dispatch({ type: "TOGGLE_STATUS" });
-      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+      window.location.reload();
     }
   };
 
