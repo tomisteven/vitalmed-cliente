@@ -1,0 +1,64 @@
+.select-doctor {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+.select-doctor:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+.lista-doctores-asignados {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  color: #000;
+}
+
+.doctor-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+  color: #000;
+  transition: background-color 0.3s ease;
+}
+
+.title-doctores-asignados {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.btn-remove {
+  color: rgb(255, 255, 255);
+  background-color: tomato;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit-asignar-doctor {
+  color: rgb(255, 255, 255);
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 16px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}

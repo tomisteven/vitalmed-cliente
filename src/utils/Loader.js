@@ -9,8 +9,7 @@ export default function Loader() {
         visible={true}
         height="30"
         width="30"
-
-        color="black"
+        color="white"
         ariaLabel="oval-loading"
         wrapperStyle={{}}
         wrapperClass=""

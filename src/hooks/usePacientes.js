@@ -65,7 +65,10 @@ export const usePacientes = ({ notificacion }) => {
       return dispatch({ type: "SET_PACIENTES", payload: listado });
     }
     const search = pacientes.filter((paciente) => {
-      return paciente.nombre.toLowerCase().includes(valor.toLowerCase());
+      return (
+        paciente.nombre.toLowerCase().includes(valor.toLowerCase()) ||
+        paciente.dni.toString().includes(valor)
+      );
     });
 
     dispatch({ type: "SET_SEARCH", payload: search });

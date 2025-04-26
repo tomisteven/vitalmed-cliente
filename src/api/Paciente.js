@@ -22,6 +22,90 @@ export class PacienteApi {
     }
   }
 
+  async getDoctoresList() {
+    try {
+      const response = await fetch(this.url + "/doctores/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async eliminarDoctor(idPaciente, idDoctor) {
+    try {
+      const response = await fetch(
+        this.url + `paciente/${idPaciente}/eliminar-doctor`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "vitalmed0258525",
+          },
+          body: JSON.stringify({ idDoctor }),
+        }
+      );
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async asignarDoctores(id, data) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}/asignar-doctor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async agregarNota(id, data) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}/agregar-nota`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.status !== 201) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async updatePaciente(id, data) {
     try {
       const response = await fetch(this.url + `paciente/${id}`, {
@@ -113,6 +197,25 @@ export class PacienteApi {
         console.log(result.message);
       }
 
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getDoctores(id) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}/doctores`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
       return result;
     } catch (error) {
       console.log(error);

@@ -13,28 +13,59 @@ import ToastMessage from "../../utils/ToastMessage";
 import Loader from "../../utils/Loader";
 import Breadcrumbs from "../../utils/Breadcums";
 import { usePaciente } from "../../hooks/usePacienteIndividual";
-import "./VerPaciente.css";
-import { LoaderIcon } from "react-hot-toast";
-
 import PdfViewer from "../../utils/PdfViewer";
+import ModalAsignarDoctor from "../../Components/ModalAsignarDoctor";
+import { LoaderIcon } from "react-hot-toast";
+import "./VerPaciente.css";
 
 export default function VerPaciente() {
-  const showToast = (message, type) => {
-    setToast({ message, type });
-  };
-  const { state, dispatch, user, handleUpload, setNombreArchivo, setArchivos } =
-    usePaciente({ showToast });
-
   const [toast, setToast] = useState(null);
+  const [modalAsignarDoctorOpen, setModalAsignarDoctorOpen] = useState(false);
+  const [notaModalOpen, setNotaModalOpen] = useState(false);
+  const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
+  const [doctoresList, setDoctoresList] = useState([]);
+
+  const showToast = (message, type) => setToast({ message, type });
+
+  const {
+    state,
+    dispatch,
+    user,
+    handleUpload,
+    setNombreArchivo,
+    setArchivos,
+    setNota,
+    loading,
+    eliminarDoctorDelPaciente,
+    fetchDoctores, // <-- debes agregar esta función en tu hook (usePacienteIndividual)
+  } = usePaciente({ showToast });
+
+  const handleOpenModalDoctor = async () => {
+    setModalAsignarDoctorOpen(true);
+    if (doctoresList.length === 0) {
+      const doctores = await fetchDoctores();
+      setDoctoresList(doctores || []);
+    }
+  };
+
+  const handleGuardarNota = () => {
+    if (!nuevaNota.nota || !nuevaNota.author) {
+      showToast("Completa todos los campos", "error");
+      return;
+    }
+    setNota(nuevaNota);
+    setNuevaNota({ nota: "", author: "" });
+    setNotaModalOpen(false);
+    showToast("Nota guardada correctamente", "success");
+  };
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
-    setArchivos([...state.archivos, ...newFiles]);
+    setArchivos((prev) => [...prev, ...newFiles]);
   };
 
   const removeFile = (index) => {
-    const updatedFiles = state.archivos.filter((_, i) => i !== index);
-    setArchivos(updatedFiles);
+    setArchivos((prev) => prev.filter((_, i) => i !== index));
   };
 
   if (!state.paciente) return <Loader />;
@@ -42,6 +73,8 @@ export default function VerPaciente() {
   return (
     <div className="paciente-container">
       <Breadcrumbs />
+
+      {/* Header Paciente */}
       <div className="paciente-header">
         <img
           src={state.paciente.avatar || avatar}
@@ -52,7 +85,7 @@ export default function VerPaciente() {
           <h2>{state.paciente.nombre || "No especifica"}</h2>
           <p>
             {state.paciente.dni
-              ? `DNI: ${state.paciente.dni}`
+              ? `Cedula de Identidad: ${state.paciente.dni}`
               : "No especifica"}
           </p>
           <div className="contact-info">
@@ -65,6 +98,8 @@ export default function VerPaciente() {
           </div>
         </div>
       </div>
+
+      {/* Info Visitas */}
       <div className="visit-info">
         <h3>Información de la visita</h3>
         <p>
@@ -73,19 +108,58 @@ export default function VerPaciente() {
             ? new Date(state.paciente.created_at).toLocaleDateString()
             : "No especifica"}
         </p>
-        <p>
-          <FaUserMd /> Médico Asignado: No especifica
-        </p>
-        <p>Razón de consulta: No especifica</p>
+
+        {/* Doctores Asignados */}
+        <h3>Doctores Asignados</h3>
+        {state.doctores?.map((doctor) => (
+          <p className="doctor-paciente" key={doctor._id}>
+            <FaUserMd /> Doctor: {doctor.nombre || "No especifica"}
+            <button
+              className="btn-doctor-asignado-eliminar"
+              onClick={() => eliminarDoctorDelPaciente(doctor._id)}
+            >
+              {loading ? (
+                <LoaderIcon
+                  style={{
+                    width: "15px",
+                    height: "15px",
+                    color: "#ff7e67",
+                    marginTop: "5px",
+                  }}
+                />
+              ) : (
+                <FaTimes />
+              )}
+            </button>
+          </p>
+        ))}
+        <button className="btn-agregar-nota" onClick={handleOpenModalDoctor}>
+          <FaPlus /> Agregar Doctor
+        </button>
+
+        {/* Notas */}
+        <h3>Notas del paciente</h3>
+        {state.paciente.notas?.length > 0 ? (
+          state.paciente.notas.map((nota, index) => (
+            <div className="nota-paciente" key={index}>
+              <p className="nota-paciente-p">
+                Autor: {nota.author} - {nota.nota || "No especifica"} -{" "}
+                {new Date(nota.fecha).toLocaleDateString()}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="no-notas">No hay notas disponibles</p>
+        )}
+        <button
+          className="btn-agregar-nota"
+          onClick={() => setNotaModalOpen(true)}
+        >
+          <FaPlus /> Agregar Nota
+        </button>
       </div>
 
-      <div className="emergency-contact">
-        <h3>Contacto de emergencia</h3>
-        <p>
-          <FaPhone /> No especifica
-        </p>
-      </div>
-
+      {/* Documentos */}
       <div className="documentos">
         <div className="doc-header">
           <h3 className="titulo-doc">Documentos del Paciente</h3>
@@ -98,10 +172,11 @@ export default function VerPaciente() {
                 dispatch({ type: "TOGGLE_MODAL" });
               }}
             >
-              <FaPlus /> {"Subir Archivo"}
+              <FaPlus /> Subir Archivo
             </button>
           )}
         </div>
+
         {state.documentos.length > 0 ? (
           <div className="carpetas">
             {state.documentos.map((doc, index) => (
@@ -118,64 +193,36 @@ export default function VerPaciente() {
         )}
       </div>
 
+      {/* Modales */}
       {state.modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>Subir Documentos</h3>
-              <FaTimes
-                className="close-icon"
-                onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
-              />
-            </div>
-            <div className="modal-body">
-              <input
-                type="text"
-                placeholder="Nombre del archivo (general)"
-                value={state.nombreArchivo}
-                onChange={(e) => setNombreArchivo(e.target.value)}
-              />
-              <input
-                type="file"
-                multiple
-                onChange={(e) => setArchivos(Array.from(e.target.files))}
-              />
+        <ModalSubirArchivo
+          dispatch={dispatch}
+          setNombreArchivo={setNombreArchivo}
+          setArchivos={setArchivos}
+          state={state}
+          handleUpload={handleUpload}
+          handleFileChange={handleFileChange}
+          removeFile={removeFile}
+        />
+      )}
 
-              {state.archivos.length > 0 && (
-                <div className="file-preview">
-                  <strong>
-                    Archivos seleccionados: {state.archivos.length}
-                  </strong>
-                  <ul className="ul-item-img">
-                    {state.archivos.map((file, index) => (
-                      <>
-                        <li className="li-item-img" key={index}>
-                          {file.name}
-                          <button
-                            className="item-eliminar-archivo"
-                            onClick={() => removeFile(index)}
-                          >
-                            x
-                          </button>
-                        </li>
-                      </>
-                    ))}
-                  </ul>
-                  <p>Seleccionar Otros archivos</p>
-                  <input type="file" onChange={handleFileChange} />
-                </div>
-              )}
+      {notaModalOpen && (
+        <ModalNota
+          setNotaModalOpen={setNotaModalOpen}
+          nuevaNota={nuevaNota}
+          setNuevaNota={setNuevaNota}
+          handleGuardarNota={handleGuardarNota}
+        />
+      )}
 
-              <button className="btn-submit" onClick={handleUpload}>
-                {state.loadingFile ? (
-                  <LoaderIcon className="loader-icon" />
-                ) : (
-                  "Subir Archivos"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+      {modalAsignarDoctorOpen && (
+        <ModalAsignarDoctor
+          showToast={showToast}
+          doctoresPaciente={state.doctores}
+          id={state.paciente._id}
+          doctores={doctoresList}
+          onClose={() => setModalAsignarDoctorOpen(false)}
+        />
       )}
 
       {toast && (
@@ -202,7 +249,9 @@ const Carpeta = ({ doc, dispatch, setNombreArchivo }) => {
   return (
     <div className="carpeta">
       <div className="carpeta-header" onClick={toggleFiles}>
-        <p className="nombre-carpeta">📁 {doc.nombreArchivo || "Sin nombre"}</p>
+        <p className="nombre-carpeta">
+          📁 {doc.nombreArchivo || "Sin nombre"} ↓{" "}
+        </p>
       </div>
       {isOpen && (
         <div className="archivos">

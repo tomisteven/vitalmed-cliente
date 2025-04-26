@@ -13,6 +13,9 @@ const initialState = {
   archivos: [],
   loadingFile: false,
   statusChange: false,
+  doctores: [],
+  doctoresList: [],
+  loading: false,
 };
 
 function reducer(state, action) {
@@ -35,8 +38,18 @@ function reducer(state, action) {
       return { ...state, documentos: [...state.documentos, ...action.payload] };
     case "SET_DOCUMENTOS":
       return { ...state, documentos: action.payload };
+    case "SET_DOCTORES":
+      return { ...state, doctores: action.payload };
+    // dentro del reducer
+    case "SET_DOCTORES_LIST":
+      return { ...state, doctoresList: action.payload };
+
+    case "SET_LOADING_DOCTORES":
+      return { ...state, loadingDoctores: action.payload };
     case "TOGGLE_STATUS":
       return { ...state, statusChange: !state.statusChange };
+    case "SET_LOADING_GLOBAL":
+      return { ...state, loading: action.payload };
     default:
       return state;
   }
@@ -53,15 +66,76 @@ export function usePaciente({ showToast }) {
     const fetchPaciente = async () => {
       try {
         const response = await PacienteController.getPacienteById(id);
-        const documentosOrdenados = await PacienteController.getDocumentos(id);
-        dispatch({ type: "SET_PACIENTE", payload: response });
-        dispatch({ type: "SET_DOCUMENTOS", payload: documentosOrdenados });
+
+        dispatch({ type: "SET_PACIENTE", payload: response.paciente });
+        dispatch({
+          type: "SET_DOCUMENTOS",
+          payload: response.documentosAgrupados,
+        });
+        dispatch({ type: "SET_DOCTORES", payload: response.doctoresAsignados });
       } catch (error) {
         console.error("Error al obtener los datos del paciente", error);
       }
     };
+
     fetchPaciente();
   }, [id]);
+
+  const fetchDoctoresList = async () => {
+    dispatch({ type: "SET_LOADING_DOCTORES", payload: true });
+    try {
+      const response = await axios.get("/api/doctores");
+      dispatch({ type: "SET_DOCTORES_LIST", payload: response.data });
+    } catch (error) {
+      console.error("Error fetching doctores:", error);
+    } finally {
+      dispatch({ type: "SET_LOADING_DOCTORES", payload: false });
+    }
+  };
+
+  const eliminarDoctorDelPaciente = async (idDoctor) => {
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    try {
+      const response = await PacienteController.eliminarDoctor(id, idDoctor);
+      if (response.ok) {
+        const doctoresActualizados = state.doctores.filter(
+          (doctor) => doctor._id !== idDoctor
+        );
+        dispatch({ type: "SET_DOCTORES", payload: doctoresActualizados });
+        showToast("Doctor eliminado correctamente", "success");
+      } else {
+        showToast("Error al eliminar el doctor", "error");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el doctor", error);
+      showToast("Error al eliminar el doctor", "error");
+    } finally {
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+    }
+  };
+
+  const setNota = async (nota) => {
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    if (!nota) {
+      showToast("Debe ingresar una nota", "error");
+      return;
+    }
+    try {
+      const response = await PacienteController.agregarNota(id, nota);
+      if (response.ok) {
+        state.paciente.notas.push(nota);
+        showToast("Nota ingresada correctamente", "success");
+      } else {
+        toast.error("Error al actualizar la nota");
+      }
+    } catch (error) {
+      console.error("Error al actualizar la nota", error);
+      toast.error("Error al actualizar la nota");
+    } finally {
+      dispatch({ type: "TOGGLE_STATUS" });
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+    }
+  };
 
   const changeStatus = useCallback(() => {
     statusRef.current = true;
@@ -125,5 +199,10 @@ export function usePaciente({ showToast }) {
     handleUpload,
     setNombreArchivo,
     setArchivos,
+    changeStatus,
+    setNota,
+    eliminarDoctorDelPaciente,
+    loading: state.loading,
+    fetchDoctoresList,
   };
 }

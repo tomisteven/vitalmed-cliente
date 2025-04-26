@@ -43,7 +43,7 @@ export default function Pacientes({ notificacion }) {
 
       <input
         type="text"
-        placeholder="Buscar por nombre"
+        placeholder="Buscar por nombre o cédula"
         onChange={(e) => searchPaciente(e.target.value)}
         className="search-input-pacientes"
       />
