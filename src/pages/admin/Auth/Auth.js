@@ -10,6 +10,7 @@ import textlogo from "../../../assets/vitalmed/Logotext.png";
 import { Icon } from "semantic-ui-react";
 import { AuthAPI } from "../../../api/auth";
 import ToastMessage from "../../../utils/ToastMessage";
+import { ENV } from "../../../utils/constants";
 
 const AuthController = new AuthAPI();
 
@@ -50,7 +51,15 @@ export function Auth() {
         showToast("Inicio de sesión exitoso", "success");
 
         if (user.rol === "paciente") {
-          navigate("/admin/pacientes/" + user.usuario._id);
+          //navigate(`/admin/paciente/${response.usuario._id}`);
+
+          window.open(
+            `${ENV.URL_CLIENT}/#/admin/pacientes/${response.usuario._id}`,
+            "_blank"
+          );
+
+          //cerrar la ventana actual
+          window.close();
         } else {
           navigate("/admin/pacientes");
         }
@@ -70,18 +79,22 @@ export function Auth() {
       <div className="login-box">
         <div className="login-left">
           <div className="cont-header-logo-text">
-            <img className="logo-text" src={textlogo} alt=""/>
+            <img className="logo-text" src={textlogo} alt="" />
           </div>
-          <img src={
-            width < 768
-              ? doctoraMovil
-              : doctora
-          } alt="Dra. Jeremmy" className="login-image" />
+          <img
+            src={width < 768 ? doctoraMovil : doctora}
+            alt="Dra. Jeremmy"
+            className="login-image"
+          />
         </div>
 
         <div className="login-right">
           <h2 className="text-bienvenida">
-            Bienvenidos (a) DoctoraEcos Jeremmy Guterrez
+            Bienvenidos (a):
+            <br />
+            DoctoraEcos
+            <br />
+            Dra. Jeremmy Guterrez
           </h2>
           <p>Inicio de sesión</p>
           <form className="login-form" onSubmit={formik.handleSubmit}>

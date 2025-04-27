@@ -79,7 +79,25 @@ export function usePaciente({ showToast }) {
     };
 
     fetchPaciente();
-  }, [id]);
+    if (user?.rol === "paciente") {
+      const handlePopState = (event) => {
+        window.history.pushState(null, null, window.location.pathname);
+      };
+
+      const handleBeforeUnload = (event) => {
+        event.preventDefault();
+        event.returnValue = ""; // Previene navegación
+      };
+
+      window.addEventListener("popstate", handlePopState);
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [id, user]);
 
   const fetchDoctoresList = async () => {
     dispatch({ type: "SET_LOADING_DOCTORES", payload: true });

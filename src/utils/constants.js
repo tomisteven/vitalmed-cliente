@@ -3,4 +3,5 @@ const url = "https://exuberant-joelle-digitalcode-937bee37.koyeb.app";
 
 export const ENV = {
   URL: url,
+  URL_CLIENT: "https://vitalmed01.netlify.app",
 };
