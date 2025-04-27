@@ -116,6 +116,11 @@ export default function VerPaciente() {
           <p className="doctor-paciente" key={doctor._id}>
             <FaUserMd /> Doctor: {doctor.nombre || "No especifica"}
             <button
+              style={
+                user.rol === "paciente"
+                  ? { display: "none" }
+                  : { display: "block" }
+              }
               className="btn-doctor-asignado-eliminar"
               onClick={() => eliminarDoctorDelPaciente(doctor._id)}
             >

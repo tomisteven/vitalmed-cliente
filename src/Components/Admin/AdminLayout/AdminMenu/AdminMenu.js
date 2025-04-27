@@ -51,6 +51,12 @@ export default function AdminMenu({ onLoad }) {
       label: "DOCTORES",
       roles: ["secretaria"],
     },
+    {
+      key: "/admin/pacientes/" + user?.usuario._id,
+      path: "/admin/pacientes/" + user?.usuario._id,
+      label: "PACIENTE",
+      roles: ["paciente"],
+    },
   ];
 
   const filteredMenuItems = menuItems.filter((item) =>
