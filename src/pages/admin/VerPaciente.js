@@ -143,11 +143,11 @@ export default function VerPaciente() {
         </button>
 
         {/* Notas */}
+
         {state.paciente.notas?.length > 0 &&
           user.rol !== "paciente" &&
           state.paciente.notas.map((nota, index) => (
             <div className="nota-paciente" key={index}>
-              <h3>Notas del paciente</h3>
               <p className="nota-paciente-p">
                 Autor: {nota.author} - {nota.nota || "No especifica"} -{" "}
                 {new Date(nota.fecha).toLocaleDateString()}

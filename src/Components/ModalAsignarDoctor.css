@@ -21,6 +21,19 @@
   margin-top: 20px;
   color: #000;
 }
+.btn-agregar-doctor-modal {
+  color: rgb(255, 255, 255);
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 16px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
 
 .doctor-item {
   display: flex;
@@ -52,7 +65,7 @@
 
 .btn-submit-asignar-doctor {
   color: rgb(255, 255, 255);
-  background-color: #007bff;
+  background-color: #047f00;
   border: none;
   border-radius: 8px;
   cursor: pointer;

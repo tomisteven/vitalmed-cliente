@@ -106,7 +106,7 @@ export default function ModalAsignarDoctor({
             ))}
           </select>
 
-          <button className="btn-agregar" onClick={agregarDoctor}>
+          <button className="btn-agregar-doctor-modal" onClick={agregarDoctor}>
             Agregar Doctor
           </button>
 
