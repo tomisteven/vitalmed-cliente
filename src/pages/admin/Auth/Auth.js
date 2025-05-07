@@ -94,7 +94,7 @@ export function Auth() {
             <br />
             DoctoraEcos
             <br />
-            Dra. Jeremmy Guterrez
+            Dra. Jeremmy Gutierrez
           </h2>
           <p>Inicio de sesión</p>
           <form className="login-form" onSubmit={formik.handleSubmit}>
