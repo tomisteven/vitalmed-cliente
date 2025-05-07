@@ -204,65 +204,61 @@ export default function VerPaciente() {
 
       {/* Modales */}
       {state.modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>Subir Documentos</h3>
-              <FaTimes
-                className="close-icon"
-                onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
-              />
-            </div>
-            <div className="modal-body">
-              <input
-                type="text"
-                placeholder="Nombre del archivo (general)"
-                value={state.nombreArchivo}
-                onChange={(e) => setNombreArchivo(e.target.value)}
-              />
-              <input
-                type="file"
-                multiple
-                onChange={(e) => setArchivos(Array.from(e.target.files))}
-              />
+  <div className="modal-overlay">
+    <div className="modal">
+      <div className="modal-header">
+        <h3>Subir Documentos</h3>
+        <FaTimes
+          className="close-icon"
+          onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
+        />
+      </div>
+      <div className="modal-body">
+        <input
+          type="text"
+          placeholder="Nombre del archivo (general)"
+          value={state.nombreArchivo}
+          onChange={(e) => setNombreArchivo(e.target.value)}
+        />
 
-              {state.archivos.length > 0 && (
-                <div className="file-preview">
-                  <strong>
-                    Archivos seleccionados: {state.archivos.length}
-                  </strong>
-                  <ul className="ul-item-img">
-                    {state.archivos.map((file, index) => (
-                      <>
-                        <li className="li-item-img" key={index}>
-                          {file.name}
-                          <button
-                            className="item-eliminar-archivo"
-                            onClick={() => removeFile(index)}
-                          >
-                            x
-                          </button>
-                        </li>
-                      </>
-                    ))}
-                  </ul>
-                  <p>Seleccionar Otros archivos</p>
-                  <input type="file" onChange={handleFileChange} />
-                </div>
-              )}
+        <input
+          type="file"
+          multiple
+          onChange={(e) =>
+            setArchivos([...state.archivos, ...Array.from(e.target.files)])
+          }
+        />
 
-              <button className="btn-submit" onClick={handleUpload}>
-                {state.loadingFile ? (
-                  <LoaderIcon className="loader-icon" />
-                ) : (
-                  "Subir Archivos"
-                )}
-              </button>
-            </div>
+        {state.archivos.length > 0 && (
+          <div className="file-preview">
+            <strong>Archivos seleccionados: {state.archivos.length}</strong>
+            <ul className="ul-item-img">
+              {state.archivos.map((file, index) => (
+                <li className="li-item-img" key={index}>
+                  {file.name}
+                  <button
+                    className="item-eliminar-archivo"
+                    onClick={() => {
+                      const nuevos = [...state.archivos];
+                      nuevos.splice(index, 1);
+                      setArchivos(nuevos);
+                    }}
+                  >
+                    x
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      )}
+        )}
 
+        <button className="btn-submit" onClick={handleUpload}>
+          {state.loadingFile ? <LoaderIcon className="loader-icon" /> : "Subir Archivos"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       {notaModalOpen && (
         <ModalNota
           onClose={() => setNotaModalOpen(false)}

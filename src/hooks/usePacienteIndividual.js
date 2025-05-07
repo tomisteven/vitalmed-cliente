@@ -182,6 +182,8 @@ export function usePaciente({ showToast }) {
     formData.append("nombreArchivo", state.nombreArchivo);
 
     try {
+      console.log(formData);
+
       const r = await PacienteController.subirDocumento(id, formData);
 
       console.log(r);
