@@ -165,7 +165,7 @@ export function usePaciente({ showToast }) {
 
   const setArchivos = (archivos) => {
     dispatch({ type: "SET_ARCHIVOS", payload: archivos });
-    //console.log(archivos);
+    console.log(archivos);
   };
 
   const handleUpload = useCallback(async () => {
