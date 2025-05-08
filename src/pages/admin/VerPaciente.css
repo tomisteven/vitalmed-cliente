@@ -46,7 +46,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
-  width:auto;
+  width: auto;
   height: 30px;
   display: flex;
   justify-content: center;
@@ -479,7 +479,7 @@ h3 {
   border-radius: 4px;
 }
 
-.btn-submit {
+.btn-submit-videos {
   width: 100%;
   background: #28a745;
   color: white;
@@ -488,6 +488,11 @@ h3 {
   border-radius: 6px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.ul-item-img {
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 .btn-submit:hover {

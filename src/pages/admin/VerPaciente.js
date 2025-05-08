@@ -252,7 +252,7 @@ export default function VerPaciente() {
           </div>
         )}
 
-        <button className="btn-submit" onClick={handleUpload}>
+        <button className="btn-submit-ventas" onClick={handleUpload}>
           {state.loadingFile ? <LoaderIcon className="loader-icon" /> : "Subir Archivos"}
         </button>
       </div>

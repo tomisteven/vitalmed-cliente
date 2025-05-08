@@ -15,6 +15,7 @@ import Doctores from "../pages/admin/Doctores.js";
 import Secretarias from "../pages/admin/Secretarias.js";
 import toast, { Toaster } from "react-hot-toast";
 import UsuarioLogueado from "../pages/admin/UsuarioLogueado.js";
+import ProtectedRoute from "../Components/ProtectedRoutes.jsx";
 
 export function AdminRoutes({ notificacion }) {
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -56,46 +57,75 @@ export function AdminRoutes({ notificacion }) {
         <>
           <Route
             path="/admin/pacientes"
-            element={loadLayout(AdminLayout, Pacientes, {
-              loading,
-              setLoading,
-              notificacion,
-            })}
+            element={
+              <ProtectedRoute
+                user={user}
+                allowedRoles={["secretaria", "doctor"]}
+              >
+                {loadLayout(AdminLayout, Pacientes, {
+                  loading,
+                  setLoading,
+                  notificacion,
+                })}
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/admin/pacientes/:id"
-            element={loadLayout(AdminLayout, VerPaciente, {
-              loading,
-              setLoading,
-              notificacion,
-            })}
+            element={
+              <ProtectedRoute
+                user={user}
+                allowedRoles={["secretaria", "doctor", "paciente"]}
+              >
+                {loadLayout(AdminLayout, VerPaciente, {
+                  loading,
+                  setLoading,
+                  notificacion,
+                })}
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/admin/secretarias"
-            element={loadLayout(AdminLayout, Secretarias, {
-              loading,
-              setLoading,
-              notificacion,
-            })}
+            element={
+              <ProtectedRoute user={user} allowedRoles={["secretaria"]}>
+                {loadLayout(AdminLayout, Secretarias, {
+                  loading,
+                  setLoading,
+                  notificacion,
+                })}
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/admin/doctores"
-            element={loadLayout(AdminLayout, Doctores, {
-              loading,
-              setLoading,
-              notificacion,
-            })}
+            element={
+              <ProtectedRoute user={user} allowedRoles={["secretaria"]}>
+                {loadLayout(AdminLayout, Doctores, {
+                  loading,
+                  setLoading,
+                  notificacion,
+                })}
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/"
-            element={loadLayout(AdminLayout, UsuarioLogueado, {
-              loading,
-              setLoading,
-              notificacion,
-            })}
+            element={
+              <ProtectedRoute
+                user={user}
+                allowedRoles={["paciente", "doctor", "secretaria"]}
+              >
+                {loadLayout(AdminLayout, UsuarioLogueado, {
+                  loading,
+                  setLoading,
+                  notificacion,
+                })}
+              </ProtectedRoute>
+            }
           />
-          {/* Página 404 para rutas inexistentes */}
-          <Route path="*" element={loadLayout(AdminLayout, NotFound)} />
+          {/* Si la ruta no existe, redirigí a una ruta por defecto */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </>
       )}
     </Routes>

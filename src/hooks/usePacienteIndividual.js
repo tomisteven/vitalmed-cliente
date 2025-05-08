@@ -16,6 +16,7 @@ const initialState = {
   doctores: [],
   doctoresList: [],
   loading: false,
+  pacienteNoEncontrado: false,
 };
 
 function reducer(state, action) {
@@ -50,6 +51,11 @@ function reducer(state, action) {
       return { ...state, statusChange: !state.statusChange };
     case "SET_LOADING_GLOBAL":
       return { ...state, loading: action.payload };
+    case "SET_PACIENTE_NO_ENCONTRADO":
+      return {
+        ...state,
+        pacienteNoEncontrado: action.payload,
+      };
     default:
       return state;
   }
@@ -66,7 +72,14 @@ export function usePaciente({ showToast }) {
     const fetchPaciente = async () => {
       try {
         const response = await PacienteController.getPacienteById(id);
+        console.log(response);
+        if (!response.ok) {
+          showToast("Paciente no encontrado", "error");
+          dispatch({ type: "SET_PACIENTE_NO_ENCONTRADO", payload: true });
+          return;
+        }
 
+        dispatch({ type: "SET_PACIENTE_NO_ENCONTRADO", payload: false });
         dispatch({ type: "SET_PACIENTE", payload: response.paciente });
         dispatch({
           type: "SET_DOCUMENTOS",

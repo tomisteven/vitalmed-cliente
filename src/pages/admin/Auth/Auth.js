@@ -26,52 +26,43 @@ export function Auth() {
 
   const formik = useFormik({
     initialValues: {
-      password: "",
       usuario: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      password: Yup.string().required("Requerido"),
-      usuario: Yup.string(),
+      usuario: Yup.string().required("Usuario requerido"),
+      password: Yup.string().required("Contraseña requerida"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await AuthController.loginForm(values);
+        const res = await AuthController.loginForm(values);
 
-        if (!response.ok) {
-          showToast(response.message, "error");
+        if (!res.ok) {
+          showToast(res.message || "Error al iniciar sesión", "error");
           return;
         }
 
-        const user = {
-          usuario: response.usuario,
-          rol: response.rol,
-        };
+        const { usuario, rol } = res;
 
+        const user = { usuario, rol };
         localStorage.setItem("userLog", JSON.stringify(user));
         showToast("Inicio de sesión exitoso", "success");
 
-        if (user.rol === "paciente") {
-          //navigate(`/admin/paciente/${response.usuario._id}`);
-
-          window.open(
-            `${ENV.URL_CLIENT}/#/admin/pacientes/${response.usuario._id}`,
-            "_blank"
-          );
-
-          //cerrar la ventana actual
-          window.close();
+        // Redirección basada en rol
+        if (rol === "paciente" && usuario?._id) {
+          navigate(`/admin/pacientes/${usuario._id}`, { replace: true });
         } else {
-          navigate("/admin/pacientes");
+          navigate("/admin/pacientes", { replace: true });
         }
-        window.location.reload();
-      } catch (error) {
-        console.error("Error al iniciar sesión", error);
+      } catch (err) {
+        console.error("Error en login:", err);
+        showToast("Ocurrió un error inesperado", "error");
       } finally {
         setSubmitting(false);
+        window.location.reload();
       }
     },
   });
-
   const width = window.innerWidth;
 
   return (
