@@ -479,7 +479,23 @@ h3 {
   border-radius: 4px;
 }
 
-.btn-submit-videos {
+.archivo-eliminar {
+  background: #e55656;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: auto;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+
+  margin: 10px 20px;
+}
+
+.btn-submit-ventas {
   width: 100%;
   background: #28a745;
   color: white;

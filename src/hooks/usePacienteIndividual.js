@@ -112,6 +112,30 @@ export function usePaciente({ showToast }) {
     }
   }, [id, user]);
 
+  const eliminarArchivo = async (idarchivo) => {
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    dispatch({ type: "SET_LOADING", payload: true });
+    if (!idarchivo) {
+      showToast("Debe seleccionar un archivo", "error");
+      return;
+    }
+    try {
+      const response = await PacienteController.eliminarArchivo(id, idarchivo);
+      if (response.ok) {
+        const documentosActualizados = state.documentos.filter(
+          (documento) => documento._id !== idarchivo
+        );
+        dispatch({ type: "SET_DOCUMENTOS", payload: documentosActualizados });
+        showToast("Archivo eliminado correctamente", "success");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el archivo", error);
+      showToast("Error al eliminar el archivo", "error");
+    } finally {
+      window.location.reload();
+    }
+  };
+
   const fetchDoctoresList = async () => {
     dispatch({ type: "SET_LOADING_DOCTORES", payload: true });
     try {
@@ -236,5 +260,6 @@ export function usePaciente({ showToast }) {
     eliminarDoctorDelPaciente,
     loading: state.loading,
     fetchDoctoresList,
+    eliminarArchivo,
   };
 }

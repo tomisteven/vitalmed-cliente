@@ -6,7 +6,7 @@ import { LoaderIcon } from "react-hot-toast";
 export default function UsuarioLogueado() {
   const usuario$ = JSON.parse(localStorage.getItem("userLog"));
 
-  const { nombre, email, password, usuario } = usuario$.usuario;
+  const { nombre, email, password, usuario, rol } = usuario$.usuario;
   console.log(usuario$);
 
   if (!usuario$) {
@@ -27,6 +27,7 @@ export default function UsuarioLogueado() {
     <div className="usuario-container">
       <FaUserCircle className="usuario-icono" />
       <div className="usuario-info">
+        <h1>ROL: {rol} </h1>
         <h2>Nombre: {nombre}</h2>
         <p>Usuario: {usuario}</p>
         <p>Email: {email ? email : "No especifica"}</p>

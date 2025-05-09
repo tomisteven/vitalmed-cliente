@@ -1,0 +1,132 @@
+.carpeta-test {
+  background-color: #ffffff;
+  border: 1px solid #cce4ff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.carpeta-header-test {
+  background-color: #e0f0ff;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carpeta-header-test:hover {
+  background-color: #d0e8ff;
+}
+
+.nombre-carpeta-test {
+  font-weight: 600;
+  color: #000;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.archivos-test {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.archivo-test {
+  background-color: #fff0f5;
+  border: 1px solid #f9c6d3;
+  border-radius: 10px;
+  padding: 12px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.img-preview-test {
+  max-height: 120px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.archivo-nombre-test {
+  font-size: 0.9rem;
+  color: #000;
+  margin-bottom: 6px;
+  display: block;
+  word-break: break-word;
+}
+
+.archivo-descarga-test {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.archivo-descarga-test:hover {
+  background-color: #0056b3;
+}
+
+.archivo-eliminar-test {
+  border: none;
+  background-color: #ff2424;
+  color: rgb(255, 255, 255);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin: 5px 5px 5px 5px;
+  text-decoration: none;
+    cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.archivo-eliminar-test:hover {
+  color: #ffd2d2;
+}
+
+.btn-agregar-carpeta-test {
+  margin-top: 12px;
+  background-color: #ff69b4;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-agregar-carpeta-test:hover {
+  background-color: #e055a0;
+}
+
+.modal-test {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-cerrar-test {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #000;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  cursor: pointer;
+}

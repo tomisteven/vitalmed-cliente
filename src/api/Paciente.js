@@ -22,6 +22,28 @@ export class PacienteApi {
     }
   }
 
+  async eliminarArchivo(id, idArchivo) {
+    try {
+      const response = await fetch(
+        this.url + `secretaria/${id}/eliminar-documento/${idArchivo}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "vitalmed0258525",
+          },
+        }
+      );
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getDoctoresList() {
     try {
       const response = await fetch(this.url + "/doctores/list", {

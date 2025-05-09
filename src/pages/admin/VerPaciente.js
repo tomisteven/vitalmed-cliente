@@ -18,6 +18,8 @@ import ModalAsignarDoctor from "../../Components/ModalAsignarDoctor";
 import { LoaderIcon } from "react-hot-toast";
 import "./VerPaciente.css";
 import ModalNota from "../../Components/ModalNota";
+import "./carpeta.css";
+import { MdDeleteForever } from "react-icons/md";
 
 export default function VerPaciente() {
   const [toast, setToast] = useState(null);
@@ -39,6 +41,7 @@ export default function VerPaciente() {
     loading,
     eliminarDoctorDelPaciente,
     fetchDoctores, // <-- debes agregar esta función en tu hook (usePacienteIndividual)
+    eliminarArchivo,
   } = usePaciente({ showToast });
 
   const handleOpenModalDoctor = async () => {
@@ -58,15 +61,6 @@ export default function VerPaciente() {
     setNuevaNota({ nota: "", author: "" });
     setNotaModalOpen(false);
     showToast("Nota guardada correctamente", "success");
-  };
-
-  const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files);
-    setArchivos((prev) => [...prev, ...newFiles]);
-  };
-
-  const removeFile = (index) => {
-    setArchivos((prev) => prev.filter((_, i) => i !== index));
   };
 
   if (!state.paciente) return <Loader />;
@@ -194,6 +188,8 @@ export default function VerPaciente() {
                 doc={doc}
                 dispatch={dispatch}
                 setNombreArchivo={setNombreArchivo}
+                eliminarArchivo={eliminarArchivo}
+                loading={loading}
               />
             ))}
           </div>
@@ -204,61 +200,70 @@ export default function VerPaciente() {
 
       {/* Modales */}
       {state.modalOpen && (
-  <div className="modal-overlay">
-    <div className="modal">
-      <div className="modal-header">
-        <h3>Subir Documentos</h3>
-        <FaTimes
-          className="close-icon"
-          onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
-        />
-      </div>
-      <div className="modal-body">
-        <input
-          type="text"
-          placeholder="Nombre del archivo (general)"
-          value={state.nombreArchivo}
-          onChange={(e) => setNombreArchivo(e.target.value)}
-        />
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h3>Subir Documentos</h3>
+              <FaTimes
+                className="close-icon"
+                onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
+              />
+            </div>
+            <div className="modal-body">
+              <input
+                type="text"
+                placeholder="Nombre del archivo (general)"
+                value={state.nombreArchivo}
+                onChange={(e) => setNombreArchivo(e.target.value)}
+              />
 
-        <input
-          type="file"
-          multiple
-          onChange={(e) =>
-            setArchivos([...state.archivos, ...Array.from(e.target.files)])
-          }
-        />
+              <input
+                type="file"
+                multiple
+                onChange={(e) =>
+                  setArchivos([
+                    ...state.archivos,
+                    ...Array.from(e.target.files),
+                  ])
+                }
+              />
 
-        {state.archivos.length > 0 && (
-          <div className="file-preview">
-            <strong>Archivos seleccionados: {state.archivos.length}</strong>
-            <ul className="ul-item-img">
-              {state.archivos.map((file, index) => (
-                <li className="li-item-img" key={index}>
-                  {file.name}
-                  <button
-                    className="item-eliminar-archivo"
-                    onClick={() => {
-                      const nuevos = [...state.archivos];
-                      nuevos.splice(index, 1);
-                      setArchivos(nuevos);
-                    }}
-                  >
-                    x
-                  </button>
-                </li>
-              ))}
-            </ul>
+              {state.archivos.length > 0 && (
+                <div className="file-preview">
+                  <strong>
+                    Archivos seleccionados: {state.archivos.length}
+                  </strong>
+                  <ul className="ul-item-img">
+                    {state.archivos.map((file, index) => (
+                      <li className="li-item-img" key={index}>
+                        {file.name}
+                        <button
+                          className="item-eliminar-archivo"
+                          onClick={() => {
+                            const nuevos = [...state.archivos];
+                            nuevos.splice(index, 1);
+                            setArchivos(nuevos);
+                          }}
+                        >
+                          x
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <button className="btn-submit-ventas" onClick={handleUpload}>
+                {state.loadingFile ? (
+                  <LoaderIcon className="loader-icon" />
+                ) : (
+                  "Subir Archivos"
+                )}
+              </button>
+            </div>
           </div>
-        )}
-
-        <button className="btn-submit-ventas" onClick={handleUpload}>
-          {state.loadingFile ? <LoaderIcon className="loader-icon" /> : "Subir Archivos"}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
       {notaModalOpen && (
         <ModalNota
           onClose={() => setNotaModalOpen(false)}
@@ -291,69 +296,98 @@ export default function VerPaciente() {
   );
 }
 
-const Carpeta = ({ doc, dispatch, setNombreArchivo }) => {
+const Carpeta = ({
+  doc,
+  dispatch,
+  setNombreArchivo,
+  eliminarArchivo,
+  loading,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPdf, setSelectedPdf] = useState(null);
-  const [loadingImage, setLoadingImage] = useState(false); // Estado para el loader
-  const [textCarpetas, setTextCarpetas] = useState("");
+  const [loadingImage, setLoadingImage] = useState(false);
 
   const toggleFiles = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="carpeta">
-      <div className="carpeta-header" onClick={toggleFiles}>
-        <p className="nombre-carpeta">
-          📁 {doc.nombreArchivo || "Sin nombre"} ↓{" "}
+    <div className="carpeta-test">
+      <div className="carpeta-header-test" onClick={toggleFiles}>
+        <p className="nombre-carpeta-test">
+          📁 {doc.nombreArchivo || "Sin nombre"}
         </p>
       </div>
-      {isOpen && (
-        <div className="archivos">
-          {doc.archivos.map((archivo) => (
-            <div className="archivo" key={archivo._id}>
-              {loadingImage && <Loader />}{" "}
-              {/* Mostrar el loader mientras carga la imagen */}
-              <img
-                onLoad={() => setLoadingImage(false)} // Cambia el estado a false cuando la imagen se haya cargado
-                onError={() => setLoadingImage(false)} // Cambia el estado a false en caso de error de carga
-                hidden={
-                  archivo.urlArchivo.includes(".pdf") ||
-                  archivo.urlArchivo.includes(".PDF") ||
-                  archivo.urlArchivo.includes(".xlsx") ||
-                  archivo.urlArchivo.includes(".dmc")
-                    ? true
-                    : false
-                }
-                className="img-preview"
-                src={archivo.urlArchivo}
-                alt="Archivo"
-                onLoadStart={() => setLoadingImage(true)} // Cambia el estado a true cuando empieza la carga
-              />
-              <span className="archivo-nombre">{archivo.originalFilename}</span>
-              <a
-                href={archivo.urlArchivo}
-                download
-                className="archivo-descarga"
-              >
-                <FaDownload /> Descargar
-              </a>
-            </div>
-          ))}
-        </div>
-      )}
+
       <button
-        className="btn-agregar-carpeta"
+        className="btn-agregar-carpeta-test"
         onClick={() => {
           setNombreArchivo(doc.nombreArchivo);
           dispatch({ type: "TOGGLE_MODAL" });
         }}
       >
-        Agregar archivos +{" "}
+        Agregar archivos +
       </button>
+
+      {isOpen && (
+        <div className="archivos-test">
+          {doc.archivos.map((archivo) => (
+            <div className="archivo-test" key={archivo._id}>
+              {loadingImage && <Loader />}
+              <img
+                onLoad={() => setLoadingImage(false)}
+                onError={() => setLoadingImage(false)}
+                onLoadStart={() => setLoadingImage(true)}
+                hidden={
+                  archivo.urlArchivo.includes(".pdf") ||
+                  archivo.urlArchivo.includes(".PDF") ||
+                  archivo.urlArchivo.includes(".xlsx") ||
+                  archivo.urlArchivo.includes(".dmc")
+                }
+                className="img-preview-test"
+                src={archivo.urlArchivo}
+                alt="Archivo"
+              />
+              <span className="archivo-nombre-test">
+                {archivo.originalFilename}
+              </span>
+              <a
+                href={archivo.urlArchivo}
+                download
+                className="archivo-descarga-test"
+              >
+                <FaDownload /> Descargar
+              </a>
+              <button
+                className="archivo-eliminar-test"
+                onClick={() => eliminarArchivo(archivo._id)}
+              >
+                {loading ? (
+                  <LoaderIcon
+                    style={{
+                      width: "15px",
+                      height: "15px",
+                      color: "#ff7e67",
+                      marginTop: "5px",
+                    }}
+                  />
+                ) : (
+                  <MdDeleteForever />
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       {selectedPdf && (
-        <div className="modal">
-          <button onClick={() => setSelectedPdf(null)}>❌ Cerrar</button>
+        <div className="modal-test">
+          <button
+            className="modal-cerrar-test"
+            onClick={() => setSelectedPdf(null)}
+          >
+            ❌ Cerrar
+          </button>
           <PdfViewer pdfUrl={selectedPdf} />
         </div>
       )}

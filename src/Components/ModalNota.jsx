@@ -8,7 +8,7 @@ import { usePaciente } from "../hooks/usePacienteIndividual";
 import { useParams } from "react-router-dom";
 const PacienteController = new PacienteApi();
 
-export default function ModalNota({ onClose, showToast }) {
+export default function ModalNota({ onClose, showToast, setNotaModalOpen }) {
   const { setNota, loading } = usePaciente({ showToast });
 
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
