@@ -237,14 +237,13 @@ export function usePaciente({ showToast }) {
         dispatch({ type: "SET_ARCHIVOS", payload: [] });
         dispatch({ type: "SET_LOADING", payload: false });
         showToast("Archivos subidos correctamente", "success");
+        window.location.reload();
       } else {
         toast.error("Error al subir los archivos");
       }
     } catch (error) {
       console.error("Error al subir los archivos", error);
       toast.error("Error al subir los archivos, Intente en unos minutos");
-    } finally {
-      window.location.reload();
     }
   }, [state.nombreArchivo, state.archivos, id]);
 
