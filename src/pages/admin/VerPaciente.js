@@ -167,6 +167,18 @@ export default function VerPaciente() {
       <div className="documentos">
         <div className="doc-header">
           <h3 className="titulo-doc">Documentos del Paciente</h3>
+          {user.rol !== "paciente" && (
+            <button
+              className="btn-upload"
+              onClick={() => {
+                setNombreArchivo("");
+                setArchivos([]);
+                dispatch({ type: "TOGGLE_MODAL" });
+              }}
+            >
+              <FaPlus /> Subir Archivo
+            </button>
+          )}
         </div>
 
         {state.documentos.length > 0 ? (
@@ -179,9 +191,6 @@ export default function VerPaciente() {
                 setNombreArchivo={setNombreArchivo}
                 eliminarArchivo={eliminarArchivo}
                 loading={loading}
-                paciente={state.paciente}
-                user={user}
-                setArchivos={setArchivos}
               />
             ))}
           </div>
@@ -294,9 +303,6 @@ const Carpeta = ({
   setNombreArchivo,
   eliminarArchivo,
   loading,
-  paciente,
-  user,
-  setArchivos,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPdf, setSelectedPdf] = useState(null);
@@ -306,13 +312,6 @@ const Carpeta = ({
     setIsOpen(!isOpen);
   };
 
-  if (
-    user.rol === "doctor" &&
-    !paciente.doctoresAsignados.includes(user.usuario._id)
-  ) {
-    return null; // No mostrar la carpeta si el doctor no está asignado al paciente
-  }
-
   return (
     <div className="carpeta-test">
       <div className="carpeta-header-test" onClick={toggleFiles}>
@@ -320,18 +319,6 @@ const Carpeta = ({
           📁 {doc.nombreArchivo || "Sin nombre"}
         </p>
       </div>
-      {user.rol !== "paciente" && (
-        <button
-          className="btn-upload"
-          onClick={() => {
-            setNombreArchivo("");
-            setArchivos([]);
-            dispatch({ type: "TOGGLE_MODAL" });
-          }}
-        >
-          <FaPlus /> Subir Archivo
-        </button>
-      )}
 
       <button
         className="btn-agregar-carpeta-test"
@@ -348,6 +335,7 @@ const Carpeta = ({
           {doc.archivos.map((archivo) => (
             <div className="archivo-test" key={archivo._id}>
               {loadingImage && <Loader />}
+
               <img
                 onLoad={() => setLoadingImage(false)}
                 onError={() => setLoadingImage(false)}
@@ -391,18 +379,6 @@ const Carpeta = ({
               </button>
             </div>
           ))}
-        </div>
-      )}
-
-      {selectedPdf && (
-        <div className="modal-test">
-          <button
-            className="modal-cerrar-test"
-            onClick={() => setSelectedPdf(null)}
-          >
-            ❌ Cerrar
-          </button>
-          <PdfViewer pdfUrl={selectedPdf} />
         </div>
       )}
     </div>
