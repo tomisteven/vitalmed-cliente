@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
+import { WiCloudRefresh } from "react-icons/wi";
 
 import "./Pacientes.css";
 import { LoaderIcon } from "react-hot-toast";
 
 export default function Pacientes({ notificacion }) {
-  const { pacientes, loading, savePaciente, deletePaciente, searchPaciente } =
-    usePacientes({ notificacion });
+  const {
+    pacientes,
+    loading,
+    savePaciente,
+    deletePaciente,
+    searchPaciente,
+    refreshPacientes,
+  } = usePacientes({ notificacion });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
   const [formData, setFormData] = useState({
@@ -40,7 +47,15 @@ export default function Pacientes({ notificacion }) {
       <h2 className="title">
         Lista de Pacientes {pacientes.length + " (Pacientes)"}
       </h2>
-
+      <button
+        className="btn-refresh"
+        onClick={() => {
+          refreshPacientes();
+          notificacion("Pacientes actualizados", "success");
+        }}
+      >
+        REFRESCAR
+      </button>
       <input
         type="text"
         placeholder="Buscar por nombre o cédula"

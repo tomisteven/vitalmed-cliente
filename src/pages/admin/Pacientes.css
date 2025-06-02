@@ -10,6 +10,20 @@
   text-align: center;
 }
 
+.btn-refresh {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 10px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+.btn-refresh:hover {
+  color: #2fad16;
+}
+
 .container-pacientes-loader {
   display: flex;
   justify-content: center;

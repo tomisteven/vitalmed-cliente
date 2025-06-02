@@ -58,6 +58,9 @@ export const usePacientes = ({ notificacion }) => {
     }
   }, []);
 
+  //refrescar pacientes con boton
+
+
   const searchPaciente = async (valor) => {
     const listado = JSON.parse(sessionStorage.getItem("pacientes"));
     const pacientes = state.pacientes;
