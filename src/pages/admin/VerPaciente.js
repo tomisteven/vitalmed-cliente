@@ -13,7 +13,6 @@ import ToastMessage from "../../utils/ToastMessage";
 import Loader from "../../utils/Loader";
 import Breadcrumbs from "../../utils/Breadcums";
 import { usePaciente } from "../../hooks/usePacienteIndividual";
-import PdfViewer from "../../utils/PdfViewer";
 import ModalAsignarDoctor from "../../Components/ModalAsignarDoctor";
 import { LoaderIcon } from "react-hot-toast";
 import "./VerPaciente.css";
@@ -27,6 +26,12 @@ export default function VerPaciente() {
   const [notaModalOpen, setNotaModalOpen] = useState(false);
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
   const [doctoresList, setDoctoresList] = useState([]);
+  // Obtener el usuario logueado desde localStorage
+  const userLogueado = JSON.parse(localStorage.getItem("userLog"))
+  const userID = userLogueado.usuario._id;
+
+  console.log("userID", userID);
+
 
   const showToast = (message, type) => setToast({ message, type });
 
@@ -51,7 +56,9 @@ export default function VerPaciente() {
     }
   };
 
-  //console.log(state);
+  console.log(state);
+  console.log(userLogueado.usuario._id);
+
 
   const handleGuardarNota = () => {
     if (!nuevaNota.nota || !nuevaNota.author) {
@@ -135,7 +142,7 @@ export default function VerPaciente() {
           </p>
         ))}
         <button
-          hidden={user.rol === "paciente"}
+          hidden={user.rol === "paciente" || user.rol === "doctor"}
           className="btn-agregar-nota"
           onClick={handleOpenModalDoctor}
         >
@@ -155,7 +162,7 @@ export default function VerPaciente() {
             </div>
           ))}
         <button
-          hidden={user.rol === "paciente"}
+          hidden={user.rol === "paciente" || user.rol === "doctor"}
           className="btn-agregar-nota"
           onClick={() => setNotaModalOpen(true)}
         >
@@ -164,40 +171,52 @@ export default function VerPaciente() {
       </div>
 
       {/* Documentos */}
-      <div className="documentos">
-        <div className="doc-header">
-          <h3 className="titulo-doc">Documentos del Paciente</h3>
-          {user.rol !== "paciente" && (
-            <button
-              className="btn-upload"
-              onClick={() => {
-                setNombreArchivo("");
-                setArchivos([]);
-                dispatch({ type: "TOGGLE_MODAL" });
-              }}
-            >
-              <FaPlus /> Subir Archivo
-            </button>
-          )}
-        </div>
+      {(
+  userLogueado.rol === "secretaria" ||
+  userLogueado.rol === "paciente" ||
+  (
+    userLogueado.rol === "doctor" &&
+    state.doctores.some((doctor) =>
+      doctor._id === userID &&
+      doctor.pacientes.includes(state.paciente._id)
+    )
+  )
+) && (
+  <div className="documentos">
+    <div className="doc-header">
+      <h3 className="titulo-doc">Documentos del Paciente</h3>
+      {userLogueado.rol !== "paciente" && (
+        <button
+          className="btn-upload"
+          onClick={() => {
+            setNombreArchivo("");
+            setArchivos([]);
+            dispatch({ type: "TOGGLE_MODAL" });
+          }}
+        >
+          <FaPlus /> Subir Archivo
+        </button>
+      )}
+    </div>
 
-        {state.documentos.length > 0 ? (
-          <div className="carpetas">
-            {state.documentos.map((doc, index) => (
-              <Carpeta
-                key={index}
-                doc={doc}
-                dispatch={dispatch}
-                setNombreArchivo={setNombreArchivo}
-                eliminarArchivo={eliminarArchivo}
-                loading={loading}
-              />
-            ))}
-          </div>
-        ) : (
-          <p>No hay documentos disponibles</p>
-        )}
+    {state.documentos.length > 0 ? (
+      <div className="carpetas">
+        {state.documentos.map((doc, index) => (
+          <Carpeta
+            key={index}
+            doc={doc}
+            dispatch={dispatch}
+            setNombreArchivo={setNombreArchivo}
+            eliminarArchivo={eliminarArchivo}
+            loading={loading}
+          />
+        ))}
       </div>
+    ) : (
+      <p>No hay documentos disponibles</p>
+    )}
+  </div>
+)}
 
       {/* Modales */}
       {state.modalOpen && (
@@ -303,6 +322,7 @@ const Carpeta = ({
   setNombreArchivo,
   eliminarArchivo,
   loading,
+  userLogueado = JSON.parse(localStorage.getItem("userLog")),
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPdf, setSelectedPdf] = useState(null);
@@ -321,6 +341,7 @@ const Carpeta = ({
       </div>
 
       <button
+        hidden={userLogueado.rol === "paciente"}
         className="btn-agregar-carpeta-test"
         onClick={() => {
           setNombreArchivo(doc.nombreArchivo);
@@ -361,6 +382,7 @@ const Carpeta = ({
                 <FaDownload /> Descargar
               </a>
               <button
+                hidden={userLogueado.rol === "paciente"}
                 className="archivo-eliminar-test"
                 onClick={() => eliminarArchivo(archivo._id, doc.nombreArchivo)}
               >
