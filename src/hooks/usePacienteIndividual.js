@@ -112,27 +112,49 @@ export function usePaciente({ showToast }) {
     }
   }, [id, user]);
 
-  const eliminarArchivo = async (idarchivo) => {
+  const eliminarArchivo = async (idarchivo, docNombre) => {
     dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
     dispatch({ type: "SET_LOADING", payload: true });
     if (!idarchivo) {
       showToast("Debe seleccionar un archivo", "error");
       return;
     }
+    console.log(state.documentos);
+    const documentos = state.documentos;
+    const carpetaSeleccionada = documentos.find(
+      (doc) => doc.nombreArchivo === docNombre
+    );
+    if (!carpetaSeleccionada) {
+      showToast("Carpeta no encontrada", "error");
+      return;
+    }
+    carpetaSeleccionada.archivos.filter((archivo) => archivo._id !== idarchivo);
+    const documentosActualizados = documentos.map((doc) => {
+      if (doc.nombreArchivo === docNombre) {
+        return {
+          ...doc,
+          archivos: doc.archivos.filter((archivo) => archivo._id !== idarchivo),
+        };
+      }
+      return doc;
+    });
+
     try {
       const response = await PacienteController.eliminarArchivo(id, idarchivo);
       if (response.ok) {
-        const documentosActualizados = state.documentos.filter(
-          (documento) => documento._id !== idarchivo
-        );
-        dispatch({ type: "SET_DOCUMENTOS", payload: documentosActualizados });
+        //dispatch({ type: "SET_DOCUMENTOS", payload: documentosActualizados });
         showToast("Archivo eliminado correctamente", "success");
+        dispatch({ type: "SET_LOADING", payload: false });
+        dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+        // Actualizar el estado del paciente para reflejar la eliminación
+        dispatch({
+          type: "SET_DOCUMENTOS",
+          payload: documentosActualizados,
+        });
       }
     } catch (error) {
       console.error("Error al eliminar el archivo", error);
       showToast("Error al eliminar el archivo", "error");
-    } finally {
-      window.location.reload();
     }
   };
 

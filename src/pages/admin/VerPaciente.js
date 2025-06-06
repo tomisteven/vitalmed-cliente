@@ -51,7 +51,7 @@ export default function VerPaciente() {
     }
   };
 
-  console.log(state);
+  //console.log(state);
 
   const handleGuardarNota = () => {
     if (!nuevaNota.nota || !nuevaNota.author) {
@@ -362,7 +362,7 @@ const Carpeta = ({
               </a>
               <button
                 className="archivo-eliminar-test"
-                onClick={() => eliminarArchivo(archivo._id)}
+                onClick={() => eliminarArchivo(archivo._id, doc.nombreArchivo)}
               >
                 {loading ? (
                   <LoaderIcon
