@@ -7,6 +7,12 @@
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+.importante-alert {
+  color: #ff0000;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
 
 .li-item-img {
   display: flex;

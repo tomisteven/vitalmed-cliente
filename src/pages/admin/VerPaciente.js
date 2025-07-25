@@ -27,11 +27,10 @@ export default function VerPaciente() {
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
   const [doctoresList, setDoctoresList] = useState([]);
   // Obtener el usuario logueado desde localStorage
-  const userLogueado = JSON.parse(localStorage.getItem("userLog"))
+  const userLogueado = JSON.parse(localStorage.getItem("userLog"));
   const userID = userLogueado.usuario._id;
 
   console.log("userID", userID);
-
 
   const showToast = (message, type) => setToast({ message, type });
 
@@ -58,7 +57,6 @@ export default function VerPaciente() {
 
   console.log(state);
   console.log(userLogueado.usuario._id);
-
 
   const handleGuardarNota = () => {
     if (!nuevaNota.nota || !nuevaNota.author) {
@@ -171,52 +169,49 @@ export default function VerPaciente() {
       </div>
 
       {/* Documentos */}
-      {(
-  userLogueado.rol === "secretaria" ||
-  userLogueado.rol === "paciente" ||
-  (
-    userLogueado.rol === "doctor" &&
-    state.doctores.some((doctor) =>
-      doctor._id === userID &&
-      doctor.pacientes.includes(state.paciente._id)
-    )
-  )
-) && (
-  <div className="documentos">
-    <div className="doc-header">
-      <h3 className="titulo-doc">Documentos del Paciente</h3>
-      {userLogueado.rol !== "paciente" && (
-        <button
-          className="btn-upload"
-          onClick={() => {
-            setNombreArchivo("");
-            setArchivos([]);
-            dispatch({ type: "TOGGLE_MODAL" });
-          }}
-        >
-          <FaPlus /> Subir Archivo
-        </button>
-      )}
-    </div>
+      {(userLogueado.rol === "secretaria" ||
+        userLogueado.rol === "paciente" ||
+        (userLogueado.rol === "doctor" &&
+          state.doctores.some(
+            (doctor) =>
+              doctor._id === userID &&
+              doctor.pacientes.includes(state.paciente._id)
+          ))) && (
+        <div className="documentos">
+          <div className="doc-header">
+            <h3 className="titulo-doc">Documentos del Paciente</h3>
+            {userLogueado.rol !== "paciente" && (
+              <button
+                className="btn-upload"
+                onClick={() => {
+                  setNombreArchivo("");
+                  setArchivos([]);
+                  dispatch({ type: "TOGGLE_MODAL" });
+                }}
+              >
+                <FaPlus /> Subir Archivo
+              </button>
+            )}
+          </div>
 
-    {state.documentos.length > 0 ? (
-      <div className="carpetas">
-        {state.documentos.map((doc, index) => (
-          <Carpeta
-            key={index}
-            doc={doc}
-            dispatch={dispatch}
-            setNombreArchivo={setNombreArchivo}
-            eliminarArchivo={eliminarArchivo}
-            loading={loading}
-          />
-        ))}
-      </div>
-    ) : (
-      <p>No hay documentos disponibles</p>
-    )}
-  </div>
-)}
+          {state.documentos.length > 0 ? (
+            <div className="carpetas">
+              {state.documentos.map((doc, index) => (
+                <Carpeta
+                  key={index}
+                  doc={doc}
+                  dispatch={dispatch}
+                  setNombreArchivo={setNombreArchivo}
+                  eliminarArchivo={eliminarArchivo}
+                  loading={loading}
+                />
+              ))}
+            </div>
+          ) : (
+            <p>No hay documentos disponibles</p>
+          )}
+        </div>
+      )}
 
       {/* Modales */}
       {state.modalOpen && (
@@ -334,6 +329,7 @@ const Carpeta = ({
 
   return (
     <div className="carpeta-test">
+      <p className="importante-alert">IMPORTANTE: LOS PDF ESTAN ADJUNTOS EN LA CARPETA PERO NO TIENEN PREVISUALIZACION, SE PODRAN DESCARGAR DIRECTAMENTE AL DISPOSITIVO</p>
       <div className="carpeta-header-test" onClick={toggleFiles}>
         <p className="nombre-carpeta-test">
           📁 {doc.nombreArchivo || "Sin nombre"}
@@ -371,6 +367,16 @@ const Carpeta = ({
                 src={archivo.urlArchivo}
                 alt="Archivo"
               />
+              {archivo.urlArchivo.includes(".pdf") ||
+              archivo.urlArchivo.includes(".PDF") ||
+              archivo.urlArchivo.includes(".xlsx") ||
+              archivo.urlArchivo.includes(".dmc") ? (
+                <img
+                  className="img-preview-test"
+                  src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                  alt="PDF Icon"
+                />
+              ) : null}
               <span className="archivo-nombre-test">
                 {archivo.originalFilename}
               </span>

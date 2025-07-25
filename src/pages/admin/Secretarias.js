@@ -17,6 +17,7 @@ const Secretarias = ({ notificacion }) => {
     password: "",
     id: "",
   });
+console.log(secretarias);
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -31,7 +32,7 @@ const Secretarias = ({ notificacion }) => {
 
   const handleSubmit = async (e) => {
     console.log(secretariaData);
-  
+
     e.preventDefault();
     const sec = await saveSecretaria(secretariaData, !!selectSecretaria);
     notificacion(sec.message, "success")
