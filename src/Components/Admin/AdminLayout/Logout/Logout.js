@@ -5,7 +5,7 @@ import "./Logout.css";
 export function Logout() {
   return (
     <button
-      className="btn-logout"
+      className="btn-logout-left"
       onClick={() => {
         localStorage.removeItem("userLog");
         window.location.href = "/";
@@ -13,7 +13,6 @@ export function Logout() {
     >
       <span>
         <Icon name="log out" />
-        Cerrar Sesión
       </span>
     </button>
   );

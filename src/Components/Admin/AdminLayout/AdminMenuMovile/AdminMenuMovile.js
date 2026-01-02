@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiUser, FiUsers, FiUserCheck, FiUserPlus } from "react-icons/fi";
-import { FaUserDoctor, FaHouseUser } from "react-icons/fa6";
+import { FiUser, FiUsers, FiUserCheck } from "react-icons/fi";
+import { FaUserDoctor, FaHouseUser, FaCalendar, FaClipboard, FaClock } from "react-icons/fa6";
 import "./AdminMenuMobile.css";
 
 export default function AdminMenuMobile() {
@@ -38,6 +38,30 @@ export default function AdminMenuMobile() {
       path: "/admin/doctores",
       icon: <FaUserDoctor />,
       roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/pacientes/" + user?.usuario._id,
+      path: "/admin/pacientes/" + user?.usuario._id,
+      icon: <FiUser />,
+      roles: ["paciente"],
+    },
+    {
+      key: "/admin/turnos",
+      path: "/admin/turnos",
+      icon: <FaCalendar />,
+      roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/mis-turnos",
+      path: "/admin/mis-turnos",
+      icon: <FaClipboard />,
+      roles: ["paciente"],
+    },
+    {
+      key: "/admin/reservar-turno",
+      path: "/admin/reservar-turno",
+      icon: <FaClock />,
+      roles: ["paciente"],
     },
   ];
 

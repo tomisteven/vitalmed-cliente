@@ -2,6 +2,7 @@ import React from "react";
 import { useDoctor } from "../../hooks/useDoctor";
 import { LoaderIcon } from "react-hot-toast";
 import Breadcrumbs from "../../utils/Breadcums";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import "./Doctores.css";
 
 const Doctores = ({ notificacion }) => {
@@ -60,18 +61,20 @@ const Doctores = ({ notificacion }) => {
                 <td>{doctor.password}</td>
                 <td>{doctor.especialidad}</td>
                 <td>{new Date(doctor.created_at).toLocaleDateString()}</td>
-                <td>
+                <td className="acciones-cell">
                   <button
-                    className="btn-edit"
+                    className="btn-icon btn-edit"
                     onClick={() => handleEdit(doctor)}
+                    title="Editar doctor"
                   >
-                    ✏️ Editar
+                    <FaEdit />
                   </button>
                   <button
-                    className="btn-delete"
+                    className="btn-icon btn-delete"
                     onClick={() => deleteDoctor(doctor._id)}
+                    title="Eliminar doctor"
                   >
-                    🗑️ Eliminar
+                    <FaTrash />
                   </button>
                 </td>
               </tr>

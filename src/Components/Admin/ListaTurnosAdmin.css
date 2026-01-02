@@ -1,0 +1,225 @@
+.lista-turnos-admin {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lista-turnos-admin h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+/* Filtros */
+.filtros-container {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+}
+
+.filtros-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filtro-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filtro-group label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.filtro-group select,
+.filtro-group input {
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.filtro-group select:focus,
+.filtro-group input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.filtros-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.btn-aplicar,
+.btn-limpiar {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-aplicar {
+    background: #007bff;
+    color: white;
+}
+
+.btn-aplicar:hover {
+    background: #0056b3;
+}
+
+.btn-limpiar {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-limpiar:hover {
+    background: #545b62;
+}
+
+/* Tabla */
+.tabla-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.tabla-turnos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.tabla-turnos thead {
+    background: #f8f9fa;
+}
+
+.tabla-turnos th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.tabla-turnos td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    color: #555;
+}
+
+.tabla-turnos tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.fecha-cell {
+    font-weight: 500;
+    color: #333;
+}
+
+.text-muted {
+    color: #999;
+    font-style: italic;
+}
+
+.badge-estado {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.btn-cancelar {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-cancelar:hover {
+    background: #c82333;
+}
+
+.btn-asignar {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-asignar:hover {
+    background: #218838;
+}
+
+/* Mensajes */
+.loading-message,
+.empty-message {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-size: 1rem;
+}
+
+.resultados-info {
+    text-align: right;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.resultados-info strong {
+    color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lista-turnos-admin {
+        padding: 1rem;
+    }
+
+    .filtros-container {
+        padding: 1rem;
+    }
+
+    .filtros-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-actions {
+        flex-direction: column;
+    }
+
+    .btn-aplicar,
+    .btn-limpiar {
+        width: 100%;
+    }
+
+    .tabla-turnos {
+        font-size: 0.85rem;
+    }
+
+    .tabla-turnos th,
+    .tabla-turnos td {
+        padding: 0.75rem 0.5rem;
+    }
+}

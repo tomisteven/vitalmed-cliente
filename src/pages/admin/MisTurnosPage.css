@@ -1,0 +1,75 @@
+.mis-turnos-page {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 200px);
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding: 1rem 0;
+
+    border-radius: 12px;
+
+}
+
+.page-header h2 {
+    margin: 0 0 0.75rem 0;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-description {
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+
+}
+
+.error-message {
+    background: #fff;
+    padding: 4rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border-left: 4px solid #dc3545;
+}
+
+.error-message p {
+    color: #dc3545;
+    font-size: 1.2rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mis-turnos-page {
+        padding: 1rem;
+    }
+
+    .page-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .page-description {
+        font-size: 0.95rem;
+    }
+
+    .error-message {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .error-message p {
+        font-size: 1rem;
+    }
+}

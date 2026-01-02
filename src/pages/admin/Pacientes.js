@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
 import { WiCloudRefresh } from "react-icons/wi";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
 import "./Pacientes.css";
 import { LoaderIcon } from "react-hot-toast";
@@ -15,6 +16,7 @@ export default function Pacientes({ notificacion }) {
     deletePaciente,
     searchPaciente,
     refreshPacientes,
+    setPacientes
   } = usePacientes({ notificacion });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
@@ -41,11 +43,22 @@ export default function Pacientes({ notificacion }) {
     setSelectedPaciente(null);
   };
 
+
+
+  const pacientesFiltrados = pacientes.filter((paciente) => {
+    if (user.rol === "doctor") {
+      const pacientesDoctor = user.usuario.pacientes || [];
+      return pacientesDoctor.some((p) => (p._id || p) === paciente._id);
+    }
+    return true;
+  });
+
+
   return (
     <div className="container-pacientes">
       <Breadcrumbs />
-      <h2 className="title">
-        Lista de Pacientes {pacientes.length + " (Pacientes)"}
+      <h2 className="title ">
+        Lista de Pacientes {pacientesFiltrados.length + " (Pacientes)"}
       </h2>
       <button
         className="btn-refresh"
@@ -54,7 +67,7 @@ export default function Pacientes({ notificacion }) {
           notificacion("Pacientes actualizados", "success");
         }}
       >
-        REFRESCAR
+        <WiCloudRefresh size={40} />
       </button>
       <input
         type="text"
@@ -67,7 +80,7 @@ export default function Pacientes({ notificacion }) {
         className="add-button"
         onClick={() => setModalOpen(true)}
       >
-        Crear Paciente
+        NUEVO
       </button>
 
       {loading ? (
@@ -86,16 +99,16 @@ export default function Pacientes({ notificacion }) {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Cedula Identidad</th>
+              <th>Cedula</th>
               <th>Email</th>
               <th>Usuario</th>
               <th>Contraseña</th>
-              <th>Fecha de Creación</th>
+              <th>Creación</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {pacientes.map((paciente) => (
+            {pacientesFiltrados.map((paciente) => (
               <tr key={paciente._id}>
                 <td>{paciente.nombre}</td>
                 <td>{paciente.dni}</td>
@@ -103,16 +116,17 @@ export default function Pacientes({ notificacion }) {
                 <td>{paciente.usuario || "No Especifica"}</td>
                 <td>{paciente.password || "No Especifica"}</td>
                 <td>{new Date(paciente.created_at).toLocaleDateString()}</td>
-                <td>
+                <td className="acciones-cell">
                   <button
-                    className="btn-ver"
+                    className="btn-icon btn-ver"
                     onClick={() => navigate(`/admin/pacientes/${paciente._id}`)}
+                    title="Ver detalles"
                   >
-                    Ver
+                    <FaEye />
                   </button>
                   <button
                     hidden={user.rol === "paciente" || user.rol === "doctor"}
-                    className="btn-editar"
+                    className="btn-icon btn-editar"
                     onClick={() => {
                       setSelectedPaciente(paciente);
                       setFormData({
@@ -123,18 +137,20 @@ export default function Pacientes({ notificacion }) {
                         password: paciente.password,
                         telefono: paciente.telefono,
                         id: paciente._id,
-                      }); // 👈 Ahora se llena el formulario con los datos del paciente
+                      });
                       setModalOpen(true);
                     }}
+                    title="Editar paciente"
                   >
-                    Editar
+                    <FaEdit />
                   </button>
                   <button
                     hidden={user.rol === "paciente" || user.rol === "doctor"}
-                    className="btn-eliminar"
+                    className="btn-icon btn-eliminar"
                     onClick={() => deletePaciente(paciente._id)}
+                    title="Eliminar paciente"
                   >
-                    Eliminar
+                    <FaTrash />
                   </button>
                 </td>
               </tr>

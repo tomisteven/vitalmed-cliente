@@ -1,77 +1,273 @@
-.select-doctor {
+/* Modal Overlay */
+.modal-asignar-doctor-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.modal-asignar-doctor-container {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
   width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  background-color: #f9f9f9;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
 }
 
-.select-doctor:focus {
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Header */
+.modal-asignar-doctor-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-asignar-doctor-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.modal-asignar-doctor-close-icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.modal-asignar-doctor-close-icon:hover {
+  transform: scale(1.2) rotate(90deg);
+}
+
+/* Modal Body */
+.modal-asignar-doctor-body {
+  padding: 2rem;
+}
+
+/* Select Doctor */
+.modal-asignar-doctor-select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  font-size: 1rem;
+  background-color: white;
+  transition: all 0.3s ease;
+  color: #2c3e50;
+}
+
+.modal-asignar-doctor-select:focus {
   outline: none;
-  border-color: #007bff;
-  background-color: #fff;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.lista-doctores-asignados {
+.modal-asignar-doctor-select:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Botones */
+.modal-asignar-doctor-btn-add {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  margin-bottom: 1.5rem;
+}
+
+.modal-asignar-doctor-btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Título Doctores Asignados */
+.modal-asignar-doctor-title-assigned {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* Lista de Doctores */
+.modal-asignar-doctor-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-  color: #000;
-}
-.btn-agregar-doctor-modal {
-  color: rgb(255, 255, 255);
-  background-color: #007bff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 16px;
-  width: 100%;
-  transition: background-color 0.3s ease;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
+.modal-asignar-doctor-list::-webkit-scrollbar {
+  width: 6px;
+}
 
-.doctor-item {
+.modal-asignar-doctor-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-asignar-doctor-list::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+/* Doctor Item */
+.modal-asignar-doctor-item {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #f1f1f1;
-  color: #000;
-  transition: background-color 0.3s ease;
+  padding: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #2c3e50;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-left: 4px solid #667eea;
 }
 
-.title-doctores-asignados {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #000;
+.modal-asignar-doctor-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
-.btn-remove {
-  color: rgb(255, 255, 255);
-  background-color: tomato;
+/* Botón Remove */
+.modal-asignar-doctor-btn-remove {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  margin: 5px;
-  transition: background-color 0.3s ease;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all 0.3s ease;
 }
 
-.btn-submit-asignar-doctor {
-  color: rgb(255, 255, 255);
-  background-color: #047f00;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 10px 20px;
-  text-align: center;
-  font-size: 16px;
+.modal-asignar-doctor-btn-remove:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Botón Submit */
+.modal-asignar-doctor-btn-submit {
   width: 100%;
-  transition: background-color 0.3s ease;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.modal-asignar-doctor-btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Botón Close Modal */
+.modal-asignar-doctor-btn-close {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.modal-asignar-doctor-btn-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-asignar-doctor-container {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  .modal-asignar-doctor-header {
+    padding: 1.5rem;
+  }
+
+  .modal-asignar-doctor-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .modal-asignar-doctor-body {
+    padding: 1.5rem;
+  }
+
+  .modal-asignar-doctor-list {
+    max-height: 150px;
+  }
 }

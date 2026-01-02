@@ -190,6 +190,26 @@ export class PacienteApi {
     }
   }
 
+  async getPacientesShort() {
+    try {
+      const response = await fetch(this.url + "pacientes/short", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async descargarArchivo(nombreArchivo) {
     try {
       const response = await fetch(this.url + `/descargar/${nombreArchivo}`, {

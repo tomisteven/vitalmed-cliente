@@ -1,0 +1,371 @@
+/* Landing Page Styles - Exact Match to Mockup */
+/* Landing Page Styles - Exact Match to Mockup */
+.landing-container {
+    height: 100vh;
+    padding: 20px 40px;
+    /* Reduced vertical padding */
+    margin: auto;
+    background: linear-gradient(180deg, #B38EC5 10%, #7d5491);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+
+/* Social Sidebar - Rounded purple container */
+.social-sidebar {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(180deg, #a8518a 0%, #a8518a 100%);
+    padding: 20px 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    width: 50px;
+    z-index: 9999;
+}
+
+.social-sidebar-text {
+    display: none;
+}
+
+.social-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1.5px solid white;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 9999;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+    background: white;
+    color: #7645f4;
+}
+
+/* Main Content */
+.landing-content {
+    max-width: 950px;
+    width: 100%;
+    height: 100%;
+    /* Ensure it takes available height */
+    max-height: 90vh;
+    /* Prevent it from exceeding viewport */
+    margin: auto;
+    padding: 20px 50px;
+    /* Reduced padding */
+    padding-left: 80px;
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.43);
+    overflow: hidden;
+    /* Hide overflow if strictly needed, or auto */
+}
+
+/* Header */
+.landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    /* Reduced margin */
+    flex-shrink: 0;
+    /* Prevent header from shrinking */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    width: 70px;
+    /* Slightly smaller logo */
+    height: 70px;
+    object-fit: contain;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-name {
+    font-size: 18px;
+    /* Slightly smaller text */
+    font-weight: 700;
+    color: #653057;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.specialty {
+    font-size: 13px;
+    color: #555;
+    margin: 2px 0 0 0;
+    font-weight: 400;
+}
+
+/* Informes Button (Top Right) */
+.btn-informes {
+    background: linear-gradient(90deg, #653057 0%, #653057 100%);
+    color: white;
+    border: none;
+    padding: 8px 10px 8px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 5px;
+    position: relative;
+    right: 180px;
+}
+
+.btn-informes span {
+    margin-bottom: 2px;
+}
+
+.btn-informes .btn-icon {
+    font-size: 18px;
+    background: white;
+    color: #B38EC5;
+    border-radius: 50%;
+    padding: 6px;
+    width: 26px;
+    height: 26px;
+}
+
+/* Welcome Section */
+.welcome-section {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    /* Give more space to text if needed */
+    gap: 20px;
+    align-items: center;
+    flex: 1;
+    overflow: hidden;
+    /* Contain inner scroll if needed, or just clip */
+    min-height: 0;
+    /* Important for flex child scrolling/sizing */
+}
+
+.welcome-text {
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.welcome-title {
+    font-size: 28px;
+    /* Adjusted size */
+    color: #a8518a;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.brand-name {
+    font-size: 48px;
+    /* Adjusted size */
+    color: #653057;
+    font-weight: 900;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: block;
+    margin-top: -8px;
+    margin-left: -2px;
+}
+
+.welcome-description {
+    font-size: 13px;
+    /* Slightly smaller for density */
+    color: #858585;
+    line-height: 1.5;
+    margin: 15px 0 0 0;
+    text-align: justify;
+    max-width: 100%;
+}
+
+.doctor-image-container {
+    position: absolute;
+    bottom: 0px;
+    /* Align to bottom edge of card */
+    right: -73px;
+    /* Pull slightly outside or to edge */
+    height: 100%;
+    /* Take up most of height */
+    width: 65%;
+    /* Occupy right side */
+    pointer-events: none;
+    /* Let clicks pass through if needed, though buttons are left */
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    z-index: 0;
+    /* Behind content if needed, or careful with z-index */
+}
+
+.doctor-image {
+    width: auto;
+    height: 100%;
+    /* Fill the container height */
+    max-height: 110%;
+    /* Allow to go slightly up */
+    object-fit: contain;
+    /* Keep aspect ratio */
+    /* Remove negative margins as we position container */
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-bottom: 20px;
+}
+
+.btn-action {
+    background: #a8518a;
+    color: white;
+    border: none;
+    padding: 8px 5px 6px 10px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.btn-action img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    border-radius: 50%;
+
+    background-color: white;
+    padding: 5px;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+}
+
+.btn-action .btn-icon {
+    background: white;
+    color: #B38EC5;
+    border-radius: 50%;
+    padding: 8px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Footer */
+.landing-footer {
+    display: none;
+    /* Hidden in mockup */
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .welcome-section {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .welcome-text {
+        padding-right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .welcome-description {
+        text-align: center;
+    }
+
+    .doctor-image-container {
+        justify-content: center;
+    }
+
+    .doctor-image {
+        margin-right: 0;
+        max-width: 400px;
+    }
+
+    .action-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .social-sidebar {
+        display: none;
+    }
+
+    .landing-content {
+        padding: 20px;
+    }
+
+    .landing-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .btn-informes {
+        align-self: center;
+    }
+
+    .brand-name {
+        font-size: 40px;
+    }
+
+    .welcome-title {
+        font-size: 28px;
+    }
+}

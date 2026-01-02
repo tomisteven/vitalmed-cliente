@@ -4,5 +4,5 @@ const url3 = "http://localhost:8082";
 
 export const ENV = {
   URL: url,
-  URL_CLIENT: "https://doctoraecos.com",
+  URL_CLIENT: "https://api.doctoraecos.com",
 };

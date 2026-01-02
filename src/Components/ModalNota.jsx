@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { PacienteApi } from "../api/Paciente";
 import { LoaderIcon } from "react-hot-toast";
-
 import { usePaciente } from "../hooks/usePacienteIndividual";
-
-import { useParams } from "react-router-dom";
-const PacienteController = new PacienteApi();
+import "./ModalNota.css";
 
 export default function ModalNota({ onClose, showToast, setNotaModalOpen }) {
   const { setNota, loading } = usePaciente({ showToast });
@@ -14,16 +10,16 @@ export default function ModalNota({ onClose, showToast, setNotaModalOpen }) {
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-header">
+    <div className="modal-nota-overlay">
+      <div className="modal-nota-container">
+        <div className="modal-nota-header">
           <h3>Agregar Nota</h3>
           <FaTimes
-            className="close-icon"
+            className="modal-nota-close-icon"
             onClick={() => setNotaModalOpen(false)}
           />
         </div>
-        <div className="modal-body">
+        <div className="modal-nota-body">
           <input
             type="text"
             placeholder="Autor"
@@ -31,6 +27,7 @@ export default function ModalNota({ onClose, showToast, setNotaModalOpen }) {
             onChange={(e) =>
               setNuevaNota({ ...nuevaNota, author: e.target.value })
             }
+            className="modal-nota-input"
           />
           <textarea
             placeholder="Escribe la nota..."
@@ -38,9 +35,10 @@ export default function ModalNota({ onClose, showToast, setNotaModalOpen }) {
             onChange={(e) =>
               setNuevaNota({ ...nuevaNota, nota: e.target.value })
             }
+            className="modal-nota-textarea"
           ></textarea>
 
-          <button className="btn-submit" onClick={() => setNota(nuevaNota)}>
+          <button className="modal-nota-btn-submit" onClick={() => setNota(nuevaNota)}>
             {loading ? <LoaderIcon /> : "Guardar Nota"}
           </button>
         </div>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../utils/Breadcums";
 import { useSecretaria } from "../../hooks/useSecretaria";
 import { LoaderIcon } from "react-hot-toast";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Secretarias = ({ notificacion }) => {
   const { secretarias, saveSecretaria, deleteSecretaria, loading } =
@@ -17,7 +18,7 @@ const Secretarias = ({ notificacion }) => {
     password: "",
     id: "",
   });
-console.log(secretarias);
+  console.log(secretarias);
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -94,18 +95,20 @@ console.log(secretarias);
                 <td>{secretaria.usuario}</td>
                 <td>{secretaria.password}</td>
                 <td>{new Date(secretaria.created_at).toLocaleDateString()}</td>
-                <td>
+                <td className="acciones-cell">
                   <button
-                    className="btn-edit"
+                    className="btn-icon btn-edit"
                     onClick={() => handleEdit(secretaria)}
+                    title="Editar secretaria"
                   >
-                    ✏️ Editar
+                    <FaEdit />
                   </button>
                   <button
-                    className="btn-eliminar"
+                    className="btn-icon btn-eliminar"
                     onClick={() => deleteSecretaria(secretaria._id)}
+                    title="Eliminar secretaria"
                   >
-                    🗑️ Eliminar
+                    <FaTrash />
                   </button>
                 </td>
               </tr>

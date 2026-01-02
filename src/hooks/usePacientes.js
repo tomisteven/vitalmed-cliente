@@ -95,6 +95,14 @@ export const usePacientes = ({ notificacion }) => {
     dispatch({ type: "TOGGLE_STATUS" });
   }, []);
 
+  const setPacientes = useCallback((pacientes) => {
+    dispatch({ type: "SET_PACIENTES", payload: pacientes });
+  }, []);
+
+
+
+
+
   // 📝 Función para crear o actualizar paciente
   const savePaciente = useCallback(
     async (paciente, isEdit = false) => {
@@ -160,5 +168,6 @@ export const usePacientes = ({ notificacion }) => {
     savePaciente,
     deletePaciente,
     searchPaciente,
+    setPacientes,
   };
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import "./ModalAsignarDoctor.css";
 import { PacienteApi } from "../api/Paciente";
-import { set } from "lodash";
 import { LoaderIcon } from "react-hot-toast";
 
 const PacienteController = new PacienteApi();
@@ -24,17 +23,11 @@ export default function ModalAsignarDoctor({
       try {
         const response = await PacienteController.getDoctoresList();
         if (response.ok) {
-          //console.log(doctoresPaciente);
-
-          //filtramos que doctores tiene el paciente y el uqe ya existe lo eliminamos del array doctores list
-          const doctoresAsignados = doctoresPaciente.map((doc) => doc._id);
-          console.log(doctoresAsignados);
+          const doctoresAsignadosIds = doctoresPaciente.map((doc) => doc._id);
           const doctoresFiltrados = response.doctores.filter(
-            (doc) => !doctoresAsignados.includes(doc._id)
+            (doc) => !doctoresAsignadosIds.includes(doc._id)
           );
-          console.log(doctoresFiltrados);
-
-          setDoctoresDisponibles(doctoresFiltrados); // Asumo que el array de doctores viene en response.data
+          setDoctoresDisponibles(doctoresFiltrados);
         } else {
           showToast("Error al cargar doctores", "error");
         }
@@ -46,7 +39,7 @@ export default function ModalAsignarDoctor({
     };
 
     cargarDoctores();
-  }, []);
+  }, [doctoresPaciente, showToast]);
 
   const agregarDoctor = () => {
     if (!doctorSeleccionado) {
@@ -65,6 +58,7 @@ export default function ModalAsignarDoctor({
     setLoading(true);
     if (doctoresAsignados.length === 0) {
       alert("Por favor agrega al menos un doctor");
+      setLoading(false);
       return;
     }
 
@@ -76,25 +70,25 @@ export default function ModalAsignarDoctor({
       window.location.reload();
     } else {
       showToast("Error al asignar doctores", "error");
+      setLoading(false);
     }
   };
 
-  // Filtro para no mostrar en el select los que ya están agregados
   const doctoresFiltrados = doctoresDisponibles.filter(
     (doctor) => !doctoresAsignados.includes(doctor._id)
   );
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal-header">
+    <div className="modal-asignar-doctor-overlay">
+      <div className="modal-asignar-doctor-container">
+        <div className="modal-asignar-doctor-header">
           <h3>Asignar Doctor</h3>
-          <FaTimes className="close-icon" onClick={onClose} />
+          <FaTimes className="modal-asignar-doctor-close-icon" onClick={onClose} />
         </div>
-        <div className="modal-body">
+        <div className="modal-asignar-doctor-body">
           <select
             disabled={loading}
-            className="select-doctor"
+            className="modal-asignar-doctor-select"
             value={doctorSeleccionado}
             onChange={(e) => setDoctorSeleccionado(e.target.value)}
           >
@@ -106,19 +100,19 @@ export default function ModalAsignarDoctor({
             ))}
           </select>
 
-          <button className="btn-agregar-doctor-modal" onClick={agregarDoctor}>
+          <button className="modal-asignar-doctor-btn-add" onClick={agregarDoctor}>
             Agregar Doctor
           </button>
 
-          <h4 className="title-doctores-asignados">Doctores Asignados:</h4>
-          <div className="lista-doctores">
+          <h4 className="modal-asignar-doctor-title-assigned">Doctores Asignados:</h4>
+          <div className="modal-asignar-doctor-list">
             {doctoresAsignados.map((id) => {
               const doctor = doctoresDisponibles.find((doc) => doc._id === id);
               return (
-                <div key={id} className="doctor-item">
+                <div key={id} className="modal-asignar-doctor-item">
                   {doctor ? doctor.nombre : "Doctor no encontrado"}
                   <button
-                    className="btn-remove"
+                    className="modal-asignar-doctor-btn-remove"
                     onClick={() =>
                       setDoctoresAsignados((prev) =>
                         prev.filter((docId) => docId !== id)
@@ -134,12 +128,16 @@ export default function ModalAsignarDoctor({
 
           <button
             hidden={doctoresAsignados.length === 0}
-            className="btn-submit-asignar-doctor"
+            className="modal-asignar-doctor-btn-submit"
             onClick={handleAsignar}
+            disabled={loading}
           >
             {loading ? <LoaderIcon /> : "Confirmar"}
           </button>
         </div>
+        <button className="modal-asignar-doctor-btn-close" onClick={onClose}>
+          Cerrar
+        </button>
       </div>
     </div>
   );
