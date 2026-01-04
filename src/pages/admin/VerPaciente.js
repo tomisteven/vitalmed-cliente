@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   FaPhone,
   FaEnvelope,
@@ -14,6 +14,9 @@ import {
   FaFilePdf,
   FaFileImage,
   FaEye,
+  FaImages,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import avatar from "../../assets/vitalmed/avatar.png";
@@ -32,6 +35,8 @@ export default function VerPaciente() {
   const [notaModalOpen, setNotaModalOpen] = useState(false);
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
   const [doctoresList, setDoctoresList] = useState([]);
+  const [carouselOpen, setCarouselOpen] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const userLogueado = JSON.parse(localStorage.getItem("userLog"));
   const userID = userLogueado.usuario._id;
@@ -69,6 +74,33 @@ export default function VerPaciente() {
     setNuevaNota({ nota: "", author: "" });
     setNotaModalOpen(false);
     showToast("Nota guardada correctamente", "success");
+  };
+
+  // Collect all images from all folders (excluding PDFs and videos)
+  const allImages = useMemo(() => {
+    if (!state.documentos || state.documentos.length === 0) return [];
+
+    const images = [];
+    state.documentos.forEach((doc) => {
+      doc.archivos.forEach((archivo) => {
+        const url = archivo.urlArchivo.toLowerCase();
+        const isImage = url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || url.includes('.gif') || url.includes('.webp') || url.includes('.bmp');
+        const isPdfOrVideo = url.includes('.pdf') || url.includes('.mp4') || url.includes('.mov') || url.includes('.avi') || url.includes('.xlsx') || url.includes('.dmc');
+
+        if (isImage && !isPdfOrVideo) {
+          images.push({
+            ...archivo,
+            folderName: doc.nombreArchivo
+          });
+        }
+      });
+    });
+    return images;
+  }, [state.documentos]);
+
+  const openCarousel = (startIndex = 0) => {
+    setCarouselIndex(startIndex);
+    setCarouselOpen(true);
   };
 
   if (!state.paciente) return <Loader />;
@@ -226,18 +258,28 @@ export default function VerPaciente() {
               <h2>
                 <FaFolder /> Documentos del Paciente
               </h2>
-              {userLogueado.rol !== "paciente" && (
-                <button
-                  className="btn-upload-doc"
-                  onClick={() => {
-                    setNombreArchivo("");
-                    setArchivos([]);
-                    dispatch({ type: "TOGGLE_MODAL" });
-                  }}
-                >
-                  <FaPlus /> Subir Documentos
-                </button>
-              )}
+              <div className="section-header-actions">
+                {allImages.length > 0 && (
+                  <button
+                    className="btn-carousel-view"
+                    onClick={() => openCarousel(0)}
+                  >
+                    <FaImages /> Ver estilo carrusel ({allImages.length})
+                  </button>
+                )}
+                {userLogueado.rol !== "paciente" && (
+                  <button
+                    className="btn-upload-doc"
+                    onClick={() => {
+                      setNombreArchivo("");
+                      setArchivos([]);
+                      dispatch({ type: "TOGGLE_MODAL" });
+                    }}
+                  >
+                    <FaPlus /> Subir Documentos
+                  </button>
+                )}
+              </div>
             </div>
 
             {state.documentos.length > 0 ? (
@@ -373,6 +415,16 @@ export default function VerPaciente() {
           onClose={() => setToast(null)}
         />
       )}
+
+      {/* Image Carousel Modal */}
+      {carouselOpen && allImages.length > 0 && (
+        <ImageCarouselModal
+          images={allImages}
+          currentIndex={carouselIndex}
+          setCurrentIndex={setCarouselIndex}
+          onClose={() => setCarouselOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -478,6 +530,124 @@ const FolderCard = ({
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+// Image Carousel Modal Component
+const ImageCarouselModal = ({ images, currentIndex, setCurrentIndex, onClose }) => {
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const currentImage = images[currentIndex];
+  const minSwipeDistance = 50;
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowLeft") goToPrevious();
+    if (e.key === "ArrowRight") goToNext();
+    if (e.key === "Escape") onClose();
+  };
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) goToNext();
+    if (isRightSwipe) goToPrevious();
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
+  const handleDownload = () => {
+    // Open image in new tab - user can right-click > Save as...
+    // For proper download from S3, a backend proxy endpoint is needed
+    window.open(currentImage.urlArchivo, '_blank');
+  };
+
+  return (
+    <div className="carousel-modal-overlay" onClick={onClose}>
+      <div
+        className="carousel-modal-content"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Close Button */}
+        <button className="carousel-close-btn" onClick={onClose}>
+          <FaTimes />
+        </button>
+
+        {/* Open Image Button */}
+        <button className="carousel-download-btn" onClick={handleDownload}>
+          <FaEye />
+          <span>Abrir imagen</span>
+        </button>
+
+        {/* Image Counter */}
+        <div className="carousel-counter">
+          {currentIndex + 1} / {images.length}
+        </div>
+
+        {/* Navigation Arrows */}
+        <button className="carousel-nav-btn prev" onClick={goToPrevious}>
+          <FaChevronLeft />
+        </button>
+        <button className="carousel-nav-btn next" onClick={goToNext}>
+          <FaChevronRight />
+        </button>
+
+        {/* Main Image */}
+        <div className="carousel-image-container">
+          <img
+            src={currentImage.urlArchivo}
+            alt={currentImage.originalFilename || "Imagen"}
+            className="carousel-image"
+          />
+        </div>
+
+        {/* Image Info */}
+        <div className="carousel-image-info">
+          <span className="carousel-folder-name">{currentImage.folderName}</span>
+          <span className="carousel-file-name">{currentImage.originalFilename}</span>
+        </div>
+
+        {/* Dots Indicator */}
+        <div className="carousel-dots">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              className={`carousel-dot ${index === currentIndex ? "active" : ""}`}
+              onClick={() => setCurrentIndex(index)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

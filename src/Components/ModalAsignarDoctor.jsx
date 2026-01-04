@@ -16,6 +16,7 @@ export default function ModalAsignarDoctor({
   const [doctoresAsignados, setDoctoresAsignados] = useState([]);
   const [doctoresDisponibles, setDoctoresDisponibles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -74,9 +75,11 @@ export default function ModalAsignarDoctor({
     }
   };
 
-  const doctoresFiltrados = doctoresDisponibles.filter(
-    (doctor) => !doctoresAsignados.includes(doctor._id)
-  );
+  const doctoresFiltrados = doctoresDisponibles
+    .filter((doctor) => !doctoresAsignados.includes(doctor._id))
+    .filter((doctor) =>
+      doctor.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="modal-asignar-doctor-overlay">
@@ -86,13 +89,24 @@ export default function ModalAsignarDoctor({
           <FaTimes className="modal-asignar-doctor-close-icon" onClick={onClose} />
         </div>
         <div className="modal-asignar-doctor-body">
+          {/* Search Input */}
+          <div className="modal-asignar-doctor-search">
+            <input
+              type="text"
+              placeholder="🔍 Buscar doctor por nombre..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="modal-asignar-doctor-search-input"
+            />
+          </div>
+
           <select
             disabled={loading}
             className="modal-asignar-doctor-select"
             value={doctorSeleccionado}
             onChange={(e) => setDoctorSeleccionado(e.target.value)}
           >
-            <option value="">Selecciona un doctor...</option>
+            <option value="">Selecciona un doctor... ({doctoresFiltrados.length} disponibles)</option>
             {doctoresFiltrados.map((doctor) => (
               <option key={doctor._id} value={doctor._id}>
                 {doctor.nombre}

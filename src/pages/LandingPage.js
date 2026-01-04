@@ -19,6 +19,10 @@ export default function LandingPage() {
         navigate("/cursos");
     };
 
+    const handleEstudios = () => {
+        navigate("/estudios");
+    };
+
     return (
         <div className="landing-container">
 
@@ -88,7 +92,7 @@ export default function LandingPage() {
                         </h2>
                         <p className="welcome-description">
                             Soy Médico especialista en Ultrasonografía Diagnóstica e Intervencionista.
-                            Egresada de la Universidad de Carabobo con especializaciones realizadas Grupo Yoma, Imagen corporal Valencia, La Universidad de La Plata Argentina, Universidad Católica Argentina. Actualizaciones avaladas por SERRADE España.
+                            Egresada de la Universidad de Carabobo con especializaciones realizadas Grupo Yoma, Imagen corporal Valencia, La Universidad de La Plata Argentina, Universidad Católica Argentina. Actualizaciones avaladas por SERTRADE España.
                             Pionera uso de Ecografía Musculoesquelética, Dermocutanea y Dermofotestica en Venezuela. Speaker Nacional e Internacional en Ecografía.
                             Profesor de la Universidad de Carabobo, mas de 18 años de trayectoria en el área de Ultrasonido.
                             A tu alcance para brindarte un diagnostico, con certidumbre clínica que me permita encaminar las acciones pertinentes a tu salud, sin vicios ni errores de información.
@@ -107,7 +111,7 @@ export default function LandingPage() {
                         <span>agenda cita</span>
                         <img src={iconcita} alt="" />
                     </button>
-                    <button className="btn-action btn-estudios">
+                    <button className="btn-action btn-estudios" onClick={handleEstudios}>
                         <span>estudios</span>
                         <img src={iconestudio} alt="" />
                     </button>
@@ -118,10 +122,45 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            {/* Footer */}
-            <footer className="landing-footer">
-                <p>Copyright © 2025 - Dra. Jeremmy Gutierrez</p>
-            </footer>
+            {/* Mobile Social Icons - Outside the card */}
+            <div className="mobile-social-bar">
+                <a
+                    href="https://www.instagram.com/doctoraecos?igsh=MXVnbGZzaXg3YzJxdQ=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mobile-social-icon instagram"
+                    aria-label="Instagram"
+                >
+                    <FaInstagram />
+                </a>
+                <a
+                    href="https://wa.me/qr/NGJUQHKJKLDWC1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mobile-social-icon whatsapp"
+                    aria-label="WhatsApp"
+                >
+                    <FaWhatsapp />
+                </a>
+                <a
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mobile-social-icon threads"
+                    aria-label="Threads"
+                >
+                    <FaComment />
+                </a>
+                <a
+                    href="#"
+                    className="mobile-social-icon location"
+                    aria-label="Ubicación"
+                >
+                    <FaMapMarkerAlt />
+                </a>
+            </div>
+
+
         </div>
     );
 }

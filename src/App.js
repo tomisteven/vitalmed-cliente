@@ -14,12 +14,7 @@ export default function App() {
   return (
     <HashRouter>
       <AdminRoutes notificacion={notificacion} />
-      <p className="copyrigth">
-        Copyrigth &copy; {new Date().getFullYear()} - Dra. Jeremmy Gutierrez -{" "}
-        <a target="_blank" href="https://wa.link/9k4rmu">
-          By Vitalmed
-        </a>
-      </p>
+
     </HashRouter>
   );
 }

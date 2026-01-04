@@ -24,7 +24,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.25rem;
@@ -37,7 +37,7 @@
 
 .btn-agregar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(101, 48, 87, 0.4);
 }
 
 .btn-icon {
@@ -58,7 +58,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #667eea;
+    border-top: 3px solid #653057;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -278,8 +278,8 @@
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #653057;
+    box-shadow: 0 0 0 3px rgba(101, 48, 87, 0.1);
 }
 
 .form-group input:disabled,
@@ -351,13 +351,13 @@
 }
 
 .btn-guardar-modal {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
     color: white;
 }
 
 .btn-guardar-modal:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(101, 48, 87, 0.4);
 }
 
 .btn-cancelar-modal:disabled,

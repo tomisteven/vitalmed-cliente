@@ -8,11 +8,11 @@
 
 /* Header Card del Paciente */
 .patient-header-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
   border-radius: 16px;
   padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 32px rgba(101, 48, 87, 0.3);
   color: white;
 }
 
@@ -194,7 +194,7 @@
   padding: 1rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #653057;
   transition: all 0.3s ease;
 }
 
@@ -206,7 +206,7 @@
 
 .doctor-item:hover {
   transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(101, 48, 87, 0.2);
 }
 
 .doctor-info {
@@ -224,7 +224,7 @@
 
 .doctor-icon {
   font-size: 1.5rem;
-  color: #667eea;
+  color: #653057;
 }
 
 .btn-remove-doctor {
@@ -322,7 +322,7 @@
 }
 
 .btn-upload-doc {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
   color: white;
   border: none;
   padding: 0.85rem 1.75rem;
@@ -334,12 +334,12 @@
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(101, 48, 87, 0.3);
 }
 
 .btn-upload-doc:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(101, 48, 87, 0.4);
 }
 
 /* Grid de Carpetas */
@@ -357,12 +357,12 @@
 }
 
 .folder-card:hover {
-  border-color: #667eea;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+  border-color: #653057;
+  box-shadow: 0 4px 16px rgba(101, 48, 87, 0.15);
 }
 
 .folder-card.open {
-  border-color: #667eea;
+  border-color: #653057;
 }
 
 .folder-header {
@@ -395,12 +395,12 @@
 
 .folder-icon {
   font-size: 1.75rem;
-  color: #667eea;
+  color: #653057;
   transition: all 0.3s ease;
 }
 
 .folder-icon.open {
-  color: #764ba2;
+  color: #A8518A;
 }
 
 .file-count {
@@ -614,7 +614,7 @@
 }
 
 .modal-header-upload {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
   color: white;
   padding: 1.75rem 2rem;
   display: flex;
@@ -669,8 +669,8 @@
 
 .form-group-upload input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #653057;
+  box-shadow: 0 0 0 3px rgba(101, 48, 87, 0.1);
 }
 
 .files-preview {
@@ -814,6 +814,358 @@
   }
 
   .btn-add-to-folder {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Section Header Actions */
+.section-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Carousel View Button */
+.btn-carousel-view {
+  background: linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+.btn-carousel-view:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+}
+
+/* ============================================= */
+/* IMAGE CAROUSEL MODAL STYLES */
+/* ============================================= */
+
+.carousel-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: carouselFadeIn 0.3s ease;
+}
+
+@keyframes carouselFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.carousel-modal-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Close Button */
+.carousel-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Download Button */
+.carousel-download-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 6.5rem;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.carousel-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+}
+
+/* Image Counter */
+.carousel-counter {
+  position: absolute;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+/* Navigation Buttons */
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-btn.prev {
+  left: 1.5rem;
+}
+
+.carousel-nav-btn.next {
+  right: 1.5rem;
+}
+
+/* Image Container */
+.carousel-image-container {
+  max-width: 90%;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.carousel-image {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: imageSlideIn 0.3s ease;
+}
+
+@keyframes imageSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Image Info */
+.carousel-image-info {
+  position: absolute;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.carousel-folder-name {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.carousel-file-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Dots Indicator */
+.carousel-dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+  max-width: 80%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.carousel-dot:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.carousel-dot.active {
+  background: white;
+  border-color: white;
+  transform: scale(1.2);
+}
+
+/* Carousel Responsive */
+@media (max-width: 768px) {
+  .carousel-modal-content {
+    padding: 1rem;
+  }
+
+  .carousel-close-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .carousel-download-btn {
+    top: auto;
+    bottom: 7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .carousel-counter {
+    top: 1rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .carousel-nav-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+
+  .carousel-nav-btn.prev {
+    left: 0.5rem;
+  }
+
+  .carousel-nav-btn.next {
+    right: 0.5rem;
+  }
+
+  .carousel-image-container {
+    max-width: 100%;
+    max-height: 60vh;
+  }
+
+  .carousel-image {
+    max-height: 60vh;
+  }
+
+  .carousel-image-info {
+    bottom: 9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .carousel-folder-name {
+    font-size: 0.75rem;
+  }
+
+  .carousel-file-name {
+    font-size: 0.85rem;
+  }
+
+  .carousel-dots {
+    bottom: 1.5rem;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .section-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-carousel-view {
     width: 100%;
     justify-content: center;
   }

@@ -37,9 +37,9 @@
 }
 
 .sidebar-item.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(101, 48, 87, 0.4);
 }
 
 .sidebar-item.active:hover {

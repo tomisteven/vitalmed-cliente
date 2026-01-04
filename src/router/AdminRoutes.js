@@ -19,6 +19,7 @@ import UsuarioLogueado from "../pages/admin/UsuarioLogueado.js";
 import ProtectedRoute from "../Components/ProtectedRoutes.jsx";
 import LandingPage from "../pages/LandingPage.js";
 import Cursos from "../pages/Cursos.js";
+import EstudiosPage from "../pages/EstudiosPage.js";
 
 export function AdminRoutes({ notificacion }) {
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -41,6 +42,7 @@ export function AdminRoutes({ notificacion }) {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/cursos" element={<Cursos />} />
+        <Route path="/estudios" element={<EstudiosPage />} />
         <Route path="/admin/auth" element={<Auth />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

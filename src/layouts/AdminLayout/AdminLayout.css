@@ -18,7 +18,8 @@
 .copyrigth {
   position: fixed;
   bottom: 10px;
-  margin: 5px;
+  margin: 25px;
+
   color: #ffffff;
   z-index: 1000;
   font-size: 12px;
@@ -57,7 +58,7 @@
   top: 0;
   height: 100vh;
   width: 70px;
-  background: linear-gradient(180deg, rgba(6, 0, 61, 0.95) 0%, rgba(15, 10, 80, 0.95) 100%);
+  background: linear-gradient(180deg, #653057 0%, #A8518A 100%);
   display: flex;
   flex-direction: column;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);

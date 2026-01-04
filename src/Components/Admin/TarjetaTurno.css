@@ -13,7 +13,7 @@
 }
 
 .tarjeta-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #653057 0%, #A8518A 100%);
     padding: 1.25rem;
     color: white;
 }
@@ -55,7 +55,7 @@
 }
 
 .info-value.especialidad {
-    color: #667eea;
+    color: #653057;
 }
 
 .info-value.estudio {
@@ -213,8 +213,8 @@
 
 .select-estudio:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #653057;
+    box-shadow: 0 0 0 3px rgba(101, 48, 87, 0.1);
 }
 
 .select-estudio:disabled {
