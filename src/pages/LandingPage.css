@@ -253,6 +253,33 @@
     padding-bottom: 20px;
 }
 
+.mobile-booking-section {
+    display: contents;
+    /* Makes children participate in the flex parent directly on desktop */
+}
+
+.mobile-section-text {
+    display: none;
+    /* Hidden on desktop */
+}
+
+/* Maintain original desktop order using order property */
+.btn-agenda {
+    order: 1;
+}
+
+.btn-estudios {
+    order: 2;
+}
+
+.btn-cursos {
+    order: 3;
+}
+
+.btn-agendar-sin-registro {
+    order: 4;
+}
+
 .btn-action {
     background: #a8518a;
     color: white;
@@ -305,18 +332,18 @@
 
 /* Botón Agendar Sin Registro */
 .btn-agendar-sin-registro {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    background: linear-gradient(135deg, #a62c65 0%, #653057 100%);
 }
 
 .btn-agendar-sin-registro:hover {
-    background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+    background: linear-gradient(135deg, #653057 0%, #a62c65 100%);
 }
 
 .btn-icon-large {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     background: white;
-    color: #28a745;
+    color: #a62c65;
     border-radius: 50%;
     padding: 5px;
     display: flex;
@@ -464,42 +491,68 @@
         border-radius: 8px;
     }
 
-    /* Action buttons - Compact horizontal row */
+    /* Action buttons - New labeled mobile structure */
     .action-buttons {
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
         margin-top: auto;
-        padding: 10px 0;
+        padding: 20px 0;
         z-index: 100;
-        flex-wrap: nowrap;
         border-top: 1px solid rgba(101, 48, 87, 0.1);
     }
 
+    .mobile-booking-section {
+        display: flex;
+        flex-direction: column;
+        grid-column: 1 / span 2;
+        gap: 10px;
+    }
+
+    .mobile-section-text {
+        display: block;
+        font-size: 13px;
+        color: #653057;
+        font-weight: 700;
+        text-align: center;
+        margin: 5px 0 0 0;
+        line-height: 1.2;
+    }
+
     .btn-action {
-        flex: 1;
-        min-width: 0;
+        width: 100%;
         justify-content: center;
         flex-direction: row;
         align-items: center;
-        padding: 8px 6px;
-        font-size: 9px;
-        border-radius: 25px;
-        gap: 5px;
+        padding: 12px 10px;
+        font-size: 11px;
+        border-radius: 20px;
+        gap: 10px;
         text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        order: unset !important;
+        /* Overrides desktop flex order */
     }
 
     .btn-action span {
-        white-space: nowrap;
-        font-size: 8px;
+        white-space: normal;
+        font-size: 10px;
         letter-spacing: 0.2px;
-        font-weight: 600;
+        font-weight: 800;
+        line-height: 1.2;
     }
 
     .btn-action img {
-        width: 22px;
-        height: 22px;
-        padding: 2px;
+        width: 28px;
+        height: 28px;
+        padding: 4px;
+    }
+
+    .btn-icon-large {
+        width: 28px !important;
+        /* Consistent sizing with other icons on mobile */
+        height: 28px !important;
+        padding: 4px;
     }
 
     /* Footer - Outside the card, on purple background */
@@ -610,12 +663,21 @@
     }
 
     .btn-action {
-        padding: 10px 12px;
-        font-size: 13px;
+        padding: 12px 10px;
+        font-size: 11px;
     }
 
-    .btn-action img {
-        width: 30px;
-        height: 30px;
+    .btn-action span {
+        font-size: 9.5px;
+    }
+
+    .btn-action img,
+    .btn-icon-large {
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    .mobile-section-text {
+        font-size: 11px;
     }
 }

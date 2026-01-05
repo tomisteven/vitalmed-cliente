@@ -111,10 +111,6 @@ export default function LandingPage() {
 
                 {/* Action Buttons */}
                 <div className="action-buttons">
-                    <button className="btn-action btn-agenda" onClick={handleInformes}>
-                        <span>agenda cita</span>
-                        <img src={iconcita} alt="" />
-                    </button>
                     <button className="btn-action btn-estudios" onClick={handleEstudios}>
                         <span>estudios</span>
                         <img src={iconestudio} alt="" />
@@ -123,10 +119,22 @@ export default function LandingPage() {
                         <span>cursos VIP</span>
                         <img src={iconcurso} alt="" />
                     </button>
-                    <button className="btn-action btn-agendar-sin-registro" onClick={handleAgendarSinRegistro}>
-                        <span>agendar sin registro</span>
-                        <FaCalendarPlus className="btn-icon-large" />
-                    </button>
+
+                    <div className="mobile-booking-section registered">
+                        <p className="mobile-section-text">¿Estás registrado como paciente? ingresa y reserva tu turno</p>
+                        <button className="btn-action btn-agenda" onClick={handleInformes}>
+                            <span>agenda cita</span>
+                            <img src={iconcita} alt="" />
+                        </button>
+                    </div>
+
+                    <div className="mobile-booking-section guest">
+                        <p className="mobile-section-text">¿No estás registrado y querés agendar un turno?</p>
+                        <button className="btn-action btn-agendar-sin-registro" onClick={handleAgendarSinRegistro}>
+                            <span>agendar sin registro</span>
+                            <FaCalendarPlus className="btn-icon-large" />
+                        </button>
+                    </div>
                 </div>
             </div>
 
