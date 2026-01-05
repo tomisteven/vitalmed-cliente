@@ -24,4 +24,23 @@ export class AuthAPI {
       console.log(error);
     }
   }
+
+  async getDashboardStats() {
+    try {
+      const url = this.baseApi + "/dashboard/stats";
+      const params = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      };
+      const response = await fetch(url, params);
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error al obtener estadísticas:", error);
+      throw error;
+    }
+  }
 }

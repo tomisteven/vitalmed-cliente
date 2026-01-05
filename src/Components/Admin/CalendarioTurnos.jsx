@@ -94,7 +94,7 @@ export default function CalendarioTurnos() {
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">👤 Paciente:</span>
-                        <span class="detail-value">${turno.paciente?.nombre || "No asignado"}</span>
+                        <span class="detail-value">${turno.paciente?.nombre || turno.pacienteNoRegistrado?.nombre || "No asignado"}</span>
                     </div>
                     ${turno.paciente?.email ? `
                     <div class="detail-row">

@@ -17,6 +17,7 @@ const initialState = {
   doctoresList: [],
   loading: false,
   pacienteNoEncontrado: false,
+  turnosAsignados: [],
 };
 
 function reducer(state, action) {
@@ -56,6 +57,8 @@ function reducer(state, action) {
         ...state,
         pacienteNoEncontrado: action.payload,
       };
+    case "SET_TURNOS_ASIGNADOS":
+      return { ...state, turnosAsignados: action.payload };
     default:
       return state;
   }
@@ -86,6 +89,7 @@ export function usePaciente({ showToast }) {
           payload: response.documentosAgrupados,
         });
         dispatch({ type: "SET_DOCTORES", payload: response.doctoresAsignados });
+        dispatch({ type: "SET_TURNOS_ASIGNADOS", payload: response.turnosAsignados || [] });
       } catch (error) {
         console.error("Error al obtener los datos del paciente", error);
       }

@@ -7,6 +7,7 @@ import ModalAsignarTurno from "./ModalAsignarTurno";
 import toast from "react-hot-toast";
 import "./ListaTurnosAdmin.css";
 import { EstudiosApi } from "../../api/Estudios";
+import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip } from "react-icons/fa";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
@@ -18,6 +19,10 @@ export default function ListaTurnosAdmin() {
     const [estudios, setEstudios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalAsignar, setModalAsignar] = useState({
+        show: false,
+        turno: null,
+    });
+    const [modalDetalles, setModalDetalles] = useState({
         show: false,
         turno: null,
     });
@@ -145,6 +150,40 @@ export default function ListaTurnosAdmin() {
 
     const handleTurnoAsignado = () => {
         cargarTurnos(filtros);
+    };
+
+    const handleVerDetalles = (turno) => {
+        setModalDetalles({
+            show: true,
+            turno: turno,
+        });
+    };
+
+    const handleCloseDetalles = () => {
+        setModalDetalles({
+            show: false,
+            turno: null,
+        });
+    };
+
+    const handleEliminar = async (turnoId) => {
+        const confirmar = window.confirm(
+            "⚠️ ¿Está seguro que desea ELIMINAR este turno permanentemente?\n\nEsta acción no se puede deshacer."
+        );
+
+        if (!confirmar) return;
+
+        try {
+            const response = await turnosApi.eliminarTurno(turnoId);
+
+            if (response) {
+                toast.success("Turno eliminado exitosamente");
+                cargarTurnos(filtros);
+            }
+        } catch (error) {
+            console.error("Error al eliminar turno:", error);
+            toast.error(error.message || "Error al eliminar el turno");
+        }
     };
 
     // Obtener especialidades únicas de los doctores
@@ -275,7 +314,14 @@ export default function ListaTurnosAdmin() {
                                     </td>
                                     <td>{turno.estudio?.tipo || "-"}</td>
                                     <td>
-                                        {turno.paciente?.nombre || (
+                                        {turno.paciente?.nombre ? (
+                                            turno.paciente.nombre
+                                        ) : turno.pacienteNoRegistrado?.nombre ? (
+                                            <span className="paciente-invitado">
+                                                {turno.pacienteNoRegistrado.nombre}
+                                                <span className="badge-invitado">Invitado</span>
+                                            </span>
+                                        ) : (
                                             <span className="text-muted">Disponible</span>
                                         )}
                                     </td>
@@ -289,7 +335,17 @@ export default function ListaTurnosAdmin() {
                                             {getEstadoLabel(turno.estado)}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td className="acciones-cell">
+                                        {/* Botón Ver Detalles - para invitados o turnos con archivos */}
+                                        {(turno.pacienteNoRegistrado || turno.archivosAdjuntos?.length > 0 || turno.motivoConsulta) && (
+                                            <button
+                                                onClick={() => handleVerDetalles(turno)}
+                                                className="btn-ver-detalles"
+                                                title="Ver detalles del turno"
+                                            >
+                                                <FaEye /> Detalles
+                                            </button>
+                                        )}
                                         {turno.estado === "disponible" && (
                                             <button
                                                 onClick={() => handleAsignarTurno(turno)}
@@ -306,6 +362,13 @@ export default function ListaTurnosAdmin() {
                                                 Cancelar
                                             </button>
                                         )}
+                                        <button
+                                            onClick={() => handleEliminar(turno._id)}
+                                            className="btn-eliminar-turno"
+                                            title="Eliminar turno permanentemente"
+                                        >
+                                            🗑️ Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -325,6 +388,130 @@ export default function ListaTurnosAdmin() {
                     onClose={handleCloseModal}
                     onAsignado={handleTurnoAsignado}
                 />
+            )}
+
+            {/* Modal Ver Detalles del Turno */}
+            {modalDetalles.show && modalDetalles.turno && (
+                <div className="modal-overlay" onClick={handleCloseDetalles}>
+                    <div className="modal-detalles" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-detalles-header">
+                            <h3>Detalles del Turno</h3>
+                            <button className="btn-close-modal" onClick={handleCloseDetalles}>
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <div className="modal-detalles-body">
+                            {/* Información del turno */}
+                            <div className="detalles-section">
+                                <h4>📅 Información del Turno</h4>
+                                <div className="detalles-grid">
+                                    <div className="detalle-item">
+                                        <span className="detalle-label">Fecha y Hora:</span>
+                                        <span className="detalle-value">{formatearFechaHora(modalDetalles.turno.fecha)}</span>
+                                    </div>
+                                    <div className="detalle-item">
+                                        <span className="detalle-label">Doctor:</span>
+                                        <span className="detalle-value">{modalDetalles.turno.doctor?.nombre || "No asignado"}</span>
+                                    </div>
+                                    <div className="detalle-item">
+                                        <span className="detalle-label">Estudio:</span>
+                                        <span className="detalle-value">{modalDetalles.turno.estudio?.tipo || "No especificado"}</span>
+                                    </div>
+                                    <div className="detalle-item">
+                                        <span className="detalle-label">Estado:</span>
+                                        <span
+                                            className="badge-estado"
+                                            style={{ backgroundColor: getEstadoColor(modalDetalles.turno.estado) }}
+                                        >
+                                            {getEstadoLabel(modalDetalles.turno.estado)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Información del paciente no registrado */}
+                            {modalDetalles.turno.pacienteNoRegistrado && (
+                                <div className="detalles-section">
+                                    <h4><FaUser /> Paciente (Invitado)</h4>
+                                    <div className="detalles-grid">
+                                        <div className="detalle-item">
+                                            <span className="detalle-label"><FaUser /> Nombre:</span>
+                                            <span className="detalle-value">{modalDetalles.turno.pacienteNoRegistrado.nombre}</span>
+                                        </div>
+                                        <div className="detalle-item">
+                                            <span className="detalle-label"><FaIdCard /> DNI:</span>
+                                            <span className="detalle-value">{modalDetalles.turno.pacienteNoRegistrado.dni}</span>
+                                        </div>
+                                        <div className="detalle-item">
+                                            <span className="detalle-label"><FaPhone /> Teléfono:</span>
+                                            <span className="detalle-value">
+                                                <a href={`tel:${modalDetalles.turno.pacienteNoRegistrado.telefono}`}>
+                                                    {modalDetalles.turno.pacienteNoRegistrado.telefono}
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Motivo de consulta */}
+                            {modalDetalles.turno.motivoConsulta && (
+                                <div className="detalles-section">
+                                    <h4><FaClipboardList /> Motivo de Consulta</h4>
+                                    <p className="motivo-consulta-text">
+                                        {modalDetalles.turno.motivoConsulta}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Archivos adjuntos */}
+                            {modalDetalles.turno.archivosAdjuntos?.length > 0 && (
+                                <div className="detalles-section">
+                                    <h4><FaPaperclip /> Archivos Adjuntos ({modalDetalles.turno.archivosAdjuntos.length})</h4>
+                                    <div className="archivos-lista">
+                                        {modalDetalles.turno.archivosAdjuntos.map((archivo, index) => (
+                                            <div key={archivo._id || index} className="archivo-item">
+                                                <div className="archivo-info">
+                                                    {archivo.tipoArchivo === 'pdf' ? (
+                                                        <FaFilePdf className="archivo-icon-pdf" />
+                                                    ) : (
+                                                        <FaFileImage className="archivo-icon-img" />
+                                                    )}
+                                                    <div className="archivo-detalles">
+                                                        <span className="archivo-nombre">{archivo.nombreArchivo}</span>
+                                                        <span className="archivo-fecha">
+                                                            Subido: {new Date(archivo.fechaSubida).toLocaleDateString('es-ES')}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="archivo-acciones">
+                                                    <a
+                                                        href={archivo.urlArchivo}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="btn-ver-archivo"
+                                                        title="Ver archivo"
+                                                    >
+                                                        <FaEye /> Ver
+                                                    </a>
+                                                    <a
+                                                        href={archivo.urlArchivo}
+                                                        download={archivo.nombreArchivo}
+                                                        className="btn-descargar-archivo"
+                                                        title="Descargar archivo"
+                                                    >
+                                                        <FaDownload /> Descargar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

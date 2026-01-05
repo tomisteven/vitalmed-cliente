@@ -7,13 +7,13 @@ export class TurnosApi {
    * Crear disponibilidad de turnos para un médico
    * @param {string} doctorId - ID del doctor
    * @param {Array<string>} horarios - Array de fechas en formato ISO
-   * @param {Array<string>} estudiosIds - Array opcional de IDs de estudios disponibles
+   * @param {string} estudioId - ID del estudio (opcional, un solo estudio por llamada)
    */
-  async crearDisponibilidad(doctorId, horarios, estudiosIds = []) {
+  async crearDisponibilidad(doctorId, horarios, estudioId = null) {
     try {
       const body = { doctorId, horarios };
-      if (estudiosIds && estudiosIds.length > 0) {
-        body.estudiosIds = estudiosIds;
+      if (estudioId) {
+        body.estudioId = estudioId;
       }
 
       const response = await fetch(this.url + "turnos/disponibilidad", {
@@ -157,6 +157,122 @@ export class TurnosApi {
       return result;
     } catch (error) {
       console.error("Error en cancelarTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Eliminar un turno permanentemente
+   * @param {string} turnoId - ID del turno a eliminar
+   */
+  async eliminarTurno(turnoId) {
+    try {
+      const response = await fetch(this.url + `turnos/${turnoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        throw new Error(result.message || "Error al eliminar turno");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en eliminarTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Reservar turno como invitado (sin registro)
+   * @param {string} turnoId - ID del turno
+   * @param {Object} datos - Datos del invitado
+   * @param {string} datos.dni - DNI del invitado
+   * @param {string} datos.nombre - Nombre completo del invitado
+   * @param {string} datos.telefono - Teléfono del invitado
+   * @param {string} datos.motivoConsulta - Motivo de la consulta (opcional)
+   * @param {string} datos.estudioId - ID del estudio seleccionado (opcional)
+   */
+  async reservarTurnoInvitado(turnoId, datos) {
+    try {
+      const response = await fetch(this.url + `turnos/reservar-invitado/${turnoId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(datos),
+      });
+
+      const result = await response.json();
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(result.message || "Error al reservar turno");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en reservarTurnoInvitado:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Subir archivo adjunto a un turno
+   * @param {string} turnoId - ID del turno
+   * @param {File} archivo - Archivo a subir
+   * @param {string} nombreArchivo - Nombre descriptivo del archivo
+   */
+  async subirArchivoTurno(turnoId, archivo, nombreArchivo = "") {
+    try {
+      const formData = new FormData();
+      formData.append("archivo", archivo);
+      if (nombreArchivo) {
+        formData.append("nombreArchivo", nombreArchivo);
+      }
+
+      const response = await fetch(this.url + `turnos/${turnoId}/archivo`, {
+        method: "POST",
+        headers: {
+          Authorization: "vitalmed0258525",
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(result.message || "Error al subir archivo");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en subirArchivoTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Eliminar archivo adjunto de un turno
+   * @param {string} turnoId - ID del turno
+   * @param {string} archivoId - ID del archivo a eliminar
+   */
+  async eliminarArchivoTurno(turnoId, archivoId) {
+    try {
+      const response = await fetch(this.url + `turnos/${turnoId}/archivo/${archivoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        throw new Error(result.message || "Error al eliminar archivo");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en eliminarArchivoTurno:", error);
       throw error;
     }
   }

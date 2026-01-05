@@ -303,6 +303,27 @@
     height: 16px;
 }
 
+/* Botón Agendar Sin Registro */
+.btn-agendar-sin-registro {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.btn-agendar-sin-registro:hover {
+    background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+}
+
+.btn-icon-large {
+    width: 30px;
+    height: 30px;
+    background: white;
+    color: #28a745;
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Footer */
 .landing-footer {
     display: none;

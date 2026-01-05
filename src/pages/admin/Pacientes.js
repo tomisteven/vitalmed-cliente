@@ -24,6 +24,7 @@ export default function Pacientes({ notificacion }) {
     nombre: "",
     dni: "",
     email: "",
+    fechaNacimiento: "",
     id: "",
   });
 
@@ -136,6 +137,7 @@ export default function Pacientes({ notificacion }) {
                         usuario: paciente.usuario,
                         password: paciente.password,
                         telefono: paciente.telefono,
+                        fechaNacimiento: paciente.fechaNacimiento,
                         id: paciente._id,
                       });
                       setModalOpen(true);
@@ -210,6 +212,16 @@ export default function Pacientes({ notificacion }) {
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
+                }
+              />
+              <label className="label-paciente" for="">
+                Fecha de Nacimiento
+              </label>
+              <input
+                type="date"
+                value={formData.fechaNacimiento ? formData.fechaNacimiento.split('T')[0] : ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, fechaNacimiento: e.target.value })
                 }
               />
               <span className="divisor"></span>

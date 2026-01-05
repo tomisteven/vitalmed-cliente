@@ -13,6 +13,7 @@ import Doctores from "../pages/admin/Doctores.js";
 import Secretarias from "../pages/admin/Secretarias.js";
 import Turnos from "../pages/admin/Turnos.js";
 import ReservarTurno from "../pages/admin/ReservarTurno.js";
+import ReservarSinRegistro from "../pages/admin/ReservarSinRegistro.js";
 import MisTurnosPage from "../pages/admin/MisTurnosPage.js";
 import toast, { Toaster } from "react-hot-toast";
 import UsuarioLogueado from "../pages/admin/UsuarioLogueado.js";
@@ -43,6 +44,7 @@ export function AdminRoutes({ notificacion }) {
         <Route path="/" element={<LandingPage />} />
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/estudios" element={<EstudiosPage />} />
+        <Route path="/reservar-sin-registro" element={<ReservarSinRegistro />} />
         <Route path="/admin/auth" element={<Auth />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

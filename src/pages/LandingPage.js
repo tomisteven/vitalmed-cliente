@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaInstagram, FaWhatsapp, FaMapMarkerAlt, FaComment, FaFileAlt, FaClipboardList, FaSearchPlus } from "react-icons/fa";
+import { FaUser, FaInstagram, FaWhatsapp, FaMapMarkerAlt, FaComment, FaFileAlt, FaClipboardList, FaSearchPlus, FaCalendarPlus } from "react-icons/fa";
 import "./LandingPage.css";
 import jer from "../assets/vitalmed/jer.png";
 import logo from "../assets/vitalmed/LogoJGIcon.png";
@@ -21,6 +21,10 @@ export default function LandingPage() {
 
     const handleEstudios = () => {
         navigate("/estudios");
+    };
+
+    const handleAgendarSinRegistro = () => {
+        navigate("/reservar-sin-registro");
     };
 
     return (
@@ -118,6 +122,10 @@ export default function LandingPage() {
                     <button className="btn-action btn-cursos" onClick={handleCursos}>
                         <span>cursos VIP</span>
                         <img src={iconcurso} alt="" />
+                    </button>
+                    <button className="btn-action btn-agendar-sin-registro" onClick={handleAgendarSinRegistro}>
+                        <span>agendar sin registro</span>
+                        <FaCalendarPlus className="btn-icon-large" />
                     </button>
                 </div>
             </div>
