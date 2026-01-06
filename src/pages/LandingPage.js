@@ -36,7 +36,7 @@ export default function LandingPage() {
                 <div className="social-sidebar">
                     <p className="social-sidebar-text">Estoy solo agregá mi Link - agendá tu cita</p>
                     <a
-                        href="https://www.instagram.com/doctoraecos?igsh=MXVnbGZzaXg3YzJxdQ=="
+                        href="https://www.instagram.com/doctoraecos/?hl=es"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="social-icon instagram"
@@ -45,7 +45,7 @@ export default function LandingPage() {
                         <FaInstagram />
                     </a>
                     <a
-                        href="https://wa.me/qr/NGJUQHKJKLDWC1"
+                        href="https://api.whatsapp.com/send?phone=584244664961&text=Hola%2C+soy+la+Asistente+de+la+Dra+Jeremmy+G+en+que+podemos+ayudarte"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="social-icon whatsapp"
@@ -54,7 +54,7 @@ export default function LandingPage() {
                         <FaWhatsapp />
                     </a>
                     <a
-                        href="#"
+                        href="https://threads.net/@doctoraecos"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="social-icon threads"
@@ -63,7 +63,9 @@ export default function LandingPage() {
                         <FaComment />
                     </a>
                     <a
-                        href="#"
+                        href="https://maps.app.goo.gl/6FtTK7Bwu9TYon369"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="social-icon location"
                         aria-label="Ubicación"
                     >

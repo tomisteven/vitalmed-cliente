@@ -96,7 +96,7 @@ export function usePaciente({ showToast }) {
     };
 
     fetchPaciente();
-    if (user?.rol === "paciente") {
+    if (user?.rol?.toLowerCase() === "paciente") {
       const handlePopState = (event) => {
         window.history.pushState(null, null, window.location.pathname);
       };

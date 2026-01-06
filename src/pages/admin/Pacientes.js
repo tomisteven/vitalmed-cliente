@@ -4,6 +4,7 @@ import { usePacientes } from "../../hooks/usePacientes";
 import Breadcrumbs from "../../utils/Breadcums";
 import { WiCloudRefresh } from "react-icons/wi";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import ModalPaciente from "../../Components/Admin/ModalPaciente";
 
 import "./Pacientes.css";
 import { LoaderIcon } from "react-hot-toast";
@@ -20,13 +21,7 @@ export default function Pacientes({ notificacion }) {
   } = usePacientes({ notificacion });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
-  const [formData, setFormData] = useState({
-    nombre: "",
-    dni: "",
-    email: "",
-    fechaNacimiento: "",
-    id: "",
-  });
+  const [loadingSave, setLoadingSave] = useState(false);
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -34,17 +29,25 @@ export default function Pacientes({ notificacion }) {
   if (!user) navigate("/admin/login");
   if (user.rol === "paciente") navigate(`/admin/paciente/${user.usuario._id}`);
 
-  const handleSubmit = async (e) => {
-    console.log(formData);
+  const handleOpenModal = (paciente = null) => {
+    setSelectedPaciente(paciente);
+    setModalOpen(true);
+  };
 
-    e.preventDefault();
-    await savePaciente(formData, !!selectedPaciente);
+  const handleCloseModal = () => {
     setModalOpen(false);
-    setFormData({ nombre: "", dni: "", email: "", id: "" });
     setSelectedPaciente(null);
   };
 
-
+  const handleSave = async (formData, isEdit) => {
+    setLoadingSave(true);
+    try {
+      await savePaciente(formData, isEdit);
+      handleCloseModal();
+    } finally {
+      setLoadingSave(false);
+    }
+  };
 
   const pacientesFiltrados = pacientes.filter((paciente) => {
     if (user.rol === "doctor") {
@@ -53,7 +56,6 @@ export default function Pacientes({ notificacion }) {
     }
     return true;
   });
-
 
   return (
     <div className="container-pacientes">
@@ -79,7 +81,7 @@ export default function Pacientes({ notificacion }) {
       <button
         hidden={user.rol === "paciente" || user.rol === "doctor"}
         className="add-button"
-        onClick={() => setModalOpen(true)}
+        onClick={() => handleOpenModal()}
       >
         NUEVO
       </button>
@@ -128,20 +130,7 @@ export default function Pacientes({ notificacion }) {
                   <button
                     hidden={user.rol === "paciente" || user.rol === "doctor"}
                     className="btn-icon btn-editar"
-                    onClick={() => {
-                      setSelectedPaciente(paciente);
-                      setFormData({
-                        nombre: paciente.nombre,
-                        dni: paciente.dni,
-                        email: paciente.email,
-                        usuario: paciente.usuario,
-                        password: paciente.password,
-                        telefono: paciente.telefono,
-                        fechaNacimiento: paciente.fechaNacimiento,
-                        id: paciente._id,
-                      });
-                      setModalOpen(true);
-                    }}
+                    onClick={() => handleOpenModal(paciente)}
                     title="Editar paciente"
                   >
                     <FaEdit />
@@ -161,110 +150,13 @@ export default function Pacientes({ notificacion }) {
         </table>
       )}
 
-      {modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h3 className="paciente-crear-titulo">
-              {selectedPaciente ? "Editar Paciente" : "Crear Nuevo Paciente"}
-            </h3>
-            <form onSubmit={handleSubmit}>
-              <label className="label-paciente" for="">
-                Nombre y Apellido
-              </label>
-              <input
-                type="text"
-                placeholder="Nombre y Apellido"
-                value={formData.nombre}
-                onChange={(e) =>
-                  setFormData({ ...formData, nombre: e.target.value })
-                }
-                required
-              />
-              <label className="label-paciente" for="">
-                Telefono
-              </label>
-              <input
-                type="text"
-                placeholder="Numero de Telefono"
-                value={formData.telefono}
-                onChange={(e) =>
-                  setFormData({ ...formData, telefono: e.target.value })
-                }
-              />
-              <label className="label-paciente" for="">
-                Cedula Identidad
-              </label>
-              <input
-                type="text"
-                placeholder="Cedula de Identidad"
-                value={formData.dni}
-                onChange={(e) =>
-                  setFormData({ ...formData, dni: e.target.value })
-                }
-                required
-              />
-              <label className="label-paciente" for="">
-                Email
-              </label>
-              <input
-                type="text"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-              <label className="label-paciente" for="">
-                Fecha de Nacimiento
-              </label>
-              <input
-                type="date"
-                value={formData.fechaNacimiento ? formData.fechaNacimiento.split('T')[0] : ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, fechaNacimiento: e.target.value })
-                }
-              />
-              <span className="divisor"></span>
-              <label className="label-paciente" for="">
-                Usuario
-              </label>
-              <input
-                type="text"
-                placeholder="Usuario"
-                value={formData.usuario}
-                onChange={(e) =>
-                  setFormData({ ...formData, usuario: e.target.value })
-                }
-                required
-              />
-              <label className="label-paciente" for="">
-                Contraseña
-              </label>
-              <input
-                type="text"
-                placeholder="Contraseña (Opcional)"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-
-              <div className="modal-actions">
-                <button type="submit" className="btn-guardar">
-                  Guardar
-                </button>
-                <button
-                  type="button"
-                  className="btn-cancelar"
-                  onClick={() => setModalOpen(false)}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ModalPaciente
+        open={modalOpen}
+        onClose={handleCloseModal}
+        selectedPaciente={selectedPaciente}
+        onSave={handleSave}
+        loading={loadingSave}
+      />
     </div>
   );
 }

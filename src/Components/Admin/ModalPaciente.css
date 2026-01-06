@@ -1,0 +1,149 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-container-paciente {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 550px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.paciente-crear-titulo {
+    color: #653057;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.form-paciente {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group-paciente {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-row-paciente {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.label-paciente {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-paciente input,
+.form-paciente select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background: #f8fafc;
+}
+
+.form-paciente input:focus,
+.form-paciente select:focus {
+    outline: none;
+    border-color: #653057;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(101, 48, 87, 0.1);
+}
+
+.birthday-selector {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    gap: 0.75rem;
+}
+
+.divisor-modal {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0.5rem 0;
+}
+
+.modal-actions-paciente {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-guardar-paciente,
+.btn-cancelar-paciente {
+    flex: 1;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-guardar-paciente {
+    background: #28a745;
+    color: white;
+}
+
+.btn-guardar-paciente:hover {
+    background: #218838;
+}
+
+.btn-cancelar-paciente {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.btn-cancelar-paciente:hover {
+    background: #e2e8f0;
+}
+
+@media (max-width: 480px) {
+    .modal-container-paciente {
+        padding: 1.5rem;
+    }
+
+    .form-row-paciente {
+        grid-template-columns: 1fr;
+    }
+
+    .birthday-selector {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+}

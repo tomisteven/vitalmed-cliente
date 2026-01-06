@@ -13,6 +13,9 @@ import {
   FaFileAlt,
   FaFilePdf,
   FaFileImage,
+  FaFileVideo,
+  FaFileExcel,
+  FaFileWord,
   FaEye,
   FaImages,
   FaChevronLeft,
@@ -43,7 +46,8 @@ export default function VerPaciente() {
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   const userLogueado = JSON.parse(localStorage.getItem("userLog"));
-  const userID = userLogueado.usuario._id;
+  const userID = userLogueado?.usuario?._id || userLogueado?._id;
+  const userRole = (userLogueado?.rol || userLogueado?.usuario?.rol)?.toLowerCase();
 
   const showToast = (message, type) => setToast({ message, type });
 
@@ -185,7 +189,7 @@ export default function VerPaciente() {
 
           <div className="contact-item">
             <div className="contact-icon">
-              🎂
+              <FaCalendarAlt />
             </div>
             <div className="contact-details">
               <span className="contact-label">Fecha de Nacimiento / Edad</span>
@@ -221,7 +225,7 @@ export default function VerPaciente() {
             <h3>
               <FaUserMd /> Doctores Asignados
             </h3>
-            {user.rol !== "paciente" && user.rol !== "doctor" && (
+            {user.rol?.toLowerCase() !== "paciente" && user.rol?.toLowerCase() !== "doctor" && (
               <button className="btn-add-small" onClick={handleOpenModalDoctor}>
                 <FaPlus /> Agregar
               </button>
@@ -237,7 +241,7 @@ export default function VerPaciente() {
                       <FaUserMd className="doctor-icon" />
                       <span className="doctor-name">{doctor.nombre || "No especifica"}</span>
                     </div>
-                    {user.rol !== "paciente" && (
+                    {user.rol?.toLowerCase() !== "paciente" && (
                       <button
                         className="btn-remove-doctor"
                         onClick={() => eliminarDoctorDelPaciente(doctor._id)}
@@ -256,7 +260,7 @@ export default function VerPaciente() {
         </div>
 
         {/* Card de Notas */}
-        {user.rol !== "paciente" && (
+        {user.rol?.toLowerCase() !== "paciente" && (
           <div className="info-card notes-card">
             <div className="card-header">
               <h3>
@@ -339,23 +343,12 @@ export default function VerPaciente() {
         )}
       </div>
 
-      {/* Re-adding carousel open function that was removed accidentally */}
-      {carouselOpen && (
-        <div className="carousel-modal">
-          <button className="carousel-close-btn" onClick={() => setCarouselOpen(false)}><FaTimes /></button>
-          {/* Carousel implementation would be here, but I'll make sure not to break existing code */}
-        </div>
-      )}
 
       {/* Sección de Documentos */}
-      {(userLogueado.rol === "secretaria" ||
-        userLogueado.rol === "paciente" ||
-        (userLogueado.rol === "doctor" &&
-          state.doctores.some(
-            (doctor) =>
-              doctor._id === userID &&
-              doctor.pacientes.includes(state.paciente._id)
-          ))) && (
+      {(userRole === "secretaria" ||
+        userRole === "paciente" ||
+        (userRole === "doctor" &&
+          state.doctores.some((doctor) => doctor._id === userID))) && (
           <div className="documents-section">
             <div className="section-header">
               <h2>
@@ -370,7 +363,7 @@ export default function VerPaciente() {
                     <FaImages /> Ver estilo carrusel ({allImages.length})
                   </button>
                 )}
-                {userLogueado.rol !== "paciente" && (
+                {userLogueado.rol?.toLowerCase() !== "paciente" && (
                   <button
                     className="btn-upload-doc"
                     onClick={() => {
@@ -544,9 +537,28 @@ const FolderCard = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const getFileIcon = (url) => {
-    if (url.includes(".pdf") || url.includes(".PDF")) return <FaFilePdf className="file-type-icon pdf" />;
-    if (url.includes(".jpg") || url.includes(".png") || url.includes(".jpeg")) return <FaFileImage className="file-type-icon image" />;
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes(".pdf")) return <FaFilePdf className="file-type-icon pdf" />;
+    if (lowerUrl.includes(".jpg") || lowerUrl.includes(".png") || lowerUrl.includes(".jpeg") || lowerUrl.includes(".webp") || lowerUrl.includes(".gif")) return <FaFileImage className="file-type-icon image" />;
+    if (lowerUrl.includes(".mp4") || lowerUrl.includes(".mov") || lowerUrl.includes(".avi") || lowerUrl.includes(".webm")) return <FaFileVideo className="file-type-icon video" />;
+    if (lowerUrl.includes(".xlsx") || lowerUrl.includes(".xls") || lowerUrl.includes(".csv")) return <FaFileExcel className="file-type-icon excel" />;
+    if (lowerUrl.includes(".doc") || lowerUrl.includes(".docx")) return <FaFileWord className="file-type-icon word" />;
     return <FaFileAlt className="file-type-icon" />;
+  };
+
+  const isVideo = (url) => {
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.includes(".mp4") || lowerUrl.includes(".mov") || lowerUrl.includes(".avi") || lowerUrl.includes(".webm") || lowerUrl.includes(".mov");
+  };
+
+  const isImage = (url) => {
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.includes(".jpg") || lowerUrl.includes(".png") || lowerUrl.includes(".jpeg") || lowerUrl.includes(".webp") || lowerUrl.includes(".gif") || lowerUrl.includes(".bmp");
+  };
+
+  const isSpecialFile = (url) => {
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.includes(".pdf") || lowerUrl.includes(".xlsx") || lowerUrl.includes(".xls") || lowerUrl.includes(".doc") || lowerUrl.includes(".docx") || lowerUrl.includes(".dmc") || lowerUrl.includes(".csv");
   };
 
   return (
@@ -557,7 +569,7 @@ const FolderCard = ({
           <span>{doc.nombreArchivo || "Sin nombre"}</span>
           <span className="file-count">{doc.archivos.length} archivo(s)</span>
         </div>
-        {userLogueado.rol !== "paciente" && (
+        {userLogueado.rol?.toLowerCase() !== "paciente" && (
           <button
             className="btn-add-to-folder"
             onClick={(e) => {
@@ -577,19 +589,25 @@ const FolderCard = ({
             {doc.archivos.map((archivo) => (
               <div className="file-card" key={archivo._id}>
                 <div className="file-preview">
-                  {archivo.urlArchivo.includes(".pdf") ||
-                    archivo.urlArchivo.includes(".PDF") ||
-                    archivo.urlArchivo.includes(".xlsx") ||
-                    archivo.urlArchivo.includes(".dmc") ? (
+                  {isSpecialFile(archivo.urlArchivo) ? (
                     <div className="pdf-placeholder">
-                      <FaFilePdf />
-                      <span>PDF</span>
+                      {getFileIcon(archivo.urlArchivo)}
+                      <span>{archivo.urlArchivo.split('.').pop().toUpperCase()}</span>
+                    </div>
+                  ) : isVideo(archivo.urlArchivo) ? (
+                    <div className="pdf-placeholder video">
+                      <FaFileVideo />
+                      <span>VIDEO</span>
                     </div>
                   ) : (
                     <img
                       src={archivo.urlArchivo}
                       alt="Archivo"
                       className="file-thumbnail"
+                      onError={(e) => {
+                        console.error("Error loading image:", archivo.urlArchivo);
+                        e.target.src = "https://placehold.co/400?text=Error+Cargando+Imagen";
+                      }}
                     />
                   )}
                 </div>
@@ -612,7 +630,7 @@ const FolderCard = ({
                     >
                       <FaDownload /> Descargar
                     </a>
-                    {userLogueado.rol !== "paciente" && (
+                    {userLogueado.rol?.toLowerCase() !== "paciente" && (
                       <button
                         className="btn-delete-file"
                         onClick={() => eliminarArchivo(archivo._id, doc.nombreArchivo)}
@@ -727,11 +745,25 @@ const ImageCarouselModal = ({ images, currentIndex, setCurrentIndex, onClose }) 
 
         {/* Main Image */}
         <div className="carousel-image-container">
-          <img
-            src={currentImage.urlArchivo}
-            alt={currentImage.originalFilename || "Imagen"}
-            className="carousel-image"
-          />
+          {isVideo(currentImage.urlArchivo) ? (
+            <div className="carousel-video-description">
+              <FaFileVideo size={60} />
+              <p>Este archivo es un video (. {currentImage.urlArchivo.split('.').pop()})</p>
+              <button className="btn-open-original" onClick={handleDownload}>
+                <FaEye /> Ver video original
+              </button>
+            </div>
+          ) : (
+            <img
+              src={currentImage.urlArchivo}
+              alt={currentImage.originalFilename || "Imagen"}
+              className="carousel-image"
+              onError={(e) => {
+                console.error("Error loading carousel image:", currentImage.urlArchivo);
+                e.target.src = "https://placehold.co/800x600?text=Error+Cargando+Imagen";
+              }}
+            />
+          )}
         </div>
 
         {/* Image Info */}

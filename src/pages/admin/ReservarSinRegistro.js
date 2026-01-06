@@ -476,7 +476,7 @@ export default function ReservarSinRegistro() {
                                     </select>
                                 </div>
 
-                                <div className="form-group-guest">
+                                {/* <div className="form-group-guest">
                                     <label htmlFor="doctorId">Médico (opcional)</label>
                                     <select
                                         id="doctorId"
@@ -491,7 +491,7 @@ export default function ReservarSinRegistro() {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </div> */}
 
                                 <div className="form-group-guest">
                                     <label htmlFor="fecha">Fecha (opcional)</label>
@@ -594,7 +594,7 @@ export default function ReservarSinRegistro() {
                         <form onSubmit={handleReservar} className="datos-form">
                             <div className="form-row-guest">
                                 <div className="form-group-guest">
-                                    <label htmlFor="dni">DNI / Cédula <span className="required">*</span></label>
+                                    <label htmlFor="dni">Cédula <span className="required">*</span></label>
                                     <input
                                         type="text"
                                         id="dni"
@@ -657,7 +657,7 @@ export default function ReservarSinRegistro() {
                                         <option value="">Seleccione un estudio</option>
                                         {estudios.map((estudio) => (
                                             <option key={estudio._id} value={estudio._id}>
-                                                {estudio.tipo} {estudio.precio > 0 ? `- $${estudio.precio}` : ''}
+                                                {estudio.tipo}
                                             </option>
                                         ))}
                                     </select>
@@ -666,7 +666,7 @@ export default function ReservarSinRegistro() {
 
                             {/* Adjuntar archivo */}
                             <div className="archivo-section">
-                                <h3><FaUpload /> Adjuntar Archivo (opcional)</h3>
+                                <h3><FaUpload /> Adjuntar ESTUDIO / ORDEN MEDICA (opcional)</h3>
                                 <p className="archivo-description">
                                     Puede adjuntar estudios previos, radiografías o documentos relevantes (imagen o PDF, máx 10MB).
                                 </p>
