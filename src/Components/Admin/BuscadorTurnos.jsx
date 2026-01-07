@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
 import TarjetaTurno from "./TarjetaTurno";
@@ -54,8 +55,31 @@ export default function BuscadorTurnos() {
                 ...filtros,
             };
 
+            // Helper para obtener fecha local formato YYYY-MM-DD (Match visual con TarjetaTurno)
+            const getFechaLocal = (isoString) => {
+                if (!isoString) return "";
+                const date = new Date(isoString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
             const response = await turnosApi.buscarTurnos(filtrosAPI);
-            setTurnos(Array.isArray(response) ? response : []);
+            let turnosEncontrados = Array.isArray(response) ? response : [];
+
+            // Filtrado Client-Side riguroso
+            if (filtros.fecha) {
+                console.log("Filtrando por fecha:", filtros.fecha);
+                turnosEncontrados = turnosEncontrados.filter((turno) => {
+                    const turnoFechaLocal = getFechaLocal(turno.fecha);
+                    const match = turnoFechaLocal === filtros.fecha;
+                    console.log(`Turno: ${turno.fecha} -> Local: ${turnoFechaLocal}. Match? ${match}`);
+                    return match;
+                });
+            }
+
+            setTurnos(turnosEncontrados);
         } catch (error) {
             console.error("Error al buscar turnos:", error);
             setTurnos([]);

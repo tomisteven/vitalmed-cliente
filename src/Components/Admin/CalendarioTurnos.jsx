@@ -221,20 +221,20 @@ export default function CalendarioTurnos() {
                 <h3>📅 Calendario de Turnos</h3>
                 <div className="calendario-stats">
                     <span className="stat-item">
-                        <span className="stat-number">{eventos.length}</span>
-                        <span className="stat-label">turnos totales</span>
+                        <span className="stat-number-calendario">{eventos.length}</span>
+                        <span className="stat-label-calendario">turnos totales</span>
                     </span>
                     <span className="stat-item">
-                        <span className="stat-number">{eventos.filter((e) => e.estado === "disponible").length}</span>
-                        <span className="stat-label">turnos disponibles</span>
+                        <span className="stat-number-calendario">{eventos.filter((e) => e.estado === "disponible").length}</span>
+                        <span className="stat-label-calendario">turnos disponibles</span>
                     </span>
                     <span className="stat-item">
-                        <span className="stat-number">{eventos.filter((e) => e.estado === "reservado").length}</span>
-                        <span className="stat-label">turnos reservados</span>
+                        <span className="stat-number-calendario">{eventos.filter((e) => e.estado === "reservado").length}</span>
+                        <span className="stat-label-calendario">turnos reservados</span>
                     </span>
                     <span className="stat-item">
-                        <span className="stat-number">{eventos.filter((e) => e.estado === "cancelado").length}</span>
-                        <span className="stat-label">turnos cancelados</span>
+                        <span className="stat-number-calendario">{eventos.filter((e) => e.estado === "cancelado").length}</span>
+                        <span className="stat-label-calendario">turnos cancelados</span>
                     </span>
                 </div>
             </div>
@@ -246,7 +246,7 @@ export default function CalendarioTurnos() {
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: 700 }}
-                    views={["month", "week", "day", "agenda"]}
+                    views={["month", "week", "day", "agenda", "work_week"]}
                     view={view}
                     date={date}
                     onNavigate={handleNavigate}

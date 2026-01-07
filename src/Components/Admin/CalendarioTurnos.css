@@ -38,14 +38,16 @@
     color: white;
 }
 
-.stat-number {
+.stat-number-calendario {
     font-size: 1.25rem;
     font-weight: 700;
+    color: white;
 }
 
-.stat-label {
+.stat-label-calendario {
     font-size: 0.85rem;
     opacity: 0.9;
+    color: white;
 }
 
 /* Loading */

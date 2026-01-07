@@ -20,10 +20,56 @@ const Doctores = ({ notificacion }) => {
     closeModal,
   } = useDoctor({ notificacion });
 
+  // Estados para el buscador
+  const [busqueda, setBusqueda] = React.useState("");
+  const [especialidadFiltro, setEspecialidadFiltro] = React.useState("");
+
+  // Obtener lista única de especialidades
+  const especialidades = React.useMemo(() => {
+    return [...new Set(doctores.map(d => d.especialidad).filter(Boolean))];
+  }, [doctores]);
+
+  // Filtrar doctores
+  const doctoresFiltrados = React.useMemo(() => {
+    return doctores.filter((doctor) => {
+      const matchNombre = doctor.nombre.toLowerCase().includes(busqueda.toLowerCase());
+      const matchEspecialidad = especialidadFiltro ? doctor.especialidad === especialidadFiltro : true;
+      return matchNombre && matchEspecialidad;
+    });
+  }, [doctores, busqueda, especialidadFiltro]);
+
   return (
     <div className="container-doctores">
       <Breadcrumbs />
-      <h2 className="title">Cantidad de Doctores: {doctores.length}</h2>
+      
+      {/* Buscador y Filtros */}
+      <div className="filtros-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap', backgroundColor: '#894172', padding: '10px', borderRadius: '5px' }}>
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="input-search"
+            style={{ padding: '8px 12px', borderRadius: '5px', border: '1px solid #ddd', minWidth: '250px' }}
+          />
+        </div>
+        <div className="filter-box">
+          <select
+            value={especialidadFiltro}
+            onChange={(e) => setEspecialidadFiltro(e.target.value)}
+            className="select-filter"
+            style={{ padding: '8px 12px', borderRadius: '5px', border: '1px solid #ddd', minWidth: '200px' }}
+          >
+            <option value="">Todas las especialidades</option>
+            {especialidades.map(esp => (
+              <option key={esp} value={esp}>{esp}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <h2 className="title">Cantidad de Doctores: {doctoresFiltrados.length}</h2>
       <button className="btn-add-doctor" onClick={openModal}>
         + Agregar Doctor
       </button>
@@ -39,8 +85,8 @@ const Doctores = ({ notificacion }) => {
             }}
           />
         </div>
-      ) : doctores.length === 0 ? (
-        <p className="empty-message">No hay doctores registrados.</p>
+      ) : doctoresFiltrados.length === 0 ? (
+        <p className="empty-message">No se encontraron doctores con los filtros seleccionados.</p>
       ) : (
         <table className="doctores-table">
           <thead>
@@ -54,7 +100,7 @@ const Doctores = ({ notificacion }) => {
             </tr>
           </thead>
           <tbody>
-            {doctores.map((doctor) => (
+            {doctoresFiltrados.map((doctor) => (
               <tr key={doctor._id}>
                 <td>{doctor.nombre}</td>
                 <td>{doctor.usuario}</td>

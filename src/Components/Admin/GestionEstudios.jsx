@@ -149,7 +149,7 @@ export default function GestionEstudios() {
     return (
         <div className="gestion-estudios">
             <div className="estudios-header">
-                <h3>Gestión de Estudios</h3>
+                <h3 className="text-white-gestion">Gestión de Estudios</h3>
                 <button className="btn-agregar" onClick={() => handleOpenModal()}>
                     <span className="btn-icon">+</span>
                     Agregar Estudio

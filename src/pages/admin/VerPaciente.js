@@ -657,6 +657,11 @@ const FolderCard = ({
 
 // Image Carousel Modal Component
 const ImageCarouselModal = ({ images, currentIndex, setCurrentIndex, onClose }) => {
+  // Helper para detectar videos
+  const isVideo = (url) => {
+    const lowerUrl = url.toLowerCase();
+    return lowerUrl.includes(".mp4") || lowerUrl.includes(".mov") || lowerUrl.includes(".avi") || lowerUrl.includes(".webm") || lowerUrl.includes(".mkv");
+  };
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 

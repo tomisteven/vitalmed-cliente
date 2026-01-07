@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useState, useMemo } from "react";
 import "./Secretarias.css"; // Importa los estilos
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../../utils/Breadcums";
@@ -18,6 +17,17 @@ const Secretarias = ({ notificacion }) => {
     password: "",
     id: "",
   });
+  
+  // Estado para el buscador
+  const [busqueda, setBusqueda] = useState("");
+
+  // Filtrar secretarias por nombre
+  const secretariasFiltradas = useMemo(() => {
+    return secretarias.filter((secretaria) =>
+      secretaria.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    );
+  }, [secretarias, busqueda]);
+
   console.log(secretarias);
 
   const navigate = useNavigate();
@@ -56,8 +66,23 @@ const Secretarias = ({ notificacion }) => {
   return (
     <div className="container-secretarias">
       <Breadcrumbs />
+
+      {/* Buscador */}
+      <div className="filtros-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center', backgroundColor: '#894172', padding: '10px', borderRadius: '5px' }}>
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="input-search"
+            style={{ padding: '8px 12px', borderRadius: '5px', border: '1px solid #ddd', minWidth: '250px' }}
+          />
+        </div>
+      </div>
+
       <h2 className="title-secretarias">
-        Cantidad de Secretarias: {secretarias.length}
+        Cantidad de Secretarias: {secretariasFiltradas.length}
       </h2>
       <button className="btn-add" onClick={() => setModalOpen(true)}>
         + Agregar Secretaria
@@ -75,8 +100,8 @@ const Secretarias = ({ notificacion }) => {
             }}
           />
         </div>
-      ) : secretarias.length === 0 ? (
-        <p className="empty-message">No hay secretarias registradas.</p>
+      ) : secretariasFiltradas.length === 0 ? (
+        <p className="empty-message">No se encontraron secretarias con los filtros seleccionados.</p>
       ) : (
         <table className="secretarias-table">
           <thead>
@@ -89,7 +114,7 @@ const Secretarias = ({ notificacion }) => {
             </tr>
           </thead>
           <tbody>
-            {secretarias.map((secretaria) => (
+            {secretariasFiltradas.map((secretaria) => (
               <tr key={secretaria._id}>
                 <td>{secretaria.nombre}</td>
                 <td>{secretaria.usuario}</td>
