@@ -3,6 +3,6 @@ const url = "https://api.doctoraecos.com";
 const url3 = "http://localhost:8082";
 
 export const ENV = {
-  URL: url3,
+  URL: url,
   URL_CLIENT: "https://api.doctoraecos.com",
 };
