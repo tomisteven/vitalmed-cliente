@@ -7,7 +7,7 @@ import ModalAsignarTurno from "./ModalAsignarTurno";
 import toast from "react-hot-toast";
 import "./ListaTurnosAdmin.css";
 import { EstudiosApi } from "../../api/Estudios";
-import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip } from "react-icons/fa";
+import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare } from "react-icons/fa";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
@@ -26,6 +26,7 @@ export default function ListaTurnosAdmin() {
         show: false,
         turno: null,
     });
+    const [selectedIds, setSelectedIds] = useState([]);
     const [filtros, setFiltros] = useState({
         estado: "",
         doctorId: "",
@@ -108,6 +109,7 @@ export default function ListaTurnosAdmin() {
             estudio: "",
             fecha: "",
         });
+        setSelectedIds([]);
         cargarTurnos();
     };
 
@@ -178,11 +180,76 @@ export default function ListaTurnosAdmin() {
 
             if (response) {
                 toast.success("Turno eliminado exitosamente");
+                setSelectedIds(prev => prev.filter(id => id !== turnoId));
                 cargarTurnos(filtros);
             }
         } catch (error) {
             console.error("Error al eliminar turno:", error);
             toast.error(error.message || "Error al eliminar el turno");
+        }
+    };
+
+    const handleSelectTurno = (id) => {
+        setSelectedIds(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(item => item !== id);
+            } else {
+                return [...prev, id];
+            }
+        });
+    };
+
+    const handleSelectAll = () => {
+        if (selectedIds.length === turnos.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(turnos.map(t => t._id));
+        }
+    };
+
+    const handleEliminarMasivo = async () => {
+        const confirmar = window.confirm(
+            `⚠️ ¿Está seguro que desea ELIMINAR ${selectedIds.length} turnos permanentemente?\n\nEsta acción no se puede deshacer.`
+        );
+
+        if (!confirmar) return;
+
+        try {
+            setLoading(true);
+            const response = await turnosApi.eliminarTurnosMasivo(selectedIds);
+            if (response) {
+                toast.success(`${selectedIds.length} turnos eliminados correctamente`);
+                setSelectedIds([]);
+                cargarTurnos(filtros);
+            }
+        } catch (error) {
+            console.error("Error en eliminación masiva:", error);
+            toast.error("Error al eliminar turnos masivamente");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLimpiarMasivo = async () => {
+        const confirmar = window.confirm(
+            `¿Está seguro que desea VACIAR ${selectedIds.length} turnos?\n\nLos pacientes y datos asociados serán eliminados y el turno volverá a estar disponible.`
+        );
+
+        if (!confirmar) return;
+
+        try {
+            setLoading(true);
+            const response = await turnosApi.limpiarTurnosMasivo(selectedIds);
+            if (response) {
+                toast.success(`${selectedIds.length} turnos vaciados correctamente`);
+                setSelectedIds([]);
+                cargarTurnos(filtros);
+            }
+        } catch (error) {
+            console.error("Error en limpieza masiva:", error);
+            toast.error("Error al vaciar turnos masivamente");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -283,6 +350,31 @@ export default function ListaTurnosAdmin() {
                 </div>
             </div>
 
+            {selectedIds.length > 0 && (
+                <div className="bulk-actions-bar">
+                    <div className="bulk-info">
+                        <FaCheckSquare />
+                        <span>{selectedIds.length} seleccionados</span>
+                    </div>
+                    <div className="bulk-buttons">
+                        <button
+                            onClick={handleLimpiarMasivo}
+                            className="btn-bulk-clear"
+                            title="Vaciar turnos seleccionados"
+                        >
+                            <FaEraser /> Vaciar seleccionados
+                        </button>
+                        <button
+                            onClick={handleEliminarMasivo}
+                            className="btn-bulk-delete"
+                            title="Eliminar turnos seleccionados permanentemente"
+                        >
+                            <FaTrashAlt /> Eliminar seleccionados
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Tabla de turnos */}
             <div className="tabla-container">
                 {loading ? (
@@ -295,6 +387,13 @@ export default function ListaTurnosAdmin() {
                     <table className="tabla-turnos">
                         <thead>
                             <tr>
+                                <th className="checkbox-cell">
+                                    <input
+                                        type="checkbox"
+                                        checked={turnos.length > 0 && selectedIds.length === turnos.length}
+                                        onChange={handleSelectAll}
+                                    />
+                                </th>
                                 <th>Fecha y Hora</th>
                                 <th>Doctor</th>
                                 <th>Estudio</th>
@@ -305,7 +404,14 @@ export default function ListaTurnosAdmin() {
                         </thead>
                         <tbody>
                             {turnos.map((turno) => (
-                                <tr key={turno._id}>
+                                <tr key={turno._id} className={selectedIds.includes(turno._id) ? "selected-row" : ""}>
+                                    <td className="checkbox-cell">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.includes(turno._id)}
+                                            onChange={() => handleSelectTurno(turno._id)}
+                                        />
+                                    </td>
                                     <td className="fecha-cell">
                                         {formatearFechaHora(turno.fecha)}
                                     </td>
@@ -367,7 +473,7 @@ export default function ListaTurnosAdmin() {
                                             className="btn-eliminar-turno"
                                             title="Eliminar turno permanentemente"
                                         >
-                                            🗑️ Eliminar
+                                            <FaTrashAlt /> Eliminar
                                         </button>
                                     </td>
                                 </tr>

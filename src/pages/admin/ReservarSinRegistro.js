@@ -112,6 +112,7 @@ export default function ReservarSinRegistro() {
 
     const seleccionarTurno = (turno) => {
         setTurnoSeleccionado(turno);
+        console.log(turno);
         setPaso(2);
     };
 
@@ -345,6 +346,10 @@ export default function ReservarSinRegistro() {
                         <span class="detail-label">Especialidad:</span>
                         <span class="detail-value">${turnoSeleccionado?.doctor?.especialidad || 'N/A'}</span>
                     </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Precio:</span>
+                        <span class="detail-value">${turnoSeleccionado?.precio || 'N/A'}</span>
+                    </div>
                 </div>
 
                 <div class="section">
@@ -494,7 +499,7 @@ export default function ReservarSinRegistro() {
                                 </div> */}
 
                                 <div className="form-group-guest">
-                                    <label htmlFor="fecha">Fecha (opcional)</label>
+                                    <label htmlFor="fecha">Fecha</label>
                                     <input
                                         type="date"
                                         id="fecha"
@@ -538,9 +543,13 @@ export default function ReservarSinRegistro() {
                                             </div>
                                             {turno.doctor?.especialidad && (
                                                 <div className="turno-especialidad">
-                                                    {turno.doctor.especialidad}
+                                                    Especialista en {turno.doctor.especialidad}
                                                 </div>
                                             )}
+                                            <div className="turno-precio">
+                                                <strong>Estudio: </strong>
+                                                {turno.estudio?.tipo}
+                                            </div>
                                             <button
                                                 className="btn-seleccionar"
                                                 onClick={() => seleccionarTurno(turno)}
@@ -634,7 +643,7 @@ export default function ReservarSinRegistro() {
                             </div>
 
                             <div className="form-group-guest full-width">
-                                <label htmlFor="motivoConsulta">Motivo de Consulta (opcional)</label>
+                                <label htmlFor="motivoConsulta">Motivo de Consulta</label>
                                 <textarea
                                     id="motivoConsulta"
                                     name="motivoConsulta"
@@ -647,7 +656,7 @@ export default function ReservarSinRegistro() {
 
                             {estudios.length > 0 && (
                                 <div className="form-group-guest">
-                                    <label htmlFor="estudioId">Estudio/Servicio (opcional)</label>
+                                    <label htmlFor="estudioId">Estudio/Servicio</label>
                                     <select
                                         id="estudioId"
                                         name="estudioId"
@@ -666,7 +675,7 @@ export default function ReservarSinRegistro() {
 
                             {/* Adjuntar archivo */}
                             <div className="archivo-section">
-                                <h3><FaUpload /> Adjuntar ESTUDIO / ORDEN MEDICA (opcional)</h3>
+                                <h3><FaUpload /> Adjuntar ESTUDIO / ORDEN MEDICA</h3>
                                 <p className="archivo-description">
                                     Puede adjuntar estudios previos, radiografías o documentos relevantes (imagen o PDF, máx 10MB).
                                 </p>

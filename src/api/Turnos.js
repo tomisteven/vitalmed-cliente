@@ -252,7 +252,7 @@ export class TurnosApi {
   }
 
   /**
-   * Eliminar archivo adjunto de un turno
+   * Eliminar archivos adjuntos de un turno
    * @param {string} turnoId - ID del turno
    * @param {string} archivoId - ID del archivo a eliminar
    */
@@ -273,6 +273,58 @@ export class TurnosApi {
       return result;
     } catch (error) {
       console.error("Error en eliminarArchivoTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Eliminar múltiples turnos permanentemente
+   * @param {Array<string>} ids - Array de IDs de turnos a eliminar
+   */
+  async eliminarTurnosMasivo(ids) {
+    try {
+      const response = await fetch(this.url + "turnos-masivo", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify({ ids }),
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        throw new Error(result.message || "Error al eliminar turnos masivamente");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en eliminarTurnosMasivo:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Limpiar/Vaciar múltiples turnos (vuelven a estado disponible)
+   * @param {Array<string>} ids - Array de IDs de turnos a limpiar
+   */
+  async limpiarTurnosMasivo(ids) {
+    try {
+      const response = await fetch(this.url + "turnos-masivo/limpiar", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify({ ids }),
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        throw new Error(result.message || "Error al limpiar turnos masivamente");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en limpiarTurnosMasivo:", error);
       throw error;
     }
   }
