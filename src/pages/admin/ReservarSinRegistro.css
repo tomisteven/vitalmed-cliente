@@ -258,8 +258,12 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #333;
+    color: #000000;
     font-size: 1rem;
+}
+
+.turno-fecha span {
+    color: #653057;
 }
 
 .turno-fecha svg,
