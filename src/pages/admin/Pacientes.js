@@ -5,7 +5,6 @@ import Breadcrumbs from "../../utils/Breadcums";
 import { WiCloudRefresh } from "react-icons/wi";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ModalPaciente from "../../Components/Admin/ModalPaciente";
-
 import "./Pacientes.css";
 import { LoaderIcon } from "react-hot-toast";
 

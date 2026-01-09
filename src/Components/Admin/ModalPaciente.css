@@ -17,9 +17,20 @@
     padding: 2.5rem;
     border-radius: 16px;
     width: 90%;
-    max-width: 550px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    animation: modalAppear 0.3s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    /* Custom scrollbar for better look */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 transparent;
+}
+
+.modal-container-paciente::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-container-paciente::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
 }
 
 @keyframes modalAppear {
@@ -133,17 +144,35 @@
     background: #e2e8f0;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .modal-container-paciente {
         padding: 1.5rem;
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .paciente-crear-titulo {
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
     }
 
     .form-row-paciente {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .birthday-selector {
         grid-template-columns: 1fr;
         gap: 0.5rem;
+    }
+
+    .modal-actions-paciente {
+        flex-direction: column-reverse;
+    }
+
+    .btn-guardar-paciente,
+    .btn-cancelar-paciente {
+        width: 100%;
+        padding: 1rem;
     }
 }
