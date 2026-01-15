@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaSearch, FaStethoscope, FaInfoCircle, FaCalendarAlt } from 'react-icons/fa';
 import './EstudiosPage.css';
+import SEO from '../Components/SEO';
 
 // Static data - In production, this would come from an API
 const estudiosData = [
@@ -58,112 +59,141 @@ export default function EstudiosPage() {
         navigate('/admin/auth');
     };
 
+    const proceduresSchema = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": estudiosData.map((estudio, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+                "@type": "MedicalProcedure",
+                "name": estudio.tipo,
+                "description": estudio.aclaraciones || `Estudio de ultrasonografía: ${estudio.tipo}`,
+                "procedureType": "Diagnostic",
+                "category": estudio.categoria
+            }
+        }))
+    };
+
     return (
         <div className="estudios-page">
+            <SEO
+                title="Estudios Médicos y Ecografías"
+                description="Consulte nuestro catálogo de estudios médicos en Valencia: Ecografías abdominales, doppler, ginecológicas, musculoesqueléticas y más."
+                keywords="estudios médicos valencia, tipos de ecografías, ecografía doppler, ecografía transfontanelar, precios ecografías"
+                schema={proceduresSchema}
+            />
+
             {/* Header */}
             <header className="estudios-header">
-                <button className="btn-back" onClick={() => navigate('/')}>
+                <button className="btn-back" onClick={() => navigate('/')} aria-label="Volver al inicio">
                     <FaArrowLeft />
                     <span>Volver</span>
                 </button>
                 <div className="header-content">
                     <h1>Estudios Médicos</h1>
-                    <p>Servicios de ultrasonografía diagnóstica</p>
+                    <p>Servicios especializados de ultrasonografía diagnóstica en Valencia, Venezuela</p>
                 </div>
             </header>
 
-            {/* Search and Filters */}
-            <div className="estudios-filters">
-                <div className="search-container">
-                    <FaSearch className="search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Buscar estudio..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
-
-                <div className="categories-container">
-                    {categorias.map(cat => (
-                        <button
-                            key={cat.id}
-                            className={`category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
-                            onClick={() => setSelectedCategory(cat.id)}
-                        >
-                            <span className="category-icon">{cat.icon}</span>
-                            <span className="category-name">{cat.nombre}</span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Results Count */}
-            <div className="results-info">
-                <FaStethoscope />
-                <span>{filteredEstudios.length} estudio{filteredEstudios.length !== 1 ? 's' : ''} encontrado{filteredEstudios.length !== 1 ? 's' : ''}</span>
-            </div>
-
-            {/* Studies Grid */}
-            <div className="estudios-grid">
-                {filteredEstudios.map(estudio => (
-                    <div
-                        key={estudio.id}
-                        className={`estudio-card ${expandedCard === estudio.id ? 'expanded' : ''}`}
-                    >
-                        <div className="estudio-card-header">
-                            <span className="estudio-categoria">{estudio.categoria}</span>
-                            {estudio.precio && (
-                                <span className="estudio-precio">Bs {estudio.precio}</span>
-                            )}
-                        </div>
-
-                        <h3 className="estudio-nombre">{estudio.tipo}</h3>
-
-                        {estudio.aclaraciones && (
-                            <button
-                                className="btn-info"
-                                onClick={() => setExpandedCard(expandedCard === estudio.id ? null : estudio.id)}
-                            >
-                                <FaInfoCircle />
-                                <span>Ver preparación</span>
-                            </button>
-                        )}
-
-                        {expandedCard === estudio.id && estudio.aclaraciones && (
-                            <div className="estudio-aclaraciones">
-                                <p>{estudio.aclaraciones}</p>
-                            </div>
-                        )}
-
-                        <button
-                            className="btn-agendar"
-                            onClick={handleAgendarCita}
-                        >
-                            <FaCalendarAlt />
-                            <span>Agendar cita</span>
-                        </button>
+            <main>
+                {/* Search and Filters */}
+                <section className="estudios-filters" aria-label="Filtros de búsqueda">
+                    <div className="search-container">
+                        <FaSearch className="search-icon" />
+                        <label htmlFor="search-study" className="sr-only">Buscar estudio</label>
+                        <input
+                            id="search-study"
+                            type="text"
+                            placeholder="Buscar estudio (ej: Doppler, Abdominal)..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="search-input"
+                        />
                     </div>
-                ))}
-            </div>
 
-            {filteredEstudios.length === 0 && (
-                <div className="no-results">
-                    <FaSearch />
-                    <p>No se encontraron estudios con ese criterio</p>
+                    <div className="categories-container" role="group" aria-label="Categorías de estudios">
+                        {categorias.map(cat => (
+                            <button
+                                key={cat.id}
+                                className={`category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
+                                onClick={() => setSelectedCategory(cat.id)}
+                                aria-pressed={selectedCategory === cat.id}
+                            >
+                                <span className="category-icon" aria-hidden="true">{cat.icon}</span>
+                                <span className="category-name">{cat.nombre}</span>
+                            </button>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Results Count */}
+                <div className="results-info" aria-live="polite">
+                    <FaStethoscope aria-hidden="true" />
+                    <span>{filteredEstudios.length} estudio{filteredEstudios.length !== 1 ? 's' : ''} encontrado{filteredEstudios.length !== 1 ? 's' : ''}</span>
                 </div>
-            )}
+
+                {/* Studies Grid */}
+                <section className="estudios-grid" aria-label="Lista de estudios médicos">
+                    {filteredEstudios.map(estudio => (
+                        <article
+                            key={estudio.id}
+                            className={`estudio-card ${expandedCard === estudio.id ? 'expanded' : ''}`}
+                        >
+                            <div className="estudio-card-header">
+                                <span className="estudio-categoria">{estudio.categoria}</span>
+                                {estudio.precio && (
+                                    <span className="estudio-precio">USD {estudio.precio}</span>
+                                )}
+                            </div>
+
+                            <h3 className="estudio-nombre">{estudio.tipo}</h3>
+
+                            {estudio.aclaraciones && (
+                                <button
+                                    className="btn-info"
+                                    onClick={() => setExpandedCard(expandedCard === estudio.id ? null : estudio.id)}
+                                    aria-expanded={expandedCard === estudio.id}
+                                >
+                                    <FaInfoCircle aria-hidden="true" />
+                                    <span>Ver preparación</span>
+                                </button>
+                            )}
+
+                            {expandedCard === estudio.id && estudio.aclaraciones && (
+                                <div className="estudio-aclaraciones">
+                                    <p>{estudio.aclaraciones}</p>
+                                </div>
+                            )}
+
+                            <button
+                                className="btn-agendar"
+                                onClick={handleAgendarCita}
+                            >
+                                <FaCalendarAlt aria-hidden="true" />
+                                <span>Agendar cita</span>
+                            </button>
+                        </article>
+                    ))}
+                </section>
+
+                {filteredEstudios.length === 0 && (
+                    <div className="no-results">
+                        <FaSearch aria-hidden="true" />
+                        <p>No se encontraron estudios que coincidan con su búsqueda.</p>
+                    </div>
+                )}
+            </main>
 
             {/* Footer Info */}
-            <div className="estudios-footer">
+            <footer className="estudios-footer">
                 <p>
-                    <strong>📍 Ubicación:</strong> Consultorio Dra. Jeremmy Gutierrez
+                    <strong>📍 Ubicación:</strong> Centro Policlínico Valencia (Clínica la Viña) Torre C piso 1 consultorio 102.
                 </p>
                 <p>
-                    <strong>💳 Formas de pago:</strong> Divisa en efectivo o pago móvil al cambio BCV
+                    <strong>💳 Formas de pago:</strong> Divisa en efectivo o pago móvil al cambio BCV.
                 </p>
-            </div>
+            </footer>
         </div>
     );
 }
