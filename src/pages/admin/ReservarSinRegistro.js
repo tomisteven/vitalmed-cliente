@@ -347,7 +347,7 @@ export default function ReservarSinRegistro() {
                         <span class="detail-value">${turnoSeleccionado?.doctor?.especialidad || 'N/A'}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Precio:</span>
+                        <span class="detail-label">Precio:REF</span>
                         <span class="detail-value">${turnoSeleccionado?.precio || 'N/A'}</span>
                     </div>
                 </div>

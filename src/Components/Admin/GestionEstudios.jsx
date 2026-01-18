@@ -138,13 +138,7 @@ export default function GestionEstudios() {
         }
     };
 
-    const formatPrecio = (precio) => {
-        if (!precio && precio !== 0) return "-";
-        return new Intl.NumberFormat("es-AR", {
-            style: "currency",
-            currency: "ARS",
-        }).format(precio);
-    };
+
 
     return (
         <div className="gestion-estudios">
@@ -183,7 +177,7 @@ export default function GestionEstudios() {
                             {estudios.map((estudio) => (
                                 <tr key={estudio._id}>
                                     <td className="td-tipo">{estudio.tipo}</td>
-                                    <td className="td-precio">{formatPrecio(estudio.precio)}</td>
+                                    <td className="td-precio">REF: {estudio.precio}</td>
                                     <td className="td-aclaraciones">
                                         {estudio.aclaraciones || "-"}
                                     </td>
@@ -251,7 +245,7 @@ export default function GestionEstudios() {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="precio">Precio (ARS)</label>
+                                    <label htmlFor="precio">REF</label>
                                     <input
                                         type="number"
                                         id="precio"
