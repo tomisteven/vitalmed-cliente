@@ -2,7 +2,13 @@ User-agent: *
 Allow: /
 Allow: /estudios
 Allow: /cursos
+Allow: /blog/
 Disallow: /admin/
 Disallow: /api/
+Disallow: /reservar-sin-registro
 
+# Sitemap
 Sitemap: https://doctoraecos.com/sitemap.xml
+
+# Host
+Host: https://doctoraecos.com

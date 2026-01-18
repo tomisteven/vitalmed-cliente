@@ -10,10 +10,10 @@ const SEO = ({
     canonical,
     ogType = 'website',
     ogImage = 'https://doctoraecos.com/logo-og.png', // Imagen por defecto
-    keywords = 'ecografía, valencia, carabobo, venezuela, doctoraecos, jeremmy gutierrez, ultrasonido',
+    keywords = 'ecografías Valencia, eco doppler Carabobo, ultrasonido Venezuela 2026, DoctoraEcos, Dra Jeremmy Gutierrez, centro ecografías La Viña',
     schema // Objeto JSON-LD
 }) => {
-    const siteName = "Dra. Jeremmy Gutierrez | DoctoraEcos";
+    const siteName = "DoctoraEcos | Dra. Jeremmy Gutierrez";
     const fullTitle = title ? `${title} | ${siteName}` : siteName;
 
     useEffect(() => {

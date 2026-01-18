@@ -30,31 +30,72 @@ export default function LandingPage() {
 
     const medicalSchema = {
         "@context": "https://schema.org",
-        "@type": "MedicalOrganization",
-        "name": "Dra. Jeremmy Gutierrez - DoctoraEcos",
+        "@type": ["MedicalBusiness", "DiagnosticLab"],
+        "name": "DoctoraEcos - Dra. Jeremmy Gutierrez",
+        "alternateName": "Centro de Ecografías Valencia",
         "url": "https://doctoraecos.com/",
         "logo": "https://doctoraecos.com/logo.png",
         "image": "https://doctoraecos.com/assets/vitalmed/jer.png",
-        "description": "Médico especialista en Ultrasonografía Diagnóstica e Intervencionista en Valencia, Venezuela.",
-        "medicalSpecialty": "Radiology",
+        "description": "Centro especializado en ecografías y ultrasonografía diagnóstica en Valencia, Carabobo, Venezuela. Dra. Jeremmy Gutierrez, pionera en Ecografía Musculoesquelética y Dermocutánea con más de 18 años de experiencia. Eco Doppler, ecografías abdominales, obstétricas, ginecológicas. Equipos de última generación 2026.",
+        "medicalSpecialty": ["Radiology", "Diagnostic Imaging"],
+        "telephone": "+584244664961",
+        "priceRange": "$$",
+        "currenciesAccepted": "USD, VES",
+        "paymentAccepted": "Efectivo, Pago Móvil",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Final de la Avenida Carabobo, Centro Policlinico Valencia (Clínica la Viña) Torre C piso 1 consultorio 102",
+            "streetAddress": "Centro Policlínico Valencia (La Viña) Torre C, Piso 1, Consultorio 102",
             "addressLocality": "Valencia",
             "addressRegion": "Carabobo",
-            "addressCountry": "VE",
-            "postalCode": "2001"
+            "postalCode": "2001",
+            "addressCountry": "VE"
         },
-        "telephone": "+584244664961",
-        "priceRange": "$$"
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "10.1799",
+            "longitude": "-67.9946"
+        },
+        "areaServed": [
+            { "@type": "City", "name": "Valencia" },
+            { "@type": "State", "name": "Carabobo" },
+            { "@type": "Country", "name": "Venezuela" }
+        ],
+        "sameAs": [
+            "https://www.instagram.com/doctoraecos/",
+            "https://threads.net/@doctoraecos",
+            "https://wa.me/584244664961"
+        ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Servicios de Ecografía",
+            "itemListElement": [
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Ecografía Abdominal", "procedureType": "Diagnostic" } },
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Eco Doppler Miembros Inferiores", "procedureType": "Diagnostic" } },
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Ecografía Obstétrica", "procedureType": "Diagnostic" } },
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Ecografía Musculoesquelética", "procedureType": "Diagnostic" } },
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Ecografía Transvaginal", "procedureType": "Diagnostic" } },
+                { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Eco Doppler Mamario", "procedureType": "Diagnostic" } }
+            ]
+        },
+        "founder": {
+            "@type": "Person",
+            "name": "Dra. Jeremmy Gutierrez",
+            "jobTitle": "Médico Especialista en Ultrasonografía Diagnóstica",
+            "alumniOf": [
+                { "@type": "EducationalOrganization", "name": "Universidad de Carabobo" },
+                { "@type": "EducationalOrganization", "name": "Universidad de La Plata, Argentina" },
+                { "@type": "EducationalOrganization", "name": "Universidad Católica Argentina" }
+            ],
+            "award": "Pionera en Ecografía Musculoesquelética y Dermocutánea en Venezuela"
+        }
     };
 
     return (
         <div className="landing-container">
             <SEO
-                title="Especialista en Ecografías en Valencia"
-                description="Dra. Jeremmy Gutierrez. Médico especialista en Ultrasonografía Diagnóstica e Intervencionista en Valencia, Venezuela. Ecografía Musculoesquelética y Dermocutánea."
-                keywords="ecografías valencia, ultrasonido venezuela, especialista en ecografía, dra jeremmy gutierrez, la viña valencia"
+                title="Especialista en Ecografías Valencia"
+                description="Dra. Jeremmy Gutierrez: Médico especialista en Ultrasonografía Diagnóstica en Valencia, La Viña. Ecografía Musculoesquelética, Doppler, Obstétrica. Centro Policlínico Valencia. Citas por WhatsApp."
+                keywords="ecografías Valencia 2026, eco doppler La Viña, ultrasonido Carabobo, Dra Jeremmy Gutierrez, centro ecografías Valencia, DoctoraEcos, ecografía abdominal preparación, precio eco Venezuela"
                 schema={medicalSchema}
             />
 

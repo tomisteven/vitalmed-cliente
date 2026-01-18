@@ -78,9 +78,9 @@ export default function EstudiosPage() {
     return (
         <div className="estudios-page">
             <SEO
-                title="Estudios Médicos y Ecografías"
-                description="Consulte nuestro catálogo de estudios médicos en Valencia: Ecografías abdominales, doppler, ginecológicas, musculoesqueléticas y más."
-                keywords="estudios médicos valencia, tipos de ecografías, ecografía doppler, ecografía transfontanelar, precios ecografías"
+                title="Estudios Médicos y Ecografías en Valencia"
+                description="Catálogo de ecografías en Valencia, La Viña 2026: Eco Doppler, ecografía abdominal, obstétrica, musculoesquelética. Precios accesibles. Citas por WhatsApp. Dra. Jeremmy Gutierrez."
+                keywords="precio ecografías Valencia 2026, eco doppler miembros inferiores La Viña, ecografía abdominal preparación, tipos de eco Carabobo, centro ecografías Valencia, citas WhatsApp"
                 schema={proceduresSchema}
             />
 

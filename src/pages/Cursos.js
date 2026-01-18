@@ -10,9 +10,9 @@ export default function Cursos() {
     return (
         <div className="cursos-container">
             <SEO
-                title="Cursos VIP | Educación Médica"
-                description="Próximamente: Cursos especializados en ultrasonografía y medicina moderna. Contenido educativo de alta calidad por la Dra. Jeremmy Gutierrez."
-                keywords="cursos medicina valencia, educación médica continua, especialización ultrasonografía, cursos vip doctoraecos"
+                title="Cursos VIP de Ecografía"
+                description="Próximamente: Cursos especializados en ultrasonografía y ecografía en Valencia, Carabobo. Formación médica de alta calidad por la Dra. Jeremmy Gutierrez."
+                keywords="cursos ecografía Valencia 2026, formación ultrasonografía Carabobo, capacitación médica Venezuela, cursos VIP DoctoraEcos, Dra Jeremmy Gutierrez"
             />
 
             <main className="cursos-content">
