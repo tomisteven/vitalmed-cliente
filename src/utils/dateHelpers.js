@@ -117,3 +117,20 @@ export const fechaParaInput = (fecha = new Date()) => {
 export const obtenerFechaHoy = () => {
     return fechaParaInput(new Date());
 };
+/**
+ * Obtiene la próxima hora en punto (HH:00) basada en la hora actual.
+ * Si son las 16:15, retorna "17:00".
+ * @returns {string} Próxima hora formateada
+ */
+export const obtenerProximaHoraCercana = () => {
+    const ahora = new Date();
+    const hora = ahora.getHours();
+    const minutos = ahora.getMinutes();
+
+    // Si ya pasaron algunos minutos de la hora, sugerir la siguiente hora
+    const proximaHora = minutos > 0 ? hora + 1 : hora;
+
+    // Formatear a HH:00 (asegurando que no pase de 23)
+    const horaFormateada = (proximaHora % 24).toString().padStart(2, "0");
+    return `${horaFormateada}:00`;
+};

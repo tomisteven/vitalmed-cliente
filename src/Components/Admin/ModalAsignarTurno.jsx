@@ -112,6 +112,11 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
             return;
         }
 
+        if (!formData.estudioId) {
+            toast.error("Debe seleccionar un estudio");
+            return;
+        }
+
         // Verificar si el estudio tiene aclaraciones
         if (estudioSeleccionado && estudioSeleccionado.aclaraciones) {
             const result = await Swal.fire({

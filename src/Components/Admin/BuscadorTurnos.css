@@ -95,6 +95,11 @@
 }
 
 .resultados-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
@@ -102,6 +107,21 @@
     color: #333;
     font-size: 1.25rem;
     margin: 0;
+}
+
+.grupos-info {
+    font-size: 0.85rem;
+    color: #666;
+    background: #e9ecef;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* Contenedor de acordeones */
+.acordeones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .turnos-grid {

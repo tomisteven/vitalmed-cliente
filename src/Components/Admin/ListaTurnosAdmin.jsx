@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
 import { formatearFechaHora } from "../../utils/dateHelpers";
@@ -7,7 +7,7 @@ import ModalAsignarTurno from "./ModalAsignarTurno";
 import toast from "react-hot-toast";
 import "./ListaTurnosAdmin.css";
 import { EstudiosApi } from "../../api/Estudios";
-import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare } from "react-icons/fa";
+import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare, FaChevronDown, FaChevronRight, FaClock } from "react-icons/fa";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
@@ -34,6 +34,7 @@ export default function ListaTurnosAdmin() {
         estudio: "",
         fecha: "",
     });
+    const [expandedGroups, setExpandedGroups] = useState({});
 
     useEffect(() => {
         cargarDoctores();
@@ -258,9 +259,45 @@ export default function ListaTurnosAdmin() {
         ...new Set(doctores.map((d) => d.especialidad).filter(Boolean)),
     ];
 
+    // Agrupar turnos por fecha/hora
+    const turnosAgrupados = useMemo(() => {
+        if (turnos.length === 0) return [];
 
+        const grupos = {};
 
-    return (
+        turnos.forEach((turno) => {
+            const fechaHoraKey = formatearFechaHora(turno.fecha);
+
+            if (!grupos[fechaHoraKey]) {
+                grupos[fechaHoraKey] = {
+                    fechaHora: fechaHoraKey,
+                    turnos: [],
+                    timestamp: new Date(turno.fecha).getTime()
+                };
+            }
+            grupos[fechaHoraKey].turnos.push(turno);
+        });
+
+        return Object.values(grupos).sort((a, b) => a.timestamp - b.timestamp);
+    }, [turnos]);
+
+    // Toggle para expandir/colapsar grupo
+    const toggleGroup = (fechaHora) => {
+        setExpandedGroups(prev => ({
+            ...prev,
+            [fechaHora]: !prev[fechaHora]
+        }));
+    };
+
+    // Expandir/colapsar todos
+    const toggleAllGroups = () => {
+        const allExpanded = turnosAgrupados.every(g => expandedGroups[g.fechaHora]);
+        const newState = {};
+        turnosAgrupados.forEach(g => {
+            newState[g.fechaHora] = !allExpanded;
+        });
+        setExpandedGroups(newState);
+    }; return (
         <div className="lista-turnos-admin">
             <h3>Gestión de Turnos</h3>
 
@@ -375,7 +412,7 @@ export default function ListaTurnosAdmin() {
                 </div>
             )}
 
-            {/* Tabla de turnos */}
+            {/* Tabla de turnos con acordeones */}
             <div className="tabla-container">
                 {loading ? (
                     <div className="loading-message">Cargando turnos...</div>
@@ -384,102 +421,145 @@ export default function ListaTurnosAdmin() {
                         No se encontraron turnos con los filtros aplicados.
                     </div>
                 ) : (
-                    <table className="tabla-turnos">
-                        <thead>
-                            <tr>
-                                <th className="checkbox-cell">
-                                    <input
-                                        type="checkbox"
-                                        checked={turnos.length > 0 && selectedIds.length === turnos.length}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th>Fecha y Hora</th>
-                                <th>Doctor</th>
-                                <th>Estudio</th>
-                                <th>Paciente</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {turnos.map((turno) => (
-                                <tr key={turno._id} className={selectedIds.includes(turno._id) ? "selected-row" : ""}>
-                                    <td className="checkbox-cell">
+                    <>
+                        <div className="grupos-header">
+                            <span className="grupos-count">
+                                {turnosAgrupados.length} {turnosAgrupados.length === 1 ? 'horario' : 'horarios'} • {turnos.length} turnos
+                            </span>
+                            <button onClick={toggleAllGroups} className="btn-toggle-all">
+                                {turnosAgrupados.every(g => expandedGroups[g.fechaHora]) ? 'Colapsar todos' : 'Expandir todos'}
+                            </button>
+                        </div>
+                        <table className="tabla-turnos tabla-agrupada">
+                            <thead>
+                                <tr>
+                                    <th className="checkbox-cell">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(turno._id)}
-                                            onChange={() => handleSelectTurno(turno._id)}
+                                            checked={turnos.length > 0 && selectedIds.length === turnos.length}
+                                            onChange={handleSelectAll}
                                         />
-                                    </td>
-                                    <td className="fecha-cell">
-                                        {formatearFechaHora(turno.fecha)}
-                                    </td>
-                                    <td>
-                                        {turno.doctor?.nombre || "Doctor no especificado"}
-                                    </td>
-                                    <td>{turno.estudio?.tipo || "-"}</td>
-                                    <td>
-                                        {turno.paciente?.nombre ? (
-                                            turno.paciente.nombre
-                                        ) : turno.pacienteNoRegistrado?.nombre ? (
-                                            <span className="paciente-invitado">
-                                                {turno.pacienteNoRegistrado.nombre}
-                                                <span className="badge-invitado">Invitado</span>
-                                            </span>
-                                        ) : (
-                                            <span className="text-muted">Disponible</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <span
-                                            className="badge-estado"
-                                            style={{
-                                                backgroundColor: getEstadoColor(turno.estado),
-                                            }}
-                                        >
-                                            {getEstadoLabel(turno.estado)}
-                                        </span>
-                                    </td>
-                                    <td className="acciones-cell">
-                                        {/* Botón Ver Detalles - para invitados o turnos con archivos */}
-                                        {(turno.pacienteNoRegistrado || turno.archivosAdjuntos?.length > 0 || turno.motivoConsulta) && (
-                                            <button
-                                                onClick={() => handleVerDetalles(turno)}
-                                                className="btn-ver-detalles"
-                                                title="Ver detalles del turno"
-                                            >
-                                                <FaEye /> Detalles
-                                            </button>
-                                        )}
-                                        {turno.estado === "disponible" && (
-                                            <button
-                                                onClick={() => handleAsignarTurno(turno)}
-                                                className="btn-asignar"
-                                            >
-                                                Asignar
-                                            </button>
-                                        )}
-                                        {turno.estado === "reservado" && (
-                                            <button
-                                                onClick={() => handleCancelar(turno._id)}
-                                                className="btn-cancelar"
-                                            >
-                                                Cancelar
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => handleEliminar(turno._id)}
-                                            className="btn-eliminar-turno"
-                                            title="Eliminar turno permanentemente"
-                                        >
-                                            <FaTrashAlt /> Eliminar
-                                        </button>
-                                    </td>
+                                    </th>
+                                    <th>Fecha y Hora</th>
+                                    <th>Doctor</th>
+                                    <th>Estudio</th>
+                                    <th>Paciente</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {turnosAgrupados.map((grupo) => (
+                                    <React.Fragment key={grupo.fechaHora}>
+                                        {/* Fila del grupo (acordeón header) */}
+                                        {grupo.turnos.length > 1 && (
+                                            <tr
+                                                className={`grupo-header-row ${expandedGroups[grupo.fechaHora] ? 'expanded' : ''}`}
+                                                onClick={() => toggleGroup(grupo.fechaHora)}
+                                            >
+                                                <td className="checkbox-cell">
+                                                    <span className="grupo-icon">
+                                                        {expandedGroups[grupo.fechaHora] ? <FaChevronDown /> : <FaChevronRight />}
+                                                    </span>
+                                                </td>
+                                                <td className="fecha-cell grupo-fecha">
+                                                    <FaClock className="icon-clock" />
+                                                    {grupo.fechaHora}
+                                                </td>
+                                                <td colSpan="5" className="grupo-info">
+                                                    <span className="grupo-count-badge">
+                                                        {grupo.turnos.length} turnos en este horario
+                                                    </span>
+                                                    <span className="grupo-especialidades">
+                                                        {[...new Set(grupo.turnos.map(t => t.especialidad || t.doctor?.especialidad).filter(Boolean))].slice(0, 3).join(', ')}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        )}
+
+                                        {/* Filas de turnos (se muestran si es único o si está expandido) */}
+                                        {(grupo.turnos.length === 1 || expandedGroups[grupo.fechaHora]) && grupo.turnos.map((turno) => (
+                                            <tr
+                                                key={turno._id}
+                                                className={`${selectedIds.includes(turno._id) ? "selected-row" : ""} ${grupo.turnos.length > 1 ? "grupo-child-row" : ""}`}
+                                            >
+                                                <td className="checkbox-cell">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.includes(turno._id)}
+                                                        onChange={() => handleSelectTurno(turno._id)}
+                                                    />
+                                                </td>
+                                                <td className="fecha-cell">
+                                                    {grupo.turnos.length === 1 ? formatearFechaHora(turno.fecha) : ''}
+                                                </td>
+                                                <td>
+                                                    {turno.doctor?.nombre || "Doctor no especificado"}
+                                                </td>
+                                                <td>{turno.estudio?.tipo || "-"}</td>
+                                                <td>
+                                                    {turno.paciente?.nombre ? (
+                                                        turno.paciente.nombre
+                                                    ) : turno.pacienteNoRegistrado?.nombre ? (
+                                                        <span className="paciente-invitado">
+                                                            {turno.pacienteNoRegistrado.nombre}
+                                                            <span className="badge-invitado">Invitado</span>
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-muted">Disponible</span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        className="badge-estado"
+                                                        style={{
+                                                            backgroundColor: getEstadoColor(turno.estado),
+                                                        }}
+                                                    >
+                                                        {getEstadoLabel(turno.estado)}
+                                                    </span>
+                                                </td>
+                                                <td className="acciones-cell">
+                                                    {(turno.pacienteNoRegistrado || turno.archivosAdjuntos?.length > 0 || turno.motivoConsulta) && (
+                                                        <button
+                                                            onClick={() => handleVerDetalles(turno)}
+                                                            className="btn-ver-detalles"
+                                                            title="Ver detalles del turno"
+                                                        >
+                                                            <FaEye /> Detalles
+                                                        </button>
+                                                    )}
+                                                    {turno.estado === "disponible" && (
+                                                        <button
+                                                            onClick={() => handleAsignarTurno(turno)}
+                                                            className="btn-asignar"
+                                                        >
+                                                            Asignar
+                                                        </button>
+                                                    )}
+                                                    {turno.estado === "reservado" && (
+                                                        <button
+                                                            onClick={() => handleCancelar(turno._id)}
+                                                            className="btn-cancelar"
+                                                        >
+                                                            Cancelar
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => handleEliminar(turno._id)}
+                                                        className="btn-eliminar-turno"
+                                                        title="Eliminar turno permanentemente"
+                                                    >
+                                                        <FaTrashAlt /> Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </>
                 )}
             </div>
 

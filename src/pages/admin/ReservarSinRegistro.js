@@ -155,6 +155,10 @@ export default function ReservarSinRegistro() {
             toast.error("El teléfono es obligatorio");
             return false;
         }
+        if (!datosInvitado.estudioId) {
+            toast.error("Debe seleccionar el estudio a realizar");
+            return false;
+        }
         return true;
     };
 
@@ -656,12 +660,13 @@ export default function ReservarSinRegistro() {
 
                             {estudios.length > 0 && (
                                 <div className="form-group-guest">
-                                    <label htmlFor="estudioId">Estudio/Servicio</label>
+                                    <label htmlFor="estudioId">Estudio/Servicio <span className="required">*</span></label>
                                     <select
                                         id="estudioId"
                                         name="estudioId"
                                         value={datosInvitado.estudioId}
                                         onChange={handleChangeDatos}
+                                        required
                                     >
                                         <option value="">Seleccione un estudio</option>
                                         {estudios.map((estudio) => (

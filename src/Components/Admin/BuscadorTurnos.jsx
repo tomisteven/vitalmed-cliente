@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
+import { formatearFechaHora } from "../../utils/dateHelpers";
 import TarjetaTurno from "./TarjetaTurno";
+import AcordeonHorario from "./AcordeonHorario";
 import "./BuscadorTurnos.css";
 
 const turnosApi = new TurnosApi();
@@ -105,6 +107,30 @@ export default function BuscadorTurnos() {
         ? doctores.filter((d) => d.especialidad === filtros.especialidad)
         : doctores;
 
+    // Agrupar turnos por fecha/hora para mostrar acordeones
+    const turnosAgrupados = useMemo(() => {
+        if (turnos.length === 0) return [];
+
+        const grupos = {};
+
+        turnos.forEach((turno) => {
+            // Crear una clave única basada en la fecha y hora
+            const fechaHoraKey = formatearFechaHora(turno.fecha);
+
+            if (!grupos[fechaHoraKey]) {
+                grupos[fechaHoraKey] = {
+                    fechaHora: fechaHoraKey,
+                    turnos: [],
+                    timestamp: new Date(turno.fecha).getTime()
+                };
+            }
+            grupos[fechaHoraKey].turnos.push(turno);
+        });
+
+        // Convertir a array y ordenar por fecha
+        return Object.values(grupos).sort((a, b) => a.timestamp - b.timestamp);
+    }, [turnos]);
+
     return (
         <div className="buscador-turnos">
             <h3>Buscar Turnos Disponibles</h3>
@@ -183,14 +209,28 @@ export default function BuscadorTurnos() {
                         <>
                             <div className="resultados-header">
                                 <h4>Turnos Disponibles ({turnos.length})</h4>
+                                <span className="grupos-info">
+                                    {turnosAgrupados.length} {turnosAgrupados.length === 1 ? 'horario' : 'horarios'} disponibles
+                                </span>
                             </div>
-                            <div className="turnos-grid">
-                                {turnos.map((turno) => (
-                                    <TarjetaTurno
-                                        key={turno._id}
-                                        turno={turno}
-                                        onReservado={handleTurnoReservado}
-                                    />
+                            <div className="acordeones-container">
+                                {turnosAgrupados.map((grupo) => (
+                                    grupo.turnos.length === 1 ? (
+                                        // Si solo hay 1 turno en este horario, mostrar directamente la tarjeta
+                                        <TarjetaTurno
+                                            key={grupo.turnos[0]._id}
+                                            turno={grupo.turnos[0]}
+                                            onReservado={handleTurnoReservado}
+                                        />
+                                    ) : (
+                                        // Si hay múltiples turnos, mostrar acordeón
+                                        <AcordeonHorario
+                                            key={grupo.fechaHora}
+                                            fechaHora={grupo.fechaHora}
+                                            turnos={grupo.turnos}
+                                            onReservado={handleTurnoReservado}
+                                        />
+                                    )
                                 ))}
                             </div>
                         </>

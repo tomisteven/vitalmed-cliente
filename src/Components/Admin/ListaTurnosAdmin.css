@@ -93,10 +93,145 @@
     margin-bottom: 1rem;
 }
 
+/* Header de grupos */
+.grupos-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.grupos-count {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.btn-toggle-all {
+    background: #653057;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-toggle-all:hover {
+    background: #8e4578;
+}
+
+/* Fila de grupo (header del acordeón) */
+.grupo-header-row {
+    background: linear-gradient(135deg, #f9f8fa 0%, #e9ecef 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.grupo-header-row td {
+    border-bottom: 1px solid #dee2e6;
+}
+
+
+.grupo-header-row.expanded {
+    background: linear-gradient(135deg, #653057 0%, #8e4578 100%);
+}
+
+.grupo-header-row.expanded td {
+    color: white;
+}
+
+.grupo-header-row.expanded .icon-clock {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.grupo-header-row.expanded .grupo-count-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.grupo-icon {
+    color: #653057;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grupo-header-row.expanded .grupo-icon {
+    color: white;
+}
+
+.grupo-fecha {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.grupo-fecha .icon-clock {
+    color: #653057;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+
+
+.grupo-count-badge {
+    background: rgba(101, 48, 87, 0.1);
+    color: #653057;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.grupo-especialidades {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+.grupo-header-row.expanded .grupo-especialidades {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Filas hijas del grupo */
+.grupo-child-row {
+    background: #fafbfc;
+    animation: fadeInRow 0.3s ease;
+}
+
+.grupo-child-row td:first-child {
+    padding-left: 2rem;
+}
+
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .tabla-turnos {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+    table-layout: fixed;
+}
+
+.tabla-turnos.tabla-agrupada {
+    table-layout: auto;
 }
 
 .tabla-turnos thead {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
 import { EstudiosApi } from "../../api/Estudios";
-import { generarHorarios, obtenerFechaHoy } from "../../utils/dateHelpers";
+import { generarHorarios, obtenerFechaHoy, obtenerProximaHoraCercana } from "../../utils/dateHelpers";
 import toast from "react-hot-toast";
 import "./CrearDisponibilidadForm.css";
 
@@ -23,20 +23,33 @@ export default function CrearDisponibilidadForm() {
     const [formData, setFormData] = useState({
         doctorId: "",
         fecha: obtenerFechaHoy(),
-        horaInicio: "09:00",
+        horaInicio: obtenerProximaHoraCercana(),
         horaFin: "17:00",
         intervalo: 30,
-        estudiosIds: [],
     });
 
     // Estado para el formulario manual
     const [formDataManual, setFormDataManual] = useState({
         doctorId: "",
         fecha: obtenerFechaHoy(),
-        estudiosIds: [],
     });
     const [horariosManual, setHorariosManual] = useState([]);
-    const [nuevoHorario, setNuevoHorario] = useState("09:00");
+    const [nuevoHorario, setNuevoHorario] = useState(obtenerProximaHoraCercana());
+
+    // Effect to update horaInicio when date is today
+    useEffect(() => {
+        if (formData.fecha === obtenerFechaHoy()) {
+            const proximaHora = obtenerProximaHoraCercana();
+            setFormData(prev => ({ ...prev, horaInicio: proximaHora }));
+        }
+    }, [formData.fecha]);
+
+    useEffect(() => {
+        if (formDataManual.fecha === obtenerFechaHoy()) {
+            const proximaHora = obtenerProximaHoraCercana();
+            setNuevoHorario(proximaHora);
+        }
+    }, [formDataManual.fecha]);
 
     // Estados para búsqueda de doctores
     const [doctorSearch, setDoctorSearch] = useState("");
@@ -106,23 +119,7 @@ export default function CrearDisponibilidadForm() {
         });
     };
 
-    const handleEstudioChange = (estudioId) => {
-        setFormData(prev => {
-            const estudiosIds = prev.estudiosIds.includes(estudioId)
-                ? prev.estudiosIds.filter(id => id !== estudioId)
-                : [...prev.estudiosIds, estudioId];
-            return { ...prev, estudiosIds };
-        });
-    };
-
-    const handleEstudioChangeManual = (estudioId) => {
-        setFormDataManual(prev => {
-            const estudiosIds = prev.estudiosIds.includes(estudioId)
-                ? prev.estudiosIds.filter(id => id !== estudioId)
-                : [...prev.estudiosIds, estudioId];
-            return { ...prev, estudiosIds };
-        });
-    };
+    // Eliminamos handleEstudioChange y handleEstudioChangeManual ya que no se seleccionan estudios al crear disponibilidad
 
     // Funciones para el selector de doctores con búsqueda
     const filtrarDoctores = (busqueda) => {
@@ -259,28 +256,14 @@ export default function CrearDisponibilidadForm() {
 
             let totalTurnosCreados = 0;
 
-            // Si hay estudios seleccionados, crear turnos para cada estudio
-            if (formData.estudiosIds.length > 0) {
-                for (const estudioId of formData.estudiosIds) {
-                    const response = await turnosApi.crearDisponibilidad(
-                        formData.doctorId,
-                        horarios,
-                        estudioId
-                    );
-                    if (response && response.turnos) {
-                        totalTurnosCreados += response.turnos.length;
-                    }
-                }
-            } else {
-                // Si no hay estudios seleccionados, crear sin estudio
-                const response = await turnosApi.crearDisponibilidad(
-                    formData.doctorId,
-                    horarios,
-                    null
-                );
-                if (response && response.turnos) {
-                    totalTurnosCreados = response.turnos.length;
-                }
+            // Crear turnos (un solo turno por horario)
+            const response = await turnosApi.crearDisponibilidad(
+                formData.doctorId,
+                horarios
+            );
+
+            if (response && response.turnos) {
+                totalTurnosCreados = response.turnos.length;
             }
 
             toast.success(
@@ -291,9 +274,8 @@ export default function CrearDisponibilidadForm() {
             setFormData({
                 ...formData,
                 fecha: obtenerFechaHoy(),
-                horaInicio: "09:00",
+                horaInicio: obtenerProximaHoraCercana(),
                 horaFin: "17:00",
-                estudiosIds: [],
             });
         } catch (error) {
             console.error("Error al crear disponibilidad:", error);
@@ -324,28 +306,14 @@ export default function CrearDisponibilidadForm() {
 
             let totalTurnosCreados = 0;
 
-            // Si hay estudios seleccionados, crear turnos para cada estudio
-            if (formDataManual.estudiosIds.length > 0) {
-                for (const estudioId of formDataManual.estudiosIds) {
-                    const response = await turnosApi.crearDisponibilidad(
-                        formDataManual.doctorId,
-                        horarios,
-                        estudioId
-                    );
-                    if (response && response.turnos) {
-                        totalTurnosCreados += response.turnos.length;
-                    }
-                }
-            } else {
-                // Si no hay estudios seleccionados, crear sin estudio
-                const response = await turnosApi.crearDisponibilidad(
-                    formDataManual.doctorId,
-                    horarios,
-                    null
-                );
-                if (response && response.turnos) {
-                    totalTurnosCreados = response.turnos.length;
-                }
+            // Crear turnos (un solo turno por horario)
+            const response = await turnosApi.crearDisponibilidad(
+                formDataManual.doctorId,
+                horarios
+            );
+
+            if (response && response.turnos) {
+                totalTurnosCreados = response.turnos.length;
             }
 
             toast.success(
@@ -356,9 +324,9 @@ export default function CrearDisponibilidadForm() {
             setFormDataManual({
                 ...formDataManual,
                 fecha: obtenerFechaHoy(),
-                estudiosIds: [],
             });
             setHorariosManual([]);
+            setNuevoHorario(obtenerProximaHoraCercana());
         } catch (error) {
             console.error("Error al crear disponibilidad:", error);
             toast.error(error.message || "Error al crear disponibilidad");
@@ -367,95 +335,7 @@ export default function CrearDisponibilidadForm() {
         }
     };
 
-    const seleccionarTodosEstudios = () => {
-        setFormData(prev => ({
-            ...prev,
-            estudiosIds: estudios.map(e => e._id)
-        }));
-    };
-
-    const deseleccionarTodosEstudios = () => {
-        setFormData(prev => ({
-            ...prev,
-            estudiosIds: []
-        }));
-    };
-
-    const seleccionarTodosEstudiosManual = () => {
-        setFormDataManual(prev => ({
-            ...prev,
-            estudiosIds: estudios.map(e => e._id)
-        }));
-    };
-
-    const deseleccionarTodosEstudiosManual = () => {
-        setFormDataManual(prev => ({
-            ...prev,
-            estudiosIds: []
-        }));
-    };
-
-    // Renderizar sección de estudios (reutilizable)
-    const renderEstudiosSection = (formState, handleEstudioChangeFn, selectAllFn, deselectAllFn) => (
-        <div className="form-group estudios-section">
-            <label>
-                Estudios Disponibles para estos Turnos
-            </label>
-            <p className="help-text">
-                Seleccione los estudios que estarán disponibles para reservar en estos turnos.
-                Si no selecciona ninguno, todos los estudios activos estarán disponibles.
-            </p>
-
-            {loadingEstudios ? (
-                <p className="loading-text">Cargando estudios...</p>
-            ) : estudios.length === 0 ? (
-                <p className="no-estudios-text">No hay estudios activos disponibles</p>
-            ) : (
-                <>
-                    <div className="estudios-actions">
-                        <button
-                            type="button"
-                            className="btn-select-all"
-                            onClick={selectAllFn}
-                        >
-                            Seleccionar todos
-                        </button>
-                        <button
-                            type="button"
-                            className="btn-deselect-all"
-                            onClick={deselectAllFn}
-                        >
-                            Deseleccionar todos
-                        </button>
-                        <span className="estudios-count">
-                            {formState.estudiosIds.length} de {estudios.length} seleccionados
-                        </span>
-                    </div>
-
-                    <div className="estudios-grid">
-                        {estudios.map((estudio) => (
-                            <label
-                                key={estudio._id}
-                                className={`estudio-checkbox ${formState.estudiosIds.includes(estudio._id) ? 'selected' : ''}`}
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={formState.estudiosIds.includes(estudio._id)}
-                                    onChange={() => handleEstudioChangeFn(estudio._id)}
-                                />
-                                <span className="estudio-info">
-                                    <span className="estudio-tipo">{estudio.tipo}</span>
-                                    {estudio.precio > 0 && (
-                                        <span className="estudio-precio">${estudio.precio}</span>
-                                    )}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
-                </>
-            )}
-        </div>
-    );
+    // Sección de estudios eliminada ya que no se eligen estudios al crear la disponibilidad
 
     return (
         <div className="crear-disponibilidad-form">
@@ -620,7 +500,7 @@ export default function CrearDisponibilidadForm() {
                         </div>
                     </div>
 
-                    {renderEstudiosSection(formData, handleEstudioChange, seleccionarTodosEstudios, deseleccionarTodosEstudios)}
+                    {/* Selector de estudios eliminado */}
 
                     <div className="form-actions">
                         <button
@@ -781,7 +661,7 @@ export default function CrearDisponibilidadForm() {
                         )}
                     </div>
 
-                    {renderEstudiosSection(formDataManual, handleEstudioChangeManual, seleccionarTodosEstudiosManual, deseleccionarTodosEstudiosManual)}
+                    {/* Selector de estudios manual eliminado */}
 
                     <div className="form-actions">
                         <button
