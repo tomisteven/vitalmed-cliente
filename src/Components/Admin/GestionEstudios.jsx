@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { EstudiosApi } from "../../api/Estudios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ export default function GestionEstudios() {
         activo: true,
     });
     const [submitting, setSubmitting] = useState(false);
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         cargarEstudios();
@@ -39,6 +40,18 @@ export default function GestionEstudios() {
             setLoading(false);
         }
     };
+
+    const estudiosFiltrados = useMemo(() => {
+        if (!busqueda.trim()) {
+            return estudios;
+        }
+        const busquedaLower = busqueda.toLowerCase();
+        return estudios.filter((estudio) => {
+            const tipo = estudio.tipo?.toLowerCase() || "";
+            const aclaraciones = estudio.aclaraciones?.toLowerCase() || "";
+            return tipo.includes(busquedaLower) || aclaraciones.includes(busquedaLower);
+        });
+    }, [estudios, busqueda]);
 
     const handleOpenModal = (estudio = null) => {
         if (estudio) {
@@ -144,10 +157,19 @@ export default function GestionEstudios() {
         <div className="gestion-estudios">
             <div className="estudios-header">
                 <h3 className="text-white-gestion">Gestión de Estudios</h3>
-                <button className="btn-agregar" onClick={() => handleOpenModal()}>
-                    <span className="btn-icon">+</span>
-                    Agregar Estudio
-                </button>
+                <div className="header-actions">
+                    <input
+                        type="text"
+                        placeholder="Buscar estudio..."
+                        className="input-busqueda-gestion"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                    <button className="btn-agregar" onClick={() => handleOpenModal()}>
+                        <span className="btn-icon">+</span>
+                        Agregar Estudio
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -174,39 +196,47 @@ export default function GestionEstudios() {
                             </tr>
                         </thead>
                         <tbody>
-                            {estudios.map((estudio) => (
-                                <tr key={estudio._id}>
-                                    <td className="td-tipo">{estudio.tipo}</td>
-                                    <td className="td-precio">REF: {estudio.precio}</td>
-                                    <td className="td-aclaraciones">
-                                        {estudio.aclaraciones || "-"}
-                                    </td>
-                                    <td className="td-estado">
-                                        <span
-                                            className={`badge ${estudio.activo ? "badge-activo" : "badge-inactivo"
-                                                }`}
-                                        >
-                                            {estudio.activo ? "Activo" : "Inactivo"}
-                                        </span>
-                                    </td>
-                                    <td className="td-acciones">
-                                        <button
-                                            className="btn-editar"
-                                            onClick={() => handleOpenModal(estudio)}
-                                            title="Editar"
-                                        >
-                                            ✏️
-                                        </button>
-                                        <button
-                                            className="btn-eliminar"
-                                            onClick={() => handleDelete(estudio)}
-                                            title="Eliminar"
-                                        >
-                                            🗑️
-                                        </button>
+                            {estudiosFiltrados.length > 0 ? (
+                                estudiosFiltrados.map((estudio) => (
+                                    <tr key={estudio._id}>
+                                        <td className="td-tipo">{estudio.tipo}</td>
+                                        <td className="td-precio">REF: {estudio.precio}</td>
+                                        <td className="td-aclaraciones">
+                                            {estudio.aclaraciones || "-"}
+                                        </td>
+                                        <td className="td-estado">
+                                            <span
+                                                className={`badge ${estudio.activo ? "badge-activo" : "badge-inactivo"
+                                                    }`}
+                                            >
+                                                {estudio.activo ? "Activo" : "Inactivo"}
+                                            </span>
+                                        </td>
+                                        <td className="td-acciones">
+                                            <button
+                                                className="btn-editar"
+                                                onClick={() => handleOpenModal(estudio)}
+                                                title="Editar"
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button
+                                                className="btn-eliminar"
+                                                onClick={() => handleDelete(estudio)}
+                                                title="Eliminar"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="no-results">
+                                        No se encontraron estudios que coincidan con "{busqueda}"
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

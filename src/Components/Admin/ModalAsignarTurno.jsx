@@ -17,6 +17,7 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
     const [loadingPacientes, setLoadingPacientes] = useState(true);
     const [loadingEstudios, setLoadingEstudios] = useState(true);
     const [busqueda, setBusqueda] = useState("");
+    const [busquedaEstudio, setBusquedaEstudio] = useState("");
     const [formData, setFormData] = useState({
         pacienteId: "",
         estudioId: "",
@@ -98,6 +99,17 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
             );
         });
     }, [pacientes, busqueda]);
+
+    const estudiosFiltrados = useMemo(() => {
+        if (!busquedaEstudio.trim()) {
+            return estudios;
+        }
+        const busquedaLower = busquedaEstudio.toLowerCase();
+        return estudios.filter((estudio) => {
+            const tipo = estudio.tipo?.toLowerCase() || "";
+            return tipo.includes(busquedaLower);
+        });
+    }, [estudios, busquedaEstudio]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -251,8 +263,21 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
                         )}
 
                         <div className="form-group">
+                            <label htmlFor="busquedaEstudio">Buscar Estudio</label>
+                            <input
+                                type="text"
+                                id="busquedaEstudio"
+                                placeholder="Buscar estudio por nombre..."
+                                value={busquedaEstudio}
+                                onChange={(e) => setBusquedaEstudio(e.target.value)}
+                                disabled={loading || loadingEstudios}
+                                className="input-busqueda"
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="estudioId">
-                                Estudio a Realizar <span className="required">*</span>
+                                Seleccionar Estudio <span className="required">*</span>
                             </label>
                             <select
                                 id="estudioId"
@@ -262,18 +287,23 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
                                 required
                                 disabled={loading || loadingEstudios}
                                 className="select-estudio"
+                                size={estudiosFiltrados.length > 5 ? "6" : "1"}
                             >
                                 <option value="">
                                     {loadingEstudios ? "Cargando estudios..." : "-- Seleccione un estudio --"}
                                 </option>
-                                {estudios.map((estudio) => (
+                                {estudiosFiltrados.map((estudio) => (
                                     <option key={estudio._id} value={estudio._id}>
                                         {estudio.tipo} {estudio.precio ? `- $${estudio.precio}` : ""}
                                     </option>
                                 ))}
                             </select>
-                            {estudios.length === 0 && !loadingEstudios && (
-                                <small className="help-text error-text">No hay estudios disponibles</small>
+                            {estudiosFiltrados.length === 0 && !loadingEstudios && (
+                                <small className="help-text error-text">
+                                    {busquedaEstudio.trim()
+                                        ? "No se encontraron estudios con ese criterio"
+                                        : "No hay estudios disponibles"}
+                                </small>
                             )}
                         </div>
 

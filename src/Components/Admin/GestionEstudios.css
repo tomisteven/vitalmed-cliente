@@ -45,6 +45,42 @@
     font-weight: bold;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.input-busqueda-gestion {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.95rem;
+    min-width: 250px;
+    transition: all 0.3s;
+}
+
+.input-busqueda-gestion::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-busqueda-gestion:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    width: 300px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 2rem !important;
+    color: #888;
+    font-style: italic;
+    background: #fdfdfd;
+}
+
 /* Loading */
 .loading-container {
     display: flex;
