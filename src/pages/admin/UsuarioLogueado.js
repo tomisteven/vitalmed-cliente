@@ -178,29 +178,7 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
               {showTurnosDropdown ? <FaChevronUp /> : <FaChevronDown />}
             </div>
           </div>
-          <div className="status-divider"></div>
-          <div className="status-items">
-            <div className="status-item">
-              <FaCalendarAlt />
-              <span className="status-value">{turnos?.porPeriodo?.hoy || 0}</span>
-              <span className="status-text">Hoy</span>
-            </div>
-            <div className="status-item">
-              <FaCalendarCheck />
-              <span className="status-value">{turnos?.porPeriodo?.estaSemana || 0}</span>
-              <span className="status-text">Semana</span>
-            </div>
-            <div className="status-item">
-              <FaClipboardList />
-              <span className="status-value">{turnos?.porPeriodo?.esteMes || 0}</span>
-              <span className="status-text">Mes</span>
-            </div>
-            <div className="status-item futuros">
-              <FaClock />
-              <span className="status-value">{turnos?.porPeriodo?.futurosReservados || 0}</span>
-              <span className="status-text">Futuros</span>
-            </div>
-          </div>
+
         </div>
 
         {/* Dropdown de Turnos Reservados */}
