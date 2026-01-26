@@ -18,10 +18,15 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
     const [loadingEstudios, setLoadingEstudios] = useState(true);
     const [busqueda, setBusqueda] = useState("");
     const [busquedaEstudio, setBusquedaEstudio] = useState("");
+    const [esInvitado, setEsInvitado] = useState(false);
     const [formData, setFormData] = useState({
         pacienteId: "",
         estudioId: "",
         motivoConsulta: "",
+        // Campos para invitado
+        nombre: "",
+        dni: "",
+        telefono: "",
     });
 
     useEffect(() => {
@@ -119,8 +124,13 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.pacienteId) {
+        if (!esInvitado && !formData.pacienteId) {
             toast.error("Debe seleccionar un paciente");
+            return;
+        }
+
+        if (esInvitado && (!formData.nombre || !formData.dni || !formData.telefono)) {
+            toast.error("Debe completar todos los datos del paciente");
             return;
         }
 
@@ -159,15 +169,26 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
         setLoading(true);
 
         try {
-            const response = await turnosApi.reservarTurno(
-                turno._id,
-                formData.pacienteId,
-                formData.motivoConsulta,
-                formData.estudioId
-            );
+            let response;
+            if (esInvitado) {
+                response = await turnosApi.reservarTurnoInvitado(turno._id, {
+                    nombre: formData.nombre,
+                    dni: formData.dni,
+                    telefono: formData.telefono,
+                    motivoConsulta: formData.motivoConsulta,
+                    estudioId: formData.estudioId
+                });
+            } else {
+                response = await turnosApi.reservarTurno(
+                    turno._id,
+                    formData.pacienteId,
+                    formData.motivoConsulta,
+                    formData.estudioId
+                );
+            }
 
             if (response) {
-                toast.success("✓ Turno asignado exitosamente al paciente");
+                toast.success(`✓ Turno asignado exitosamente ${esInvitado ? "al invitado" : "al paciente"}`);
                 onAsignado();
                 onClose();
             }
@@ -208,57 +229,123 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
                         <p><strong>Especialidad:</strong> {turno.especialidad || "No especificada"}</p>
                     </div>
 
+
+                    <div className="registro-mode-selector">
+                        <button
+                            type="button"
+                            className={`mode-btn ${!esInvitado ? 'active' : ''}`}
+                            onClick={() => setEsInvitado(false)}
+                        >
+                            Paciente Registrado
+                        </button>
+                        <button
+                            type="button"
+                            className={`mode-btn ${esInvitado ? 'active' : ''}`}
+                            onClick={() => setEsInvitado(true)}
+                        >
+                            Paciente No Registrado
+                        </button>
+                    </div>
+
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="busqueda">Buscar Paciente</label>
-                            <input
-                                type="text"
-                                id="busqueda"
-                                placeholder="Buscar por nombre, DNI o email..."
-                                value={busqueda}
-                                onChange={(e) => setBusqueda(e.target.value)}
-                                disabled={loading || loadingPacientes}
-                                className="input-busqueda"
-                            />
-                            <small className="help-text">
-                                {loadingPacientes
-                                    ? "Cargando pacientes..."
-                                    : `${pacientesFiltrados.length} de ${pacientes.length} pacientes`}
-                            </small>
-                        </div>
+                        {!esInvitado ? (
+                            <>
+                                <div className="form-group">
+                                    <label htmlFor="busqueda">Buscar Paciente</label>
+                                    <input
+                                        type="text"
+                                        id="busqueda"
+                                        placeholder="Buscar por nombre, DNI o email..."
+                                        value={busqueda}
+                                        onChange={(e) => setBusqueda(e.target.value)}
+                                        disabled={loading || loadingPacientes}
+                                        className="input-busqueda"
+                                    />
+                                    <small className="help-text">
+                                        {loadingPacientes
+                                            ? "Cargando pacientes..."
+                                            : `${pacientesFiltrados.length} de ${pacientes.length} pacientes`}
+                                    </small>
+                                </div>
 
-                        <div className="form-group">
-                            <label htmlFor="pacienteId">
-                                Seleccionar Paciente <span className="required">*</span>
-                            </label>
-                            <select
-                                id="pacienteId"
-                                name="pacienteId"
-                                value={formData.pacienteId}
-                                onChange={handleChange}
-                                required
-                                disabled={loading || loadingPacientes}
-                                size="6"
-                                className="select-pacientes"
-                            >
-                                <option value="">-- Seleccione un paciente --</option>
-                                {pacientesFiltrados.map((paciente) => (
-                                    <option key={paciente._id} value={paciente._id}>
-                                        {paciente.nombre} {paciente.dni ? `- DNI: ${paciente.dni}` : ""}
-                                    </option>
-                                ))}
-                            </select>
-                            {pacientesFiltrados.length === 0 && !loadingPacientes && (
-                                <small className="help-text error-text">
-                                    No se encontraron pacientes con ese criterio de búsqueda
-                                </small>
-                            )}
-                        </div>
+                                <div className="form-group">
+                                    <label htmlFor="pacienteId">
+                                        Seleccionar Paciente <span className="required">*</span>
+                                    </label>
+                                    <select
+                                        id="pacienteId"
+                                        name="pacienteId"
+                                        value={formData.pacienteId}
+                                        onChange={handleChange}
+                                        required={!esInvitado}
+                                        disabled={loading || loadingPacientes}
+                                        size="6"
+                                        className="select-pacientes"
+                                    >
+                                        <option value="">-- Seleccione un paciente --</option>
+                                        {pacientesFiltrados.map((paciente) => (
+                                            <option key={paciente._id} value={paciente._id}>
+                                                {paciente.nombre} {paciente.dni ? `- DNI: ${paciente.dni}` : ""}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {pacientesFiltrados.length === 0 && !loadingPacientes && (
+                                        <small className="help-text error-text">
+                                            No se encontraron pacientes con ese criterio de búsqueda
+                                        </small>
+                                    )}
+                                </div>
 
-                        {pacienteSeleccionado && (
-                            <div className="paciente-info-box">
-                                <p><strong>Email:</strong> {pacienteSeleccionado.email || "No especificado"}</p>
-                                <p><strong>Teléfono:</strong> {pacienteSeleccionado.telefono || "No especificado"}</p>
+                                {pacienteSeleccionado && (
+                                    <div className="paciente-info-box">
+                                        <p><strong>Email:</strong> {pacienteSeleccionado.email || "No especificado"}</p>
+                                        <p><strong>Teléfono:</strong> {pacienteSeleccionado.telefono || "No especificado"}</p>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="guest-form-section">
+                                <div className="form-group">
+                                    <label htmlFor="nombre">Nombre Completo <span className="required">*</span></label>
+                                    <input
+                                        type="text"
+                                        id="nombre"
+                                        name="nombre"
+                                        placeholder="Nombre y Apellido del paciente..."
+                                        value={formData.nombre}
+                                        onChange={handleChange}
+                                        required={esInvitado}
+                                        disabled={loading}
+                                    />
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label htmlFor="dni">DNI / Identificación <span className="required">*</span></label>
+                                        <input
+                                            type="text"
+                                            id="dni"
+                                            name="dni"
+                                            placeholder="DNI del paciente..."
+                                            value={formData.dni}
+                                            onChange={handleChange}
+                                            required={esInvitado}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="telefono">Teléfono <span className="required">*</span></label>
+                                        <input
+                                            type="text"
+                                            id="telefono"
+                                            name="telefono"
+                                            placeholder="Teléfono de contacto..."
+                                            value={formData.telefono}
+                                            onChange={handleChange}
+                                            required={esInvitado}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         )}
 
