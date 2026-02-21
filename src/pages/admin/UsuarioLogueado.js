@@ -4,6 +4,7 @@ import { FaUserCircle, FaEnvelope, FaIdCard, FaSignOutAlt, FaUsers, FaUserMd, Fa
 import "./UsuarioLogueado.css";
 import { LoaderIcon } from "react-hot-toast";
 import { AuthAPI } from "../../api/auth";
+import TurnoDetalleModal from "../../Components/TurnoDetalleModal";
 
 const authApi = new AuthAPI();
 
@@ -97,6 +98,7 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTurnosDropdown, setShowTurnosDropdown] = useState(false);
+  const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
 
   useEffect(() => {
     cargarEstadisticas();
@@ -108,6 +110,7 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
       const response = await authApi.getDashboardStats();
       if (response && response.ok) {
         setStats(response);
+        console.log(response);
       } else {
         setError("Error al cargar las estadísticas");
       }
@@ -153,6 +156,14 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
         </button>
       </div>
 
+      {/* Modal de Detalle de Turno */}
+      {turnoSeleccionado && (
+        <TurnoDetalleModal
+          turno={turnoSeleccionado}
+          onClose={() => setTurnoSeleccionado(null)}
+        />
+      )}
+
       {/* Backdrop cuando el dropdown está abierto */}
       {showTurnosDropdown && (
         <div className="dropdown-backdrop" onClick={() => setShowTurnosDropdown(false)}></div>
@@ -165,14 +176,12 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
             className="status-highlight clickable-highlight"
             onClick={() => setShowTurnosDropdown(!showTurnosDropdown)}
           >
-            <div className="highlight-icon">🔥</div>
+            <div className="highlight-icon">📅</div>
             <div className="highlight-content">
               <span className="highlight-number">
-                {Array.isArray(turnos?.porPeriodo?.reservadosSemanaActual)
-                  ? turnos.porPeriodo.reservadosSemanaActual.length
-                  : 0}
+                {Array.isArray(turnos?.proximosTurnos) ? turnos.proximosTurnos.length : 0}
               </span>
-              <span className="highlight-label">Reservados Esta Semana</span>
+              <span className="highlight-label">Próximos Turnos</span>
             </div>
             <div className="highlight-toggle">
               {showTurnosDropdown ? <FaChevronUp /> : <FaChevronDown />}
@@ -181,20 +190,20 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
 
         </div>
 
-        {/* Dropdown de Turnos Reservados */}
-        {showTurnosDropdown && Array.isArray(turnos?.porPeriodo?.reservadosSemanaActual) && (
+        {/* Dropdown de Próximos Turnos */}
+        {showTurnosDropdown && Array.isArray(turnos?.proximosTurnos) && (
           <div className="turnos-dropdown">
             <div className="dropdown-header">
-              <h4>📋 Turnos Reservados Esta Semana</h4>
+              <h4>📋 Próximos Turnos</h4>
               <button className="btn-close-dropdown" onClick={() => setShowTurnosDropdown(false)}>×</button>
             </div>
             <div className="dropdown-body">
-              {turnos.porPeriodo.reservadosSemanaActual.length > 0 ? (
-                turnos.porPeriodo.reservadosSemanaActual.map((turno) => (
+              {turnos.proximosTurnos.length > 0 ? (
+                turnos.proximosTurnos.map((turno) => (
                   <div
                     key={turno._id}
                     className="turno-item-dropdown"
-                    onClick={() => navigate('/admin/turnos')}
+                    onClick={() => { setShowTurnosDropdown(false); setTurnoSeleccionado(turno); }}
                   >
                     <div className="turno-fecha-hora">
                       <span className="turno-dia">
@@ -219,7 +228,7 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
                   </div>
                 ))
               ) : (
-                <p className="no-turnos-msg">No hay turnos reservados esta semana</p>
+                <p className="no-turnos-msg">No hay próximos turnos reservados</p>
               )}
             </div>
           </div>
@@ -316,6 +325,45 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
                 <span className="periodo-badge">{turnos?.porPeriodo?.futurosReservados || 0}</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Próximos Turnos */}
+        <div className="dashboard-card clickable" onClick={() => navigate('/admin/turnos')}>
+          <div className="card-header">
+            <FaCalendarCheck />
+            <h3>Próximos Turnos</h3>
+          </div>
+          <div className="card-body">
+            {Array.isArray(turnos?.proximosTurnos) && turnos.proximosTurnos.length > 0 ? (
+              <div className="proximos-turnos-lista">
+                {turnos.proximosTurnos.map((turno) => (
+                  <div key={turno._id} className="proximo-turno-item" onClick={(e) => { e.stopPropagation(); setTurnoSeleccionado(turno); }} style={{ cursor: 'pointer' }}>
+                    <div className="proximo-turno-fecha">
+                      <span className="proximo-dia">
+                        {new Date(turno.fecha).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}
+                      </span>
+                      <span className="proximo-hora">
+                        {new Date(turno.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <div className="proximo-turno-info">
+                      <span className="proximo-paciente">
+                        👤 {turno.paciente?.nombre || turno.pacienteNoRegistrado?.nombre || 'Sin paciente'}
+                      </span>
+                      <span className="proximo-estudio">
+                        🔬 {turno.estudio?.tipo || 'Sin estudio'}
+                      </span>
+                      <span className="proximo-doctor">
+                        👨‍⚕️ {turno.doctor?.nombre || 'Sin doctor'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-data">No hay próximos turnos reservados</p>
+            )}
           </div>
         </div>
 

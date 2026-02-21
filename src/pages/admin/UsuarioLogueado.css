@@ -1472,3 +1472,76 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Próximos Turnos */
+.proximos-turnos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.proximo-turno-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #653057;
+  transition: all 0.3s ease;
+}
+
+.proximo-turno-item:hover {
+  background: #f0e6ee;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(101, 48, 87, 0.12);
+}
+
+.proximo-turno-fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 76px;
+  padding: 0.5rem 0.6rem;
+  background: linear-gradient(135deg, #653057, #A8518A);
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.proximo-dia {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.proximo-hora {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+.proximo-turno-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.proximo-paciente {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.proximo-estudio {
+  color: #555;
+  font-size: 0.82rem;
+}
+
+.proximo-doctor {
+  color: #888;
+  font-size: 0.78rem;
+}
