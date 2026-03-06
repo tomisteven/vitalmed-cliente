@@ -244,6 +244,30 @@ export function usePaciente({ showToast }) {
     }
   };
 
+  const eliminarNota = async (idNota) => {
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    try {
+      const response = await PacienteController.eliminarNota(id, idNota);
+      if (response.ok) {
+        dispatch({
+          type: "SET_PACIENTE",
+          payload: {
+            ...state.paciente,
+            notas: state.paciente.notas.filter((n) => n._id !== idNota),
+          },
+        });
+        showToast("Nota eliminada correctamente", "success");
+      } else {
+        showToast("Error al eliminar la nota", "error");
+      }
+    } catch (error) {
+      console.error("Error al eliminar la nota", error);
+      showToast("Error al eliminar la nota", "error");
+    } finally {
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+    }
+  };
+
   const changeStatus = useCallback(() => {
     statusRef.current = true;
     dispatch({ type: "TOGGLE_STATUS" });
@@ -310,6 +334,7 @@ export function usePaciente({ showToast }) {
     changeStatus,
     setNota,
     editarNota,
+    eliminarNota,
     eliminarDoctorDelPaciente,
     loading: state.loading,
     fetchDoctoresList,

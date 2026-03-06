@@ -149,6 +149,27 @@ export class PacienteApi {
     }
   }
 
+  async eliminarNota(id, idNota) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}/eliminar-nota`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify({ idNota }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async updatePaciente(id, data) {
     try {
       const response = await fetch(this.url + `paciente/${id}`, {

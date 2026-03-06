@@ -64,6 +64,7 @@ export default function VerPaciente() {
     setNota,
     loading,
     editarNota,
+    eliminarNota,
     eliminarDoctorDelPaciente,
     fetchDoctores,
     eliminarArchivo,
@@ -297,15 +298,29 @@ export default function VerPaciente() {
                           {new Date(nota.fecha).toLocaleDateString()}
                         </span>
                         {user.rol !== "doctor" && (
-                          <button
-                            className="btn-edit-nota"
-                            title="Editar nota"
-                            onClick={() =>
-                              setEditNotaModal({ _id: nota._id, nota: nota.nota })
-                            }
-                          >
-                            <FaPencilAlt />
-                          </button>
+                          <div className="nota-actions">
+                            <button
+                              className="btn-edit-nota"
+                              title="Editar nota"
+                              onClick={() =>
+                                setEditNotaModal({ _id: nota._id, nota: nota.nota })
+                              }
+                            >
+                              <FaPencilAlt />
+                            </button>
+                            <button
+                              className="btn-delete-nota"
+                              title="Eliminar nota"
+                              onClick={() => {
+                                if (window.confirm("¿Seguro que deseas eliminar esta nota?")) {
+                                  eliminarNota(nota._id);
+                                }
+                              }}
+                              disabled={loading}
+                            >
+                              <MdDeleteForever />
+                            </button>
+                          </div>
                         )}
                       </div>
                       <p className="note-content">{nota.nota || "No especifica"}</p>

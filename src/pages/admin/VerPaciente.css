@@ -1364,3 +1364,37 @@
   color: white;
   transform: scale(1.05);
 }
+
+/* Contenedor de acciones de nota */
+.nota-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+/* Botón eliminar nota */
+.btn-delete-nota {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-nota:hover:not(:disabled) {
+  background: #dc3545;
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-delete-nota:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
