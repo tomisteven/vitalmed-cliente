@@ -217,6 +217,33 @@ export function usePaciente({ showToast }) {
     }
   };
 
+  const editarNota = async (idNota, nuevaNota) => {
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    try {
+      const response = await PacienteController.editarNota(id, { idNota, nota: nuevaNota });
+      if (response.ok) {
+        // Actualizar la nota en el estado local sin recargar
+        dispatch({
+          type: "SET_PACIENTE",
+          payload: {
+            ...state.paciente,
+            notas: state.paciente.notas.map((n) =>
+              n._id === idNota ? { ...n, nota: nuevaNota } : n
+            ),
+          },
+        });
+        showToast("Nota editada correctamente", "success");
+      } else {
+        showToast("Error al editar la nota", "error");
+      }
+    } catch (error) {
+      console.error("Error al editar la nota", error);
+      showToast("Error al editar la nota", "error");
+    } finally {
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+    }
+  };
+
   const changeStatus = useCallback(() => {
     statusRef.current = true;
     dispatch({ type: "TOGGLE_STATUS" });
@@ -282,9 +309,11 @@ export function usePaciente({ showToast }) {
     setArchivos,
     changeStatus,
     setNota,
+    editarNota,
     eliminarDoctorDelPaciente,
     loading: state.loading,
     fetchDoctoresList,
+    fetchDoctores: fetchDoctoresList,
     eliminarArchivo,
   };
 }

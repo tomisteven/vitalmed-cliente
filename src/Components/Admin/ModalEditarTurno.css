@@ -1,0 +1,383 @@
+/* ============================================================
+   ModalEditarTurno.css  —  Modal para editar turnos agendados
+   ============================================================ */
+
+/* Overlay */
+.met-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    animation: met-fade-in 0.2s ease;
+}
+
+@keyframes met-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal */
+.met-modal {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    width: 95%;
+    max-width: 700px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: met-slide-up 0.25s ease;
+    overflow: hidden;
+}
+
+@keyframes met-slide-up {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ---- Header ---- */
+.met-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #1a6eb5 0%, #1255a0 100%);
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.met-header-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.met-header-icon {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+.met-header-title h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.met-header-sub {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    opacity: 0.8;
+    text-transform: capitalize;
+}
+
+.met-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.met-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- Formulario scrollable ---- */
+.met-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.met-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ---- Secciones ---- */
+.met-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.met-section-title {
+    margin: 0 0 4px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1a6eb5;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+/* ---- Grid ---- */
+.met-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 520px) {
+    .met-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---- Campos ---- */
+.met-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.met-field label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.met-required {
+    color: #e53e3e;
+    margin-left: 2px;
+}
+
+.met-field input,
+.met-field select,
+.met-field textarea {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 11px;
+    font-size: 0.9rem;
+    color: #1e293b;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.met-field input:focus,
+.met-field select:focus,
+.met-field textarea:focus {
+    outline: none;
+    border-color: #1a6eb5;
+    box-shadow: 0 0 0 3px rgba(26, 110, 181, 0.12);
+}
+
+.met-field textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.met-select-tall {
+    min-height: 110px;
+}
+
+.met-search {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 0.87rem;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.met-search:focus {
+    outline: none;
+    border-color: #1a6eb5;
+    box-shadow: 0 0 0 3px rgba(26, 110, 181, 0.12);
+}
+
+.met-hint {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+/* ---- Tabs tipo de paciente ---- */
+.met-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.met-tab {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.met-tab:hover {
+    border-color: #1a6eb5;
+    color: #1a6eb5;
+    background: #eff6ff;
+}
+
+.met-tab.active {
+    background: #1a6eb5;
+    border-color: #1a6eb5;
+    color: #fff;
+}
+
+/* ---- Sección paciente ---- */
+.met-patient-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.met-patient-preview {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+    padding: 8px 12px;
+    background: #eff6ff;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    color: #1a6eb5;
+    flex-wrap: wrap;
+}
+
+.met-empty-patient {
+    padding: 16px;
+    background: #fefce8;
+    border: 1px dashed #facc15;
+    border-radius: 8px;
+    color: #78350f;
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+/* ---- Alert info estudio ---- */
+.met-alert-info {
+    margin-top: 6px;
+    padding: 10px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.84rem;
+    color: #5d4037;
+}
+
+/* ---- Footer ---- */
+.met-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+}
+
+.met-btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.met-btn-cancel:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.met-btn-save {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 22px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1a6eb5, #0f4c8f);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(26, 110, 181, 0.35);
+}
+
+.met-btn-save:hover:not(:disabled) {
+    background: linear-gradient(135deg, #155fa0, #0a3d78);
+    box-shadow: 0 4px 14px rgba(26, 110, 181, 0.45);
+    transform: translateY(-1px);
+}
+
+.met-btn-cancel:disabled,
+.met-btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ---- Spinner ---- */
+.met-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: met-spin 0.7s linear infinite;
+}
+
+@keyframes met-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

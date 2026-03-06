@@ -4,10 +4,11 @@ import { PacienteApi } from "../../api/Paciente";
 import { formatearFechaHora } from "../../utils/dateHelpers";
 import { getEstadoColor, getEstadoLabel } from "../../utils/turnoHelpers";
 import ModalAsignarTurno from "./ModalAsignarTurno";
+import ModalEditarTurno from "./ModalEditarTurno";
 import toast from "react-hot-toast";
 import "./ListaTurnosAdmin.css";
 import { EstudiosApi } from "../../api/Estudios";
-import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare, FaChevronDown, FaChevronRight, FaClock } from "react-icons/fa";
+import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare, FaChevronDown, FaChevronRight, FaClock, FaEdit } from "react-icons/fa";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
@@ -23,6 +24,10 @@ export default function ListaTurnosAdmin() {
         turno: null,
     });
     const [modalDetalles, setModalDetalles] = useState({
+        show: false,
+        turno: null,
+    });
+    const [modalEditar, setModalEditar] = useState({
         show: false,
         turno: null,
     });
@@ -167,6 +172,24 @@ export default function ListaTurnosAdmin() {
             show: false,
             turno: null,
         });
+    };
+
+    const handleEditarTurno = (turno) => {
+        setModalEditar({
+            show: true,
+            turno: turno,
+        });
+    };
+
+    const handleCloseEditar = () => {
+        setModalEditar({
+            show: false,
+            turno: null,
+        });
+    };
+
+    const handleTurnoEditado = () => {
+        cargarTurnos(filtros);
     };
 
     const handleEliminar = async (turnoId) => {
@@ -538,12 +561,21 @@ export default function ListaTurnosAdmin() {
                                                         </button>
                                                     )}
                                                     {turno.estado === "reservado" && (
-                                                        <button
-                                                            onClick={() => handleCancelar(turno._id)}
-                                                            className="btn-cancelar"
-                                                        >
-                                                            Cancelar
-                                                        </button>
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleEditarTurno(turno)}
+                                                                className="btn-editar-turno"
+                                                                title="Editar datos del turno"
+                                                            >
+                                                                <FaEdit /> Editar
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleCancelar(turno._id)}
+                                                                className="btn-cancelar"
+                                                            >
+                                                                Cancelar
+                                                            </button>
+                                                        </>
                                                     )}
                                                     <button
                                                         onClick={() => handleEliminar(turno._id)}
@@ -573,6 +605,16 @@ export default function ListaTurnosAdmin() {
                     turno={modalAsignar.turno}
                     onClose={handleCloseModal}
                     onAsignado={handleTurnoAsignado}
+                />
+            )}
+
+            {/* Modal Editar Turno */}
+            {modalEditar.show && modalEditar.turno && (
+                <ModalEditarTurno
+                    turno={modalEditar.turno}
+                    doctores={doctores}
+                    onClose={handleCloseEditar}
+                    onEditado={handleTurnoEditado}
                 />
             )}
 

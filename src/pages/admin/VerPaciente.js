@@ -25,6 +25,8 @@ import {
   FaStethoscope,
   FaNotesMedical,
   FaHistory,
+  FaPencilAlt,
+  FaCheck,
 } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import ToastMessage from "../../utils/ToastMessage";
@@ -44,6 +46,7 @@ export default function VerPaciente() {
   const [doctoresList, setDoctoresList] = useState([]);
   const [carouselOpen, setCarouselOpen] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [editNotaModal, setEditNotaModal] = useState(null); // { _id, nota }
 
   const userLogueado = JSON.parse(localStorage.getItem("userLog"));
   const userID = userLogueado?.usuario?._id || userLogueado?._id;
@@ -60,6 +63,7 @@ export default function VerPaciente() {
     setArchivos,
     setNota,
     loading,
+    editarNota,
     eliminarDoctorDelPaciente,
     fetchDoctores,
     eliminarArchivo,
@@ -82,6 +86,15 @@ export default function VerPaciente() {
     setNuevaNota({ nota: "", author: "" });
     setNotaModalOpen(false);
     showToast("Nota guardada correctamente", "success");
+  };
+
+  const handleGuardarEdicionNota = async () => {
+    if (!editNotaModal?.nota?.trim()) {
+      showToast("La nota no puede estar vacía", "error");
+      return;
+    }
+    await editarNota(editNotaModal._id, editNotaModal.nota);
+    setEditNotaModal(null);
   };
 
   // Collect all images from all folders (excluding PDFs and videos)
@@ -283,6 +296,17 @@ export default function VerPaciente() {
                         <span className="note-date">
                           {new Date(nota.fecha).toLocaleDateString()}
                         </span>
+                        {user.rol !== "doctor" && (
+                          <button
+                            className="btn-edit-nota"
+                            title="Editar nota"
+                            onClick={() =>
+                              setEditNotaModal({ _id: nota._id, nota: nota.nota })
+                            }
+                          >
+                            <FaPencilAlt />
+                          </button>
+                        )}
                       </div>
                       <p className="note-content">{nota.nota || "No especifica"}</p>
                     </div>
@@ -502,6 +526,42 @@ export default function VerPaciente() {
           setModalAsignarDoctorOpen={setModalAsignarDoctorOpen}
           onClose={() => setModalAsignarDoctorOpen(false)}
         />
+      )}
+
+      {/* Modal Editar Nota */}
+      {editNotaModal && (
+        <div className="modal-overlay" onClick={() => setEditNotaModal(null)}>
+          <div className="modal-upload" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header-upload">
+              <h3>Editar Nota</h3>
+              <FaTimes
+                className="close-icon"
+                onClick={() => setEditNotaModal(null)}
+              />
+            </div>
+            <div className="modal-body-upload">
+              <div className="form-group-upload">
+                <label className="label-upload">Contenido de la nota</label>
+                <textarea
+                  rows={5}
+                  style={{ width: "100%", resize: "vertical", padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+                  value={editNotaModal.nota}
+                  onChange={(e) =>
+                    setEditNotaModal((prev) => ({ ...prev, nota: e.target.value }))
+                  }
+                />
+              </div>
+              <button
+                className="btn-submit-upload"
+                onClick={handleGuardarEdicionNota}
+                disabled={loading}
+              >
+                <FaCheck />
+                <span>Guardar cambios</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {toast && (

@@ -291,6 +291,27 @@
     text-align: center;
 }
 
+.btn-editar-turno {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.87rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.25s ease;
+}
+
+.btn-editar-turno:hover {
+    background: linear-gradient(135deg, #d35400, #b94600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(211, 84, 0, 0.35);
+}
+
 .btn-cancelar {
     background: #dc3545;
     color: white;

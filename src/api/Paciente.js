@@ -128,6 +128,27 @@ export class PacienteApi {
     }
   }
 
+  async editarNota(id, data) {
+    try {
+      const response = await fetch(this.url + `paciente/${id}/editar-nota`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async updatePaciente(id, data) {
     try {
       const response = await fetch(this.url + `paciente/${id}`, {

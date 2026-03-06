@@ -304,6 +304,33 @@ export class TurnosApi {
   }
 
   /**
+   * Actualizar cualquier campo de un turno (Admin/Secretaria)
+   * @param {string} turnoId - ID del turno a actualizar
+   * @param {Object} datos - Campos a actualizar (fecha, doctor, paciente, pacienteNoRegistrado, estudio, estado, comentarios, motivoConsulta)
+   */
+  async actualizarTurno(turnoId, datos) {
+    try {
+      const response = await fetch(this.url + `turnos/${turnoId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(datos),
+      });
+
+      const result = await response.json();
+      if (response.status !== 200) {
+        throw new Error(result.message || "Error al actualizar turno");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error en actualizarTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
    * Limpiar/Vaciar múltiples turnos (vuelven a estado disponible)
    * @param {Array<string>} ids - Array de IDs de turnos a limpiar
    */
