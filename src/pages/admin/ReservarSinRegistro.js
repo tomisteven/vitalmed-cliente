@@ -234,6 +234,10 @@ export default function ReservarSinRegistro() {
     };
 
     const imprimirComprobante = () => {
+        const estudioSeleccionado = estudios.find(e => e._id === datosInvitado.estudioId);
+        const tipoEstudio = estudioSeleccionado?.tipo || 'No especificado';
+        const precioEstudio = estudioSeleccionado?.precio ? `$${estudioSeleccionado.precio}` : 'N/A';
+
         const contenido = `
             <!DOCTYPE html>
             <html>
@@ -347,12 +351,12 @@ export default function ReservarSinRegistro() {
                         <span class="detail-value">${turnoSeleccionado?.doctor?.nombre || 'N/A'}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Especialidad:</span>
-                        <span class="detail-value">${turnoSeleccionado?.doctor?.especialidad || 'N/A'}</span>
+                        <span class="detail-label">Estudio / Servicio:</span>
+                        <span class="detail-value">${tipoEstudio}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Precio:REF</span>
-                        <span class="detail-value">${turnoSeleccionado?.precio || 'N/A'}</span>
+                        <span class="detail-label">Precio del Estudio:</span>
+                        <span class="detail-value">${precioEstudio}</span>
                     </div>
                 </div>
 
@@ -375,6 +379,7 @@ export default function ReservarSinRegistro() {
                         <span class="detail-label">Motivo:</span>
                         <span class="detail-value">${datosInvitado.motivoConsulta}</span>
                     </div>
+
                     ` : ''}
                 </div>
 
@@ -774,6 +779,19 @@ export default function ReservarSinRegistro() {
                                 </span>
                             </div>
                             <div className="detail-row">
+                                <span className="detail-label">Estudio / Servicio:</span>
+                                <span className="detail-value">
+                                    {estudios.find(e => e._id === datosInvitado.estudioId)?.tipo || 'No especificado'}
+                                </span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Precio:</span>
+                                <span className="detail-value">
+                                    {estudios.find(e => e._id === datosInvitado.estudioId)?.precio ? 
+                                        `$${estudios.find(e => e._id === datosInvitado.estudioId).precio}` : 'N/A'}
+                                </span>
+                            </div>
+                            <div className="detail-row">
                                 <span className="detail-label">Paciente:</span>
                                 <span className="detail-value">{datosInvitado.nombre}</span>
                             </div>
@@ -794,6 +812,10 @@ export default function ReservarSinRegistro() {
                                     </span>
                                 </div>
                             )}
+                        </div>
+
+                        <div>
+
                         </div>
 
                         <div className="confirmation-note">
