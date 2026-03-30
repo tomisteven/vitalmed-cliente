@@ -206,10 +206,12 @@ export default function LandingPage() {
 
                     <nav className="mobile-booking-section guest">
                         <p className="mobile-section-text">¿Nuevo paciente? Agenda tu turno sin registro</p>
-                        <button className="btn-action btn-agendar-sin-registro" onClick={handleAgendarSinRegistro}>
-                            <span>agendar sin registro</span>
-                            <FaCalendarPlus className="btn-icon-large" />
-                        </button>
+                        <div className="guest-cta-wrapper">
+                            <button className="btn-action btn-agendar-sin-registro" onClick={handleAgendarSinRegistro}>
+                                <span>agendar sin registro</span>
+                                <img src={iconcita} alt="Icono agendar cita" />
+                            </button>
+                        </div>
                     </nav>
                 </section>
             </main>

@@ -276,7 +276,7 @@
     order: 3;
 }
 
-.btn-agendar-sin-registro {
+.guest-cta-wrapper {
     order: 4;
 }
 
@@ -330,25 +330,79 @@
     height: 16px;
 }
 
-/* Botón Agendar Sin Registro */
+/* Botón Agendar Sin Registro - Principal CTA */
 .btn-agendar-sin-registro {
-    background: linear-gradient(135deg, #a62c65 0%, #653057 100%);
+    background: linear-gradient(135deg, #d81b60 0%, #653057 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 8px 5px 6px 15px !important; /* Matches other buttons with slight left padding */
+    box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4);
+    animation: pulse-border 3s infinite;
 }
 
 .btn-agendar-sin-registro:hover {
-    background: linear-gradient(135deg, #653057 0%, #a62c65 100%);
+    background: linear-gradient(135deg, #653057 0%, #d81b60 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(216, 27, 96, 0.5);
+}
+
+/* Shimmer effect overlay */
+.btn-agendar-sin-registro::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
 }
 
 .btn-icon-large {
     width: 60px;
     height: 60px;
     background: white;
-    color: #a62c65;
+    color: #d81b60;
     border-radius: 50%;
     padding: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* Recommended Badge */
+.guest-cta-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translate(-100%, -100%) rotate(45deg); }
+    20%, 100% { transform: translate(100%, 100%) rotate(45deg); }
+}
+
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(216, 27, 96, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
 
 /* Footer */
@@ -519,7 +573,7 @@
         line-height: 1.2;
     }
 
-    .btn-action {
+    .btn-action, .guest-cta-wrapper {
         width: 100%;
         justify-content: center;
         flex-direction: row;
@@ -553,6 +607,11 @@
         /* Consistent sizing with other icons on mobile */
         height: 28px !important;
         padding: 4px;
+        color: #d81b60;
+    }
+
+    .btn-agendar-sin-registro {
+        margin: 5px 0;
     }
 
     /* Footer - Outside the card, on purple background */
