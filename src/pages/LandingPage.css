@@ -60,6 +60,42 @@
     color: #7645f4;
 }
 
+/* Location Specific Styles (Desktop Sidebar) */
+.social-icon.location {
+    background: linear-gradient(135deg, #d81b60 0%, #653057 100%);
+    border-color: white;
+    position: relative;
+    animation: location-pulse-brand 2s infinite;
+}
+
+.social-icon.location:hover {
+    background: white;
+    color: #d81b60;
+}
+
+.social-icon.location::after {
+    content: 'Ubícanos';
+    position: absolute;
+    left: 45px;
+    background: #d81b60;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.social-icon.location:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 /* Main Content */
 .landing-content {
     max-width: 950px;
@@ -405,6 +441,12 @@
     50% { transform: translateY(-3px); }
 }
 
+@keyframes location-pulse-brand {
+    0% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(216, 27, 96, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(216, 27, 96, 0); }
+}
+
 /* Footer */
 .landing-footer {
     display: none;
@@ -673,6 +715,13 @@
 
     .mobile-social-icon.whatsapp:hover {
         background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    }
+
+    .mobile-social-icon.location {
+        background: linear-gradient(135deg, #d81b60 0%, #653057 100%);
+        animation: location-pulse-brand 2s infinite;
+        box-shadow: 0 0 15px rgba(216, 27, 96, 0.4);
+        border: 2px solid white;
     }
 
     .landing-content::after {
