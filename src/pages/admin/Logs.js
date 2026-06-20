@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Loader, Header, Icon, Modal, Message } from "semantic-ui-react";
 import toast from "react-hot-toast";
+import { ENV } from "../../utils/constants";
 
 export default function Logs() {
   const [logs, setLogs] = useState([]);
@@ -11,9 +12,11 @@ export default function Logs() {
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8082/api/logs");
+      const res = await fetch(`${ENV.URL}/api/logs`, {
+        headers: { Authorization: "vitalmed0258525" }
+      });
       const data = await res.json();
-      setLogs(data);
+      setLogs(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error("Error al cargar los logs");
     } finally {
@@ -27,7 +30,7 @@ export default function Logs() {
 
   const borrarLogs = async () => {
     try {
-      await fetch("http://localhost:8082/api/logs", { method: "DELETE" });
+      await fetch(`${ENV.URL}/api/logs`, { method: "DELETE", headers: { Authorization: "vitalmed0258525" } });
       toast.success("Logs eliminados correctamente");
       fetchLogs();
     } catch (error) {
