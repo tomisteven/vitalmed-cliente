@@ -13,6 +13,7 @@ export default function TarjetaTurno({ turno, onReservado }) {
     const [showModal, setShowModal] = useState(false);
     const [motivoConsulta, setMotivoConsulta] = useState("");
     const [estudioId, setEstudioId] = useState("");
+    const [telefono, setTelefono] = useState("");
     const [estudios, setEstudios] = useState([]);
     const [loadingEstudios, setLoadingEstudios] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -40,6 +41,10 @@ export default function TarjetaTurno({ turno, onReservado }) {
             setEstudioId(idEstudio);
         }
         setShowModal(true);
+        const user = JSON.parse(localStorage.getItem("userLog"));
+        if (user && user.usuario && user.usuario.telefono) {
+            setTelefono(user.usuario.telefono);
+        }
         if (!idEstudio) {
             cargarEstudios();
         }
@@ -50,6 +55,7 @@ export default function TarjetaTurno({ turno, onReservado }) {
         setShowModal(false);
         setMotivoConsulta("");
         setEstudioId("");
+        setTelefono("");
         setReservaExitosa(null);
 
         if (wasSuccessful && onReservado) {
@@ -68,6 +74,11 @@ export default function TarjetaTurno({ turno, onReservado }) {
             return;
         }
 
+        if (!telefono.trim()) {
+            toast.error("Debe ingresar un número de teléfono");
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -83,7 +94,8 @@ export default function TarjetaTurno({ turno, onReservado }) {
                 turno._id,
                 user.usuario._id,
                 motivoConsulta,
-                estudioId
+                estudioId,
+                telefono
             );
 
             if (response) {
@@ -91,10 +103,12 @@ export default function TarjetaTurno({ turno, onReservado }) {
                 setReservaExitosa({
                     ...turno,
                     motivoConsulta,
+                    telefono,
                     paciente: user.usuario
                 });
                 setMotivoConsulta("");
                 setEstudioId("");
+                setTelefono("");
             }
         } catch (error) {
             console.error("Error al reservar turno:", error);
@@ -429,6 +443,30 @@ export default function TarjetaTurno({ turno, onReservado }) {
                                             )}
                                         </div>
                                     )}
+
+                                    <div className="form-group">
+                                        <label htmlFor="telefono">
+                                            Teléfono de contacto <span className="required">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="telefono"
+                                            value={telefono}
+                                            onChange={(e) => setTelefono(e.target.value)}
+                                            placeholder="Ingrese su número de teléfono..."
+                                            disabled={loading}
+                                            style={{
+                                                width: "100%",
+                                                padding: "0.75rem 1rem",
+                                                border: "2px solid #e2e8f0",
+                                                borderRadius: "10px",
+                                                fontSize: "0.95rem"
+                                            }}
+                                        />
+                                        <small className="help-text" style={{marginTop: "5px", display: "block", color: "#64748b"}}>
+                                            Requerido para confirmar el turno y registro
+                                        </small>
+                                    </div>
 
                                     <div className="form-group">
                                         <label htmlFor="motivoConsulta">

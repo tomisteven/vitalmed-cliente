@@ -6,7 +6,9 @@ import {
   FiUserCheck,
   FiCalendar,
   FiClipboard,
-  FiClock
+  FiClock,
+  FiAlertTriangle,
+  FiFileText
 } from "react-icons/fi";
 import { FaUserDoctor, FaHouseUser } from "react-icons/fa6";
 import "./AdminMenu.css";
@@ -82,6 +84,20 @@ export default function AdminMenu({ onLoad }) {
       label: "Agendar",
       icon: <FiClock />,
       roles: ["paciente"],
+    },
+    {
+      key: "/admin/logs",
+      path: "/admin/logs",
+      label: "Logs",
+      icon: <FiAlertTriangle />,
+      roles: ["secretaria"],
+    },
+    {
+      key: "/admin/historial-turnos",
+      path: "/admin/historial-turnos",
+      label: "Historial",
+      icon: <FiFileText />,
+      roles: ["secretaria"],
     },
   ];
 

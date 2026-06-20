@@ -82,11 +82,14 @@ export class TurnosApi {
    * @param {string} motivoConsulta - Motivo de la consulta
    * @param {string} estudioId - ID del estudio seleccionado
    */
-  async reservarTurno(turnoId, pacienteId, motivoConsulta, estudioId = null) {
+  async reservarTurno(turnoId, pacienteId, motivoConsulta, estudioId = null, telefono = null) {
     try {
       const body = { pacienteId, motivoConsulta };
       if (estudioId) {
         body.estudioId = estudioId;
+      }
+      if (telefono) {
+        body.telefono = telefono;
       }
 
       const response = await fetch(this.url + `turnos/reservar/${turnoId}`, {

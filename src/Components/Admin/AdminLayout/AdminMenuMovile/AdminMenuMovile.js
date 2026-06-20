@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiUser, FiUsers, FiUserCheck } from "react-icons/fi";
+import { FiUser, FiUsers, FiUserCheck, FiAlertTriangle, FiFileText } from "react-icons/fi";
 import { FaUserDoctor, FaHouseUser, FaCalendar, FaClipboard, FaClock } from "react-icons/fa6";
 import "./AdminMenuMobile.css";
 
@@ -62,6 +62,18 @@ export default function AdminMenuMobile() {
       path: "/admin/reservar-turno",
       icon: <FaClock />,
       roles: ["paciente"],
+    },
+    {
+      key: "/admin/logs",
+      path: "/admin/logs",
+      icon: <FiAlertTriangle />,
+      roles: ["secretaria"],
+    },
+    {
+      key: "/admin/historial-turnos",
+      path: "/admin/historial-turnos",
+      icon: <FiFileText />,
+      roles: ["secretaria"],
     },
   ];
 

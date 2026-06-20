@@ -21,6 +21,8 @@ import ProtectedRoute from "../Components/ProtectedRoutes.jsx";
 import LandingPage from "../pages/LandingPage.js";
 import Cursos from "../pages/Cursos.js";
 import EstudiosPage from "../pages/EstudiosPage.js";
+import Logs from "../pages/admin/Logs.js";
+import HistorialTurnos from "../pages/admin/HistorialTurnos.js";
 
 export function AdminRoutes({ notificacion }) {
   const user = JSON.parse(localStorage.getItem("userLog"));
@@ -136,6 +138,30 @@ export function AdminRoutes({ notificacion }) {
         element={
           <ProtectedRoute user={user} allowedRoles={["paciente"]}>
             {loadLayout(AdminLayout, MisTurnosPage, {
+              loading,
+              setLoading,
+              notificacion,
+            })}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/logs"
+        element={
+          <ProtectedRoute user={user} allowedRoles={["secretaria"]}>
+            {loadLayout(AdminLayout, Logs, {
+              loading,
+              setLoading,
+              notificacion,
+            })}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/historial-turnos"
+        element={
+          <ProtectedRoute user={user} allowedRoles={["secretaria"]}>
+            {loadLayout(AdminLayout, HistorialTurnos, {
               loading,
               setLoading,
               notificacion,

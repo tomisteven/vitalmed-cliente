@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
-import { formatearFechaHora } from "../../utils/dateHelpers";
+import { formatearFechaHora, formatearHora } from "../../utils/dateHelpers";
 import { getEstadoColor, getEstadoLabel } from "../../utils/turnoHelpers";
 import ModalAsignarTurno from "./ModalAsignarTurno";
 import ModalEditarTurno from "./ModalEditarTurno";
@@ -282,23 +282,38 @@ export default function ListaTurnosAdmin() {
         ...new Set(doctores.map((d) => d.especialidad).filter(Boolean)),
     ];
 
-    // Agrupar turnos por fecha/hora
+    // Agrupar turnos por fecha (día)
     const turnosAgrupados = useMemo(() => {
         if (turnos.length === 0) return [];
 
         const grupos = {};
 
         turnos.forEach((turno) => {
-            const fechaHoraKey = formatearFechaHora(turno.fecha);
+            const fechaObj = new Date(turno.fecha);
+            // Crear un string de fecha como "Lunes 20 de Junio de 2026"
+            const fechaKey = fechaObj.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            // Capitalizar la primera letra
+            const fechaFormat = fechaKey.charAt(0).toUpperCase() + fechaKey.slice(1);
 
-            if (!grupos[fechaHoraKey]) {
-                grupos[fechaHoraKey] = {
-                    fechaHora: fechaHoraKey,
+            if (!grupos[fechaFormat]) {
+                grupos[fechaFormat] = {
+                    fechaHora: fechaFormat,
                     turnos: [],
-                    timestamp: new Date(turno.fecha).getTime()
+                    // Usar la fecha a las 00:00 para ordenar correctamente por día
+                    timestamp: new Date(fechaObj.getFullYear(), fechaObj.getMonth(), fechaObj.getDate()).getTime()
                 };
             }
-            grupos[fechaHoraKey].turnos.push(turno);
+            grupos[fechaFormat].turnos.push(turno);
+        });
+
+        // Ordenar los turnos dentro de cada grupo por hora
+        Object.values(grupos).forEach(grupo => {
+            grupo.turnos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
         });
 
         return Object.values(grupos).sort((a, b) => a.timestamp - b.timestamp);
@@ -447,7 +462,7 @@ export default function ListaTurnosAdmin() {
                     <>
                         <div className="grupos-header">
                             <span className="grupos-count">
-                                {turnosAgrupados.length} {turnosAgrupados.length === 1 ? 'horario' : 'horarios'} • {turnos.length} turnos
+                                {turnosAgrupados.length} {turnosAgrupados.length === 1 ? 'día' : 'días'} • {turnos.length} turnos
                             </span>
                             <button onClick={toggleAllGroups} className="btn-toggle-all">
                                 {turnosAgrupados.every(g => expandedGroups[g.fechaHora]) ? 'Colapsar todos' : 'Expandir todos'}
@@ -463,7 +478,7 @@ export default function ListaTurnosAdmin() {
                                             onChange={handleSelectAll}
                                         />
                                     </th>
-                                    <th>Fecha y Hora</th>
+                                    <th>Hora</th>
                                     <th>Doctor</th>
                                     <th>Estudio</th>
                                     <th>Paciente</th>
@@ -486,7 +501,6 @@ export default function ListaTurnosAdmin() {
                                                     </span>
                                                 </td>
                                                 <td className="fecha-cell grupo-fecha">
-                                                    <FaClock className="icon-clock" />
                                                     {grupo.fechaHora}
                                                 </td>
                                                 <td colSpan="5" className="grupo-info">
@@ -514,7 +528,8 @@ export default function ListaTurnosAdmin() {
                                                     />
                                                 </td>
                                                 <td className="fecha-cell">
-                                                    {grupo.turnos.length === 1 ? formatearFechaHora(turno.fecha) : ''}
+                                                    <FaClock className="icon-clock" style={{ fontSize: '0.85rem', color: '#94a3b8', marginRight: '0.4rem' }} />
+                                                    {formatearHora(turno.fecha)} hs
                                                 </td>
                                                 <td>
                                                     {turno.doctor?.nombre || "Doctor no especificado"}
@@ -556,8 +571,9 @@ export default function ListaTurnosAdmin() {
                                                         <button
                                                             onClick={() => handleAsignarTurno(turno)}
                                                             className="btn-asignar"
+                                                            title="Asignar turno"
                                                         >
-                                                            Asignar
+                                                            <FaUser /> Asignar
                                                         </button>
                                                     )}
                                                     {turno.estado === "reservado" && (
@@ -572,8 +588,9 @@ export default function ListaTurnosAdmin() {
                                                             <button
                                                                 onClick={() => handleCancelar(turno._id)}
                                                                 className="btn-cancelar"
+                                                                title="Cancelar turno"
                                                             >
-                                                                Cancelar
+                                                                <FaTimes /> Cancelar
                                                             </button>
                                                         </>
                                                     )}
