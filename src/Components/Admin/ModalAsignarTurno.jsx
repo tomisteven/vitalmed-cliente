@@ -23,6 +23,7 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
         pacienteId: "",
         estudioId: "",
         motivoConsulta: "",
+        telefonoRegistrado: "",
         // Campos para invitado
         nombre: "",
         dni: "",
@@ -118,7 +119,17 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const newFormData = { ...formData, [name]: value };
+        // Auto-fill telefono when selecting a registered patient
+        if (name === "pacienteId" && !esInvitado) {
+            const pac = pacientes.find((p) => p._id === value);
+            if (pac && pac.telefono) {
+                newFormData.telefonoRegistrado = pac.telefono;
+            } else {
+                newFormData.telefonoRegistrado = "";
+            }
+        }
+        setFormData(newFormData);
     };
 
     const handleSubmit = async (e) => {
@@ -126,6 +137,11 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
 
         if (!esInvitado && !formData.pacienteId) {
             toast.error("Debe seleccionar un paciente");
+            return;
+        }
+
+        if (!esInvitado && !formData.telefonoRegistrado.trim()) {
+            toast.error("Debe ingresar el teléfono del paciente");
             return;
         }
 
@@ -179,18 +195,23 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
                     estudioId: formData.estudioId
                 });
             } else {
+                // Obtener el teléfono del paciente seleccionado
+                const telPaciente = formData.telefonoRegistrado;
                 response = await turnosApi.reservarTurno(
                     turno._id,
                     formData.pacienteId,
                     formData.motivoConsulta,
-                    formData.estudioId
+                    formData.estudioId,
+                    telPaciente
                 );
             }
 
-            if (response) {
+            if (response && response.turno) {
                 toast.success(`✓ Turno asignado exitosamente ${esInvitado ? "al invitado" : "al paciente"}`);
                 onAsignado();
                 onClose();
+            } else {
+                throw new Error("No se recibió confirmación del servidor");
             }
         } catch (error) {
             console.error("Error al asignar turno:", error);
@@ -297,10 +318,28 @@ export default function ModalAsignarTurno({ turno, onClose, onAsignado }) {
                                 </div>
 
                                 {pacienteSeleccionado && (
+                                    <>
                                     <div className="paciente-info-box">
                                         <p><strong>Email:</strong> {pacienteSeleccionado.email || "No especificado"}</p>
-                                        <p><strong>Teléfono:</strong> {pacienteSeleccionado.telefono || "No especificado"}</p>
+                                        <p><strong>Teléfono registrado:</strong> {pacienteSeleccionado.telefono || "No tiene"}</p>
                                     </div>
+                                    <div className="form-group">
+                                        <label htmlFor="telefonoRegistrado">
+                                            Teléfono de contacto <span className="required">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="telefonoRegistrado"
+                                            name="telefonoRegistrado"
+                                            placeholder="Teléfono del paciente..."
+                                            value={formData.telefonoRegistrado}
+                                            onChange={handleChange}
+                                            required={!esInvitado}
+                                            disabled={loading}
+                                        />
+                                        <small className="help-text">Requerido para confirmar el turno</small>
+                                    </div>
+                                    </>
                                 )}
                             </>
                         ) : (

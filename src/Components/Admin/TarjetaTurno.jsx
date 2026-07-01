@@ -98,7 +98,7 @@ export default function TarjetaTurno({ turno, onReservado }) {
                 telefono
             );
 
-            if (response) {
+            if (response && response.turno) {
                 toast.success("✓ Turno reservado exitosamente. Se envió un email de confirmación.");
                 setReservaExitosa({
                     ...turno,
@@ -109,6 +109,8 @@ export default function TarjetaTurno({ turno, onReservado }) {
                 setMotivoConsulta("");
                 setEstudioId("");
                 setTelefono("");
+            } else {
+                throw new Error("No se recibió confirmación del servidor. El turno no fue guardado.");
             }
         } catch (error) {
             console.error("Error al reservar turno:", error);
