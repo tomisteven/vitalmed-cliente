@@ -1,17 +1,14 @@
 import {
-  useState,
   useEffect,
   useCallback,
   useMemo,
   useReducer,
-  useRef,
 } from "react";
 import { PacienteApi } from "../api/Paciente";
 import Swal from "sweetalert2";
 
 const PacienteController = new PacienteApi();
 
-// 🎯 Reducer para manejar el estado global del hook
 const initialState = {
   pacientes: [],
   loading: true,
@@ -35,16 +32,13 @@ const pacientesReducer = (state, action) => {
 
 export const usePacientes = ({ notificacion }) => {
   const [state, dispatch] = useReducer(pacientesReducer, initialState);
-  const statusRef = useRef(false); // useRef para evitar renders innecesarios
 
-  // 🔥 Fetch de pacientes optimizado con useCallback
   const fetchPacientes = useCallback(async () => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
       const response = await PacienteController.getPacientes();
       if (Array.isArray(response)) {
         const pacientesOrdenados = response.slice().reverse();
-        sessionStorage.setItem("pacientes", JSON.stringify(pacientesOrdenados));
         dispatch({ type: "SET_PACIENTES", payload: pacientesOrdenados });
         return;
       }
@@ -58,16 +52,11 @@ export const usePacientes = ({ notificacion }) => {
     }
   }, []);
 
-  //refrescar pacientes con boton
-
-
   const searchPaciente = async (valor) => {
-    const listado = JSON.parse(sessionStorage.getItem("pacientes"));
-    const pacientes = state.pacientes;
     if (!valor) {
-      return dispatch({ type: "SET_PACIENTES", payload: listado });
+      return fetchPacientes();
     }
-    const search = pacientes.filter((paciente) => {
+    const search = state.pacientes.filter((paciente) => {
       return (
         paciente.nombre.toLowerCase().includes(valor.toLowerCase()) ||
         paciente.dni.toString().includes(valor)
@@ -77,21 +66,11 @@ export const usePacientes = ({ notificacion }) => {
     dispatch({ type: "SET_SEARCH", payload: search });
   };
 
-  // 🔥 Efecto optimizado con sessionStorage
   useEffect(() => {
-    const cachedPacientes = sessionStorage.getItem("pacientes");
-    if (cachedPacientes && !statusRef.current) {
-      dispatch({ type: "SET_PACIENTES", payload: JSON.parse(cachedPacientes) });
-      dispatch({ type: "SET_LOADING", payload: false });
-    } else {
-      fetchPacientes();
-    }
-    statusRef.current = false;
+    fetchPacientes();
   }, [state.statusChange, fetchPacientes]);
 
-  // 🔄 Función para forzar actualización con useCallback
   const refreshPacientes = useCallback(() => {
-    statusRef.current = true;
     dispatch({ type: "TOGGLE_STATUS" });
   }, []);
 
@@ -99,11 +78,6 @@ export const usePacientes = ({ notificacion }) => {
     dispatch({ type: "SET_PACIENTES", payload: pacientes });
   }, []);
 
-
-
-
-
-  // 📝 Función para crear o actualizar paciente
   const savePaciente = useCallback(
     async (paciente, isEdit = false) => {
       try {
@@ -125,7 +99,6 @@ export const usePacientes = ({ notificacion }) => {
     [refreshPacientes]
   );
 
-  // ❌ Función para eliminar paciente con confirmación
   const deletePaciente = useCallback(
     async (id) => {
       const result = await Swal.fire({
@@ -158,7 +131,6 @@ export const usePacientes = ({ notificacion }) => {
     [refreshPacientes]
   );
 
-  // 🏆 Memoización de pacientes para evitar renders innecesarios
   const pacientesMemo = useMemo(() => state.pacientes, [state.pacientes]);
 
   return {
