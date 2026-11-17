@@ -37,7 +37,10 @@ export const useDoctor = ({ notificacion }) => {
   const [editingDoctor, setEditingDoctor] = useState(null);
   const [doctorData, setDoctorData] = useState({
     nombre: "",
+    usuario: "",
     email: "",
+    telefono: "",
+    especialidad: "",
     password: "",
   });
 
@@ -116,16 +119,26 @@ export const useDoctor = ({ notificacion }) => {
   const handleEdit = (doctor) => {
     setEditingDoctor(doctor);
     setDoctorData({
-      nombre: doctor.nombre,
-      email: doctor.email,
-      password: doctor.password,
+      nombre: doctor.nombre || "",
+      usuario: doctor.usuario || "",
+      email: doctor.email || "",
+      telefono: doctor.telefono || "",
+      especialidad: doctor.especialidad || "",
+      password: doctor.password || "",
     });
     setModalOpen(true);
   };
 
   // Abrir modal para agregar un nuevo doctor
   const openModal = () => {
-    setDoctorData({ nombre: "", email: "", password: "" });
+    setDoctorData({
+      nombre: "",
+      usuario: "",
+      email: "",
+      telefono: "",
+      especialidad: "",
+      password: "",
+    });
     setEditingDoctor(null);
     setModalOpen(true);
   };
@@ -134,7 +147,14 @@ export const useDoctor = ({ notificacion }) => {
   const closeModal = () => {
     setModalOpen(false);
     setEditingDoctor(null);
-    setDoctorData({ nombre: "", email: "", password: "" });
+    setDoctorData({
+      nombre: "",
+      usuario: "",
+      email: "",
+      telefono: "",
+      especialidad: "",
+      password: "",
+    });
   };
 
   const doctoresMemo = useMemo(() => {

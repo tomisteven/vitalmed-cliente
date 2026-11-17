@@ -113,18 +113,37 @@ export const useSecretaria = ({ notificacion }) => {
       try {
         dispach({ type: "SET_LOADING", payload: true });
         if (isEdit) {
-          await SecretariaController.updateSecretaria(
+          const result = await SecretariaController.updateSecretaria(
             secretaria.id,
             secretaria
           );
-          notificacion("Secretaria actualizada correctamente", "success");
+          if (result?.ok) {
+            notificacion(
+              result.message || "Secretaria actualizada correctamente",
+              "success"
+            );
+          } else {
+            notificacion(
+              result?.message || "Error al actualizar la secretaria",
+              "error"
+            );
+            return;
+          }
         } else {
-          const newSecretaria = await SecretariaController.createSecretaria(
+          const result = await SecretariaController.createSecretaria(
             secretaria
           );
-          if (newSecretaria.ok) {
-            notificacion("Secretaria creada correctamente", "success");
-            dispach({ type: "SET_LOADING", payload: false });
+          if (result?.secretaria) {
+            notificacion(
+              result.message || "Secretaria creada correctamente",
+              "success"
+            );
+          } else {
+            notificacion(
+              result?.message || "Error al crear la secretaria",
+              "error"
+            );
+            return;
           }
         }
         changeStatus();
@@ -157,7 +176,7 @@ export const useSecretaria = ({ notificacion }) => {
           if (eliminado.ok) {
             Swal.fire(
               "Eliminado!",
-              "El paciente ha sido eliminado.",
+              "La secretaria ha sido eliminada.",
               "success"
             );
             changeStatus();

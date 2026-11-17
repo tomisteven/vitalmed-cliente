@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
-import { EstudiosApi } from "../../api/Estudios";
 import { generarHorarios, obtenerFechaHoy, obtenerProximaHoraCercana } from "../../utils/dateHelpers";
+import { resolverEspecialistaUnico, nombreEspecialista } from "../../utils/especialista";
 import toast from "react-hot-toast";
 import "./CrearDisponibilidadForm.css";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
-const estudiosApi = new EstudiosApi();
 
 export default function CrearDisponibilidadForm() {
     // Estado para el tab activo
     const [activeTab, setActiveTab] = useState("automatico");
 
-    const [doctores, setDoctores] = useState([]);
-    const [estudios, setEstudios] = useState([]);
+    const [especialista, setEspecialista] = useState(null);
+    const [loadingEspecialista, setLoadingEspecialista] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [loadingEstudios, setLoadingEstudios] = useState(true);
 
     // Estado para el formulario automático
     const [formData, setFormData] = useState({
@@ -51,55 +49,30 @@ export default function CrearDisponibilidadForm() {
         }
     }, [formDataManual.fecha]);
 
-    // Estados para búsqueda de doctores
-    const [doctorSearch, setDoctorSearch] = useState("");
-    const [doctorSearchManual, setDoctorSearchManual] = useState("");
-    const [showDoctorDropdown, setShowDoctorDropdown] = useState(false);
-    const [showDoctorDropdownManual, setShowDoctorDropdownManual] = useState(false);
-
     useEffect(() => {
-        cargarDoctores();
-        cargarEstudios();
+        cargarEspecialista();
     }, []);
 
-    // Cerrar dropdown al hacer clic fuera
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (!event.target.closest('.doctor-search-container')) {
-                setShowDoctorDropdown(false);
-                setShowDoctorDropdownManual(false);
-            }
-        };
-
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
-
-    const cargarDoctores = async () => {
+    const cargarEspecialista = async () => {
+        setLoadingEspecialista(true);
         try {
             const response = await pacienteApi.getDoctoresList();
-            if (response && response.doctores) {
-                setDoctores(response.doctores);
-            }
-        } catch (error) {
-            console.error("Error al cargar doctores:", error);
-            toast.error("Error al cargar la lista de doctores");
-        }
-    };
+            const lista = response?.doctores || [];
+            const fija = resolverEspecialistaUnico(lista);
 
-    const cargarEstudios = async () => {
-        setLoadingEstudios(true);
-        try {
-            const response = await estudiosApi.getEstudios(true);
-            const listaEstudios = Array.isArray(response)
-                ? response
-                : response.estudios || [];
-            setEstudios(listaEstudios.filter(e => e.activo));
+            if (!fija) {
+                toast.error("No se encontró la especialista configurada");
+                return;
+            }
+
+            setEspecialista(fija);
+            setFormData((prev) => ({ ...prev, doctorId: fija._id }));
+            setFormDataManual((prev) => ({ ...prev, doctorId: fija._id }));
         } catch (error) {
-            console.error("Error al cargar estudios:", error);
-            toast.error("Error al cargar los estudios");
+            console.error("Error al cargar la especialista:", error);
+            toast.error("Error al cargar la especialista");
         } finally {
-            setLoadingEstudios(false);
+            setLoadingEspecialista(false);
         }
     };
 
@@ -117,45 +90,6 @@ export default function CrearDisponibilidadForm() {
             ...formDataManual,
             [name]: value,
         });
-    };
-
-    // Eliminamos handleEstudioChange y handleEstudioChangeManual ya que no se seleccionan estudios al crear disponibilidad
-
-    // Funciones para el selector de doctores con búsqueda
-    const filtrarDoctores = (busqueda) => {
-        if (!busqueda.trim()) return doctores;
-        const termino = busqueda.toLowerCase();
-        return doctores.filter(doctor =>
-            doctor.nombre?.toLowerCase().includes(termino) ||
-            doctor.especialidad?.toLowerCase().includes(termino)
-        );
-    };
-
-    const seleccionarDoctor = (doctor) => {
-        setFormData(prev => ({ ...prev, doctorId: doctor._id }));
-        setDoctorSearch(doctor.nombre);
-        setShowDoctorDropdown(false);
-    };
-
-    const seleccionarDoctorManual = (doctor) => {
-        setFormDataManual(prev => ({ ...prev, doctorId: doctor._id }));
-        setDoctorSearchManual(doctor.nombre);
-        setShowDoctorDropdownManual(false);
-    };
-
-    const getDoctorNombre = (doctorId) => {
-        const doctor = doctores.find(d => d._id === doctorId);
-        return doctor ? doctor.nombre : "";
-    };
-
-    const limpiarDoctorSeleccion = () => {
-        setFormData(prev => ({ ...prev, doctorId: "" }));
-        setDoctorSearch("");
-    };
-
-    const limpiarDoctorSeleccionManual = () => {
-        setFormDataManual(prev => ({ ...prev, doctorId: "" }));
-        setDoctorSearchManual("");
     };
 
     // Funciones para manejar horarios manuales
@@ -186,7 +120,7 @@ export default function CrearDisponibilidadForm() {
 
     const validarFormulario = () => {
         if (!formData.doctorId) {
-            toast.error("Debe seleccionar un doctor");
+            toast.error("No se encontró la especialista configurada");
             return false;
         }
 
@@ -212,7 +146,7 @@ export default function CrearDisponibilidadForm() {
 
     const validarFormularioManual = () => {
         if (!formDataManual.doctorId) {
-            toast.error("Debe seleccionar un doctor");
+            toast.error("No se encontró la especialista configurada");
             return false;
         }
 
@@ -339,10 +273,10 @@ export default function CrearDisponibilidadForm() {
 
     return (
         <div className="crear-disponibilidad-form">
-            <h3>Crear Disponibilidad de Turnos</h3>
+            <h3>Gestionar Disponibilidad</h3>
             <p className="form-description">
-                Genere turnos disponibles para un médico. Elija entre generación automática
-                o ingreso manual de horarios.
+                Configure los horarios de atención y los cupos disponibles de la especialista.
+                Elija entre generación automática o ingreso manual de horarios.
             </p>
 
             {/* Tabs */}
@@ -373,66 +307,15 @@ export default function CrearDisponibilidadForm() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="doctorId">
-                            Doctor <span className="required">*</span>
-                        </label>
-                        <div className="doctor-search-container">
-                            <div className="doctor-search-input-wrapper">
-                                <input
-                                    type="text"
-                                    id="doctorId"
-                                    className="doctor-search-input"
-                                    placeholder="Buscar doctor por nombre o especialidad..."
-                                    value={doctorSearch}
-                                    onChange={(e) => {
-                                        setDoctorSearch(e.target.value);
-                                        setShowDoctorDropdown(true);
-                                        if (!e.target.value) {
-                                            setFormData(prev => ({ ...prev, doctorId: "" }));
-                                        }
-                                    }}
-                                    onFocus={() => setShowDoctorDropdown(true)}
-                                    autoComplete="off"
-                                />
-                                {formData.doctorId && (
-                                    <button
-                                        type="button"
-                                        className="btn-clear-doctor"
-                                        onClick={limpiarDoctorSeleccion}
-                                        title="Limpiar selección"
-                                    >
-                                        ×
-                                    </button>
-                                )}
-                            </div>
-                            {showDoctorDropdown && (
-                                <div className="doctor-dropdown">
-                                    {filtrarDoctores(doctorSearch).length === 0 ? (
-                                        <div className="doctor-dropdown-empty">
-                                            No se encontraron doctores
-                                        </div>
-                                    ) : (
-                                        filtrarDoctores(doctorSearch).map((doctor) => (
-                                            <div
-                                                key={doctor._id}
-                                                className={`doctor-dropdown-item ${formData.doctorId === doctor._id ? 'selected' : ''}`}
-                                                onClick={() => seleccionarDoctor(doctor)}
-                                            >
-                                                <span className="doctor-nombre">{doctor.nombre}</span>
-                                                <span className="doctor-especialidad">
-                                                    {doctor.especialidad || "Sin especialidad"}
-                                                </span>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            )}
+                        <label>Especialista</label>
+                        <div className="especialista-fija-badge">
+                            <span className="especialista-fija-nombre">
+                                {loadingEspecialista
+                                    ? "Cargando especialista..."
+                                    : nombreEspecialista(especialista)}
+                            </span>
+                            <span className="especialista-fija-tag">Especialista única</span>
                         </div>
-                        {formData.doctorId && (
-                            <div className="doctor-selected-badge">
-                                ✓ Doctor seleccionado: <strong>{getDoctorNombre(formData.doctorId)}</strong>
-                            </div>
-                        )}
                     </div>
 
                     <div className="form-row">
@@ -522,66 +405,15 @@ export default function CrearDisponibilidadForm() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="doctorIdManual">
-                            Doctor <span className="required">*</span>
-                        </label>
-                        <div className="doctor-search-container">
-                            <div className="doctor-search-input-wrapper">
-                                <input
-                                    type="text"
-                                    id="doctorIdManual"
-                                    className="doctor-search-input"
-                                    placeholder="Buscar doctor por nombre o especialidad..."
-                                    value={doctorSearchManual}
-                                    onChange={(e) => {
-                                        setDoctorSearchManual(e.target.value);
-                                        setShowDoctorDropdownManual(true);
-                                        if (!e.target.value) {
-                                            setFormDataManual(prev => ({ ...prev, doctorId: "" }));
-                                        }
-                                    }}
-                                    onFocus={() => setShowDoctorDropdownManual(true)}
-                                    autoComplete="off"
-                                />
-                                {formDataManual.doctorId && (
-                                    <button
-                                        type="button"
-                                        className="btn-clear-doctor"
-                                        onClick={limpiarDoctorSeleccionManual}
-                                        title="Limpiar selección"
-                                    >
-                                        ×
-                                    </button>
-                                )}
-                            </div>
-                            {showDoctorDropdownManual && (
-                                <div className="doctor-dropdown">
-                                    {filtrarDoctores(doctorSearchManual).length === 0 ? (
-                                        <div className="doctor-dropdown-empty">
-                                            No se encontraron doctores
-                                        </div>
-                                    ) : (
-                                        filtrarDoctores(doctorSearchManual).map((doctor) => (
-                                            <div
-                                                key={doctor._id}
-                                                className={`doctor-dropdown-item ${formDataManual.doctorId === doctor._id ? 'selected' : ''}`}
-                                                onClick={() => seleccionarDoctorManual(doctor)}
-                                            >
-                                                <span className="doctor-nombre">{doctor.nombre}</span>
-                                                <span className="doctor-especialidad">
-                                                    {doctor.especialidad || "Sin especialidad"}
-                                                </span>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            )}
+                        <label>Especialista</label>
+                        <div className="especialista-fija-badge">
+                            <span className="especialista-fija-nombre">
+                                {loadingEspecialista
+                                    ? "Cargando especialista..."
+                                    : nombreEspecialista(especialista)}
+                            </span>
+                            <span className="especialista-fija-tag">Especialista única</span>
                         </div>
-                        {formDataManual.doctorId && (
-                            <div className="doctor-selected-badge">
-                                ✓ Doctor seleccionado: <strong>{getDoctorNombre(formDataManual.doctorId)}</strong>
-                            </div>
-                        )}
                     </div>
 
                     <div className="form-group">

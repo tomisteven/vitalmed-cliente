@@ -29,6 +29,7 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
+import Swal from "sweetalert2";
 import ToastMessage from "../../utils/ToastMessage";
 import Loader from "../../utils/Loader";
 import Breadcrumbs from "../../utils/Breadcums";
@@ -36,12 +37,33 @@ import { usePaciente } from "../../hooks/usePacienteIndividual";
 import ModalAsignarDoctor from "../../Components/ModalAsignarDoctor";
 import { LoaderIcon } from "react-hot-toast";
 import ModalNota from "../../Components/ModalNota";
+import ModalEnviarInforme from "../../Components/Admin/ModalEnviarInforme";
 import "./VerPaciente.css";
+
+const escapeHtml = (text = "") =>
+  String(text).replace(/[&<>"']/g, (char) => {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return map[char];
+  });
+
+const ESTADO_TURNO_LABEL = {
+  disponible: "Disponible",
+  reservado: "Reservado",
+  finalizado: "Finalizado",
+  cancelado: "Cancelado",
+};
 
 export default function VerPaciente() {
   const [toast, setToast] = useState(null);
   const [modalAsignarDoctorOpen, setModalAsignarDoctorOpen] = useState(false);
   const [notaModalOpen, setNotaModalOpen] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [nuevaNota, setNuevaNota] = useState({ nota: "", author: "" });
   const [doctoresList, setDoctoresList] = useState([]);
   const [carouselOpen, setCarouselOpen] = useState(false);
@@ -68,6 +90,9 @@ export default function VerPaciente() {
     eliminarDoctorDelPaciente,
     fetchDoctores,
     eliminarArchivo,
+    renombrarCarpeta,
+    eliminarCarpeta,
+    actualizarEmailPaciente,
   } = usePaciente({ showToast });
 
   const handleOpenModalDoctor = async () => {
@@ -98,6 +123,73 @@ export default function VerPaciente() {
     setEditNotaModal(null);
   };
 
+  const handleRenombrarCarpeta = async (doc) => {
+    const { value: nuevoNombre } = await Swal.fire({
+      title: "Renombrar carpeta",
+      input: "text",
+      inputValue: doc.nombreArchivo,
+      inputLabel: "Nuevo nombre de la carpeta",
+      inputPlaceholder: "Ej: Estudios 2026",
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#653057",
+      inputValidator: (value) => {
+        if (!value || !value.trim()) return "Debe ingresar un nombre";
+        const nombre = value.trim();
+        if (nombre === doc.nombreArchivo)
+          return "El nombre debe ser diferente al actual";
+        const existe = state.documentos.some(
+          (carpeta) =>
+            carpeta.nombreArchivo === nombre &&
+            carpeta.nombreArchivo !== doc.nombreArchivo
+        );
+        if (existe) return "Ya existe una carpeta con ese nombre";
+        return null;
+      },
+    });
+
+    if (!nuevoNombre) return;
+
+    await renombrarCarpeta(doc.nombreArchivo, nuevoNombre.trim());
+  };
+
+  const handleEliminarCarpeta = async (doc) => {
+    const totalArchivos = doc.archivos.length;
+    const archivosVisibles = doc.archivos.slice(0, 5);
+    const listaArchivos = archivosVisibles
+      .map(
+        (archivo) =>
+          `<li>${escapeHtml(archivo.originalFilename || archivo.nombreArchivo || "Archivo")}</li>`
+      )
+      .join("");
+    const restantes =
+      totalArchivos > archivosVisibles.length
+        ? `<li>... y ${totalArchivos - archivosVisibles.length} archivo(s) más</li>`
+        : "";
+
+    const result = await Swal.fire({
+      title: "¿Eliminar carpeta completa?",
+      html: `
+        <p>Se eliminará la carpeta <strong>${escapeHtml(doc.nombreArchivo)}</strong> y sus <strong>${totalArchivos} archivo(s)</strong>.</p>
+        <ul style="text-align:left; max-height:150px; overflow:auto; margin:10px 0 0; padding-left:20px; font-size:0.9rem;">
+          ${listaArchivos}${restantes}
+        </ul>
+        <p style="margin-top:12px; color:#b91c1c;"><strong>Esta acción no se puede deshacer.</strong></p>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar carpeta",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!result.isConfirmed) return;
+
+    await eliminarCarpeta(doc.nombreArchivo);
+  };
+
   // Collect all images from all folders (excluding PDFs and videos)
   const allImages = useMemo(() => {
     if (!state.documentos || state.documentos.length === 0) return [];
@@ -119,6 +211,55 @@ export default function VerPaciente() {
     });
     return images;
   }, [state.documentos]);
+
+  const pdfsPaciente = useMemo(() => {
+    const desdeCarpetas = [];
+    (state.documentos || []).forEach((carpeta) => {
+      (carpeta.archivos || []).forEach((archivo) => {
+        const url = (archivo.urlArchivo || "").toLowerCase();
+        const nombre = (
+          archivo.originalFilename ||
+          archivo.nombreArchivo ||
+          ""
+        ).toLowerCase();
+        if (url.includes(".pdf") || nombre.endsWith(".pdf")) {
+          desdeCarpetas.push({
+            ...archivo,
+            nombreMostrar:
+              archivo.originalFilename ||
+              archivo.nombreArchivo ||
+              "Documento.pdf",
+            origen: `Carpeta: ${carpeta.nombreArchivo || "Sin nombre"}`,
+          });
+        }
+      });
+    });
+
+    const desdeTurnos = [];
+    (state.turnosAsignados || []).forEach((turno) => {
+      (turno.archivosAdjuntos || []).forEach((archivo) => {
+        const url = (archivo.urlArchivo || "").toLowerCase();
+        const nombre = (
+          archivo.nombreArchivo ||
+          archivo.originalFilename ||
+          ""
+        ).toLowerCase();
+        const tipo = (archivo.tipoArchivo || "").toLowerCase();
+        if (tipo === "pdf" || url.includes(".pdf") || nombre.endsWith(".pdf")) {
+          desdeTurnos.push({
+            ...archivo,
+            nombreMostrar:
+              archivo.nombreArchivo ||
+              archivo.originalFilename ||
+              "Documento.pdf",
+            origen: `Turno: ${new Date(turno.fecha).toLocaleDateString("es-ES")}`,
+          });
+        }
+      });
+    });
+
+    return [...desdeCarpetas, ...desdeTurnos];
+  }, [state.documentos, state.turnosAsignados]);
 
   // Filter for future appointments only
   const futureAppointments = useMemo(() => {
@@ -149,6 +290,12 @@ export default function VerPaciente() {
   };
 
   const age = state.paciente ? calcularEdad(state.paciente.fechaNacimiento) : null;
+  const puedeVerNotas = user.rol?.toLowerCase() !== "paciente";
+  const puedeVerDocumentos =
+    userRole === "secretaria" ||
+    userRole === "paciente" ||
+    (userRole === "doctor" &&
+      state.doctores.some((doctor) => doctor._id === userID));
 
   if (!state.paciente) return <Loader />;
 
@@ -172,6 +319,7 @@ export default function VerPaciente() {
             </div>
           </div>
           <div className="patient-basic-info">
+            <span className="patient-eyebrow">Ficha del paciente</span>
             <h1 className="patient-name">{state.paciente.nombre || "No especifica"}</h1>
             <div className="patient-dni">
               <FaIdCard />
@@ -231,6 +379,57 @@ export default function VerPaciente() {
         </div>
       </div>
 
+      {/* Resumen rápido del paciente */}
+      <div className="patient-stats-strip">
+        <div className="patient-stat">
+          <div className="patient-stat-icon">
+            <FaCalendarCheck />
+          </div>
+          <div className="patient-stat-info">
+            <span className="patient-stat-value">{futureAppointments.length}</span>
+            <span className="patient-stat-label">Turnos próximos</span>
+          </div>
+        </div>
+        <div className="patient-stat">
+          <div className="patient-stat-icon">
+            <FaUserMd />
+          </div>
+          <div className="patient-stat-info">
+            <span className="patient-stat-value">{state.doctores?.length || 0}</span>
+            <span className="patient-stat-label">Doctores asignados</span>
+          </div>
+        </div>
+        {puedeVerDocumentos && (
+          <div className="patient-stat">
+            <div className="patient-stat-icon">
+              <FaFolder />
+            </div>
+            <div className="patient-stat-info">
+              <span className="patient-stat-value">
+                {state.documentos?.reduce(
+                  (total, carpeta) => total + (carpeta.archivos?.length || 0),
+                  0
+                ) || 0}
+              </span>
+              <span className="patient-stat-label">Documentos</span>
+            </div>
+          </div>
+        )}
+        {puedeVerNotas && (
+          <div className="patient-stat">
+            <div className="patient-stat-icon">
+              <FaNotesMedical />
+            </div>
+            <div className="patient-stat-info">
+              <span className="patient-stat-value">
+                {state.paciente.notas?.length || 0}
+              </span>
+              <span className="patient-stat-label">Notas médicas</span>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Sección de Doctores y Notas */}
       <div className="info-cards-grid">
         {/* Card de Doctores */}
@@ -274,7 +473,7 @@ export default function VerPaciente() {
         </div>
 
         {/* Card de Notas */}
-        {user.rol?.toLowerCase() !== "paciente" && (
+        {puedeVerNotas && (
           <div className="info-card notes-card">
             <div className="card-header">
               <h3>
@@ -355,7 +554,9 @@ export default function VerPaciente() {
                     <div className="time-info">
                       <FaClock /> <span>{new Date(turno.fecha).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}</span>
                     </div>
-                    <span className={`status-badge-inline ${turno.estado}`}>{turno.estado}</span>
+                    <span className={`status-badge-inline ${turno.estado}`}>
+                      {ESTADO_TURNO_LABEL[turno.estado] || turno.estado}
+                    </span>
                   </div>
                   <h4 className="appointment-study">
                     <FaStethoscope /> {turno.estudio?.tipo || "Estudio no especificado"}
@@ -384,10 +585,7 @@ export default function VerPaciente() {
 
 
       {/* Sección de Documentos */}
-      {(userRole === "secretaria" ||
-        userRole === "paciente" ||
-        (userRole === "doctor" &&
-          state.doctores.some((doctor) => doctor._id === userID))) && (
+      {puedeVerDocumentos && (
           <div className="documents-section">
             <div className="section-header">
               <h2>
@@ -403,16 +601,26 @@ export default function VerPaciente() {
                   </button>
                 )}
                 {userLogueado.rol?.toLowerCase() !== "paciente" && (
-                  <button
-                    className="btn-upload-doc"
-                    onClick={() => {
-                      setNombreArchivo("");
-                      setArchivos([]);
-                      dispatch({ type: "TOGGLE_MODAL" });
-                    }}
-                  >
-                    <FaPlus /> Subir Documentos
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="btn-email-doc"
+                      onClick={() => setEmailModalOpen(true)}
+                      title="Enviar informe por correo"
+                    >
+                      <FaEnvelope /> Enviar por correo
+                    </button>
+                    <button
+                      className="btn-upload-doc"
+                      onClick={() => {
+                        setNombreArchivo("");
+                        setArchivos([]);
+                        dispatch({ type: "TOGGLE_MODAL" });
+                      }}
+                    >
+                      <FaPlus /> Subir Documentos
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -428,6 +636,8 @@ export default function VerPaciente() {
                     eliminarArchivo={eliminarArchivo}
                     loading={loading}
                     userLogueado={userLogueado}
+                    onRenombrarCarpeta={handleRenombrarCarpeta}
+                    onEliminarCarpeta={handleEliminarCarpeta}
                   />
                 ))}
               </div>
@@ -531,6 +741,16 @@ export default function VerPaciente() {
         />
       )}
 
+      {emailModalOpen && (
+        <ModalEnviarInforme
+          open={emailModalOpen}
+          onClose={() => setEmailModalOpen(false)}
+          paciente={state.paciente}
+          archivos={pdfsPaciente}
+          onEmailGuardado={actualizarEmailPaciente}
+        />
+      )}
+
       {modalAsignarDoctorOpen && (
         <ModalAsignarDoctor
           showToast={showToast}
@@ -559,7 +779,7 @@ export default function VerPaciente() {
                 <label className="label-upload">Contenido de la nota</label>
                 <textarea
                   rows={5}
-                  style={{ width: "100%", resize: "vertical", padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+                  className="form-textarea"
                   value={editNotaModal.nota}
                   onChange={(e) =>
                     setEditNotaModal((prev) => ({ ...prev, nota: e.target.value }))
@@ -608,6 +828,8 @@ const FolderCard = ({
   eliminarArchivo,
   loading,
   userLogueado,
+  onRenombrarCarpeta,
+  onEliminarCarpeta,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -645,16 +867,40 @@ const FolderCard = ({
           <span className="file-count">{doc.archivos.length} archivo(s)</span>
         </div>
         {userLogueado.rol?.toLowerCase() !== "paciente" && (
-          <button
-            className="btn-add-to-folder"
-            onClick={(e) => {
-              e.stopPropagation();
-              setNombreArchivo(doc.nombreArchivo);
-              dispatch({ type: "TOGGLE_MODAL" });
-            }}
-          >
-            <FaPlus /> Agregar
-          </button>
+          <div className="folder-actions">
+            <button
+              className="btn-folder-action btn-rename-folder"
+              title="Renombrar carpeta"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRenombrarCarpeta(doc);
+              }}
+            >
+              <FaPencilAlt />
+            </button>
+            <button
+              className="btn-folder-action btn-delete-folder"
+              title="Eliminar carpeta"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEliminarCarpeta(doc);
+              }}
+            >
+              <MdDeleteForever />
+            </button>
+            <button
+              className="btn-add-to-folder"
+              onClick={(e) => {
+                e.stopPropagation();
+                setNombreArchivo(doc.nombreArchivo);
+                dispatch({ type: "TOGGLE_MODAL" });
+              }}
+            >
+              <FaPlus /> Agregar
+            </button>
+          </div>
         )}
       </div>
 
@@ -691,12 +937,12 @@ const FolderCard = ({
                   <span className="file-name">{archivo.originalFilename}</span>
                   <div className="file-actions">
                     <button
-                      style={{
-                        border: "none",
-                        backgroundColor: "green",
-                      }}
                       onClick={() => window.open(archivo.urlArchivo, "_blank")}
-                      className="btn-eye-file"><FaEye /></button>
+                      className="btn-eye-file"
+                      title="Ver archivo"
+                    >
+                      <FaEye />
+                    </button>
                     <a
                       href={archivo.urlArchivo}
                       download

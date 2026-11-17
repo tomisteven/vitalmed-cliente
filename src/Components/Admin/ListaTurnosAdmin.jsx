@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { TurnosApi } from "../../api/Turnos";
-import { PacienteApi } from "../../api/Paciente";
 import { formatearFechaHora, formatearHora } from "../../utils/dateHelpers";
 import { getEstadoColor, getEstadoLabel } from "../../utils/turnoHelpers";
 import ModalAsignarTurno from "./ModalAsignarTurno";
@@ -11,12 +10,10 @@ import { EstudiosApi } from "../../api/Estudios";
 import { FaEye, FaDownload, FaFilePdf, FaFileImage, FaTimes, FaUser, FaPhone, FaIdCard, FaClipboardList, FaPaperclip, FaTrashAlt, FaEraser, FaCheckSquare, FaSquare, FaChevronDown, FaChevronRight, FaClock, FaEdit } from "react-icons/fa";
 
 const turnosApi = new TurnosApi();
-const pacienteApi = new PacienteApi();
 const estudiosApi = new EstudiosApi();
 
 export default function ListaTurnosAdmin() {
     const [turnos, setTurnos] = useState([]);
-    const [doctores, setDoctores] = useState([]);
     const [estudios, setEstudios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalAsignar, setModalAsignar] = useState({
@@ -34,32 +31,15 @@ export default function ListaTurnosAdmin() {
     const [selectedIds, setSelectedIds] = useState([]);
     const [filtros, setFiltros] = useState({
         estado: "",
-        doctorId: "",
-        especialidad: "",
         estudio: "",
         fecha: "",
     });
     const [expandedGroups, setExpandedGroups] = useState({});
 
     useEffect(() => {
-        cargarDoctores();
         cargarTurnos();
         cargarEstudios();
-
-        console.log(turnos);
-
     }, []);
-
-    const cargarDoctores = async () => {
-        try {
-            const response = await pacienteApi.getDoctoresList();
-            if (response && response.doctores) {
-                setDoctores(response.doctores);
-            }
-        } catch (error) {
-            console.error("Error al cargar doctores:", error);
-        }
-    };
 
     const cargarEstudios = async () => {
         try {
@@ -110,8 +90,6 @@ export default function ListaTurnosAdmin() {
     const limpiarFiltros = () => {
         setFiltros({
             estado: "",
-            doctorId: "",
-            especialidad: "",
             estudio: "",
             fecha: "",
         });
@@ -277,11 +255,6 @@ export default function ListaTurnosAdmin() {
         }
     };
 
-    // Obtener especialidades únicas de los doctores
-    const especialidades = [
-        ...new Set(doctores.map((d) => d.especialidad).filter(Boolean)),
-    ];
-
     // Agrupar turnos por fecha (día)
     const turnosAgrupados = useMemo(() => {
         if (turnos.length === 0) return [];
@@ -357,21 +330,6 @@ export default function ListaTurnosAdmin() {
                     </div>
 
                     <div className="filtro-group">
-                        <label>Doctor</label>
-                        <select
-                            name="doctorId"
-                            value={filtros.doctorId}
-                            onChange={handleFiltroChange}
-                        >
-                            <option value="">Todos</option>
-                            {doctores.map((doctor) => (
-                                <option key={doctor._id} value={doctor._id}>
-                                    {doctor.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="filtro-group">
                         <label>Estudio</label>
                         <select
                             name="estudio"
@@ -382,21 +340,6 @@ export default function ListaTurnosAdmin() {
                             {estudios.map((estudio) => (
                                 <option key={estudio._id} value={estudio._id}>
                                     {estudio.tipo}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="filtro-group">
-                        <label>Especialidad</label>
-                        <select
-                            name="especialidad"
-                            value={filtros.especialidad}
-                            onChange={handleFiltroChange}
-                        >
-                            <option value="">Todas</option>
-                            {especialidades.map((esp) => (
-                                <option key={esp} value={esp}>
-                                    {esp}
                                 </option>
                             ))}
                         </select>
@@ -629,7 +572,6 @@ export default function ListaTurnosAdmin() {
             {modalEditar.show && modalEditar.turno && (
                 <ModalEditarTurno
                     turno={modalEditar.turno}
-                    doctores={doctores}
                     onClose={handleCloseEditar}
                     onEditado={handleTurnoEditado}
                 />

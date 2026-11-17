@@ -1,38 +1,48 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { format } from "date-fns";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
 import { formatearFechaHora } from "../../utils/dateHelpers";
+import { resolverEspecialistaUnico, nombreEspecialista } from "../../utils/especialista";
 import TarjetaTurno from "./TarjetaTurno";
 import AcordeonHorario from "./AcordeonHorario";
+import toast from "react-hot-toast";
 import "./BuscadorTurnos.css";
 
 const turnosApi = new TurnosApi();
 const pacienteApi = new PacienteApi();
 
 export default function BuscadorTurnos() {
-    const [doctores, setDoctores] = useState([]);
+    const [especialista, setEspecialista] = useState(null);
+    const [loadingEspecialista, setLoadingEspecialista] = useState(true);
     const [turnos, setTurnos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [busquedaRealizada, setBusquedaRealizada] = useState(false);
     const [filtros, setFiltros] = useState({
-        especialidad: "",
-        doctorId: "",
         fecha: "",
     });
 
     useEffect(() => {
-        cargarDoctores();
+        cargarEspecialista();
     }, []);
 
-    const cargarDoctores = async () => {
+    const cargarEspecialista = async () => {
+        setLoadingEspecialista(true);
         try {
             const response = await pacienteApi.getDoctoresList();
-            if (response && response.doctores) {
-                setDoctores(response.doctores);
+            const lista = response?.doctores || [];
+            const fija = resolverEspecialistaUnico(lista);
+
+            if (!fija) {
+                toast.error("No se encontró la especialista configurada");
+                return;
             }
+
+            setEspecialista(fija);
         } catch (error) {
-            console.error("Error al cargar doctores:", error);
+            console.error("Error al cargar la especialista:", error);
+            toast.error("Error al cargar la especialista");
+        } finally {
+            setLoadingEspecialista(false);
         }
     };
 
@@ -41,19 +51,24 @@ export default function BuscadorTurnos() {
         setFiltros({
             ...filtros,
             [name]: value,
-            // Si cambia la especialidad, resetear el doctor
-            ...(name === "especialidad" && { doctorId: "" }),
         });
     };
 
     const buscarTurnos = async (e) => {
         e.preventDefault();
+
+        if (!especialista?._id) {
+            toast.error("No se encontró la especialista configurada");
+            return;
+        }
+
         setLoading(true);
         setBusquedaRealizada(true);
 
         try {
             const filtrosAPI = {
                 estado: "disponible",
+                doctorId: especialista._id,
                 ...filtros,
             };
 
@@ -97,16 +112,6 @@ export default function BuscadorTurnos() {
         }
     };
 
-    // Obtener especialidades únicas
-    const especialidades = [
-        ...new Set(doctores.map((d) => d.especialidad).filter(Boolean)),
-    ];
-
-    // Filtrar doctores por especialidad seleccionada
-    const doctoresFiltrados = filtros.especialidad
-        ? doctores.filter((d) => d.especialidad === filtros.especialidad)
-        : doctores;
-
     // Agrupar turnos por fecha/hora para mostrar acordeones
     const turnosAgrupados = useMemo(() => {
         if (turnos.length === 0) return [];
@@ -135,45 +140,13 @@ export default function BuscadorTurnos() {
         <div className="buscador-turnos">
             <h3>Buscar Turnos Disponibles</h3>
             <p className="buscador-description">
-                Seleccione la especialidad y/o médico para ver los turnos disponibles.
+                {loadingEspecialista
+                    ? "Cargando especialista..."
+                    : `Turnos disponibles de ${nombreEspecialista(especialista)}. Seleccione una fecha si lo desea.`}
             </p>
 
             <form onSubmit={buscarTurnos} className="buscador-form">
                 <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="especialidad">Especialidad</label>
-                        <select
-                            id="especialidad"
-                            name="especialidad"
-                            value={filtros.especialidad}
-                            onChange={handleChange}
-                        >
-                            <option value="">Todas las especialidades</option>
-                            {especialidades.map((esp) => (
-                                <option key={esp} value={esp}>
-                                    {esp}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="doctorId">Médico (opcional)</label>
-                        <select
-                            id="doctorId"
-                            name="doctorId"
-                            value={filtros.doctorId}
-                            onChange={handleChange}
-                        >
-                            <option value="">Todos los médicos</option>
-                            {doctoresFiltrados.map((doctor) => (
-                                <option key={doctor._id} value={doctor._id}>
-                                    {doctor.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
                     <div className="form-group">
                         <label htmlFor="fecha">Fecha (opcional)</label>
                         <input
@@ -202,7 +175,7 @@ export default function BuscadorTurnos() {
                         <div className="empty-message">
                             <p>No se encontraron turnos disponibles con los filtros seleccionados.</p>
                             <p className="empty-hint">
-                                Intente con otra especialidad o fecha.
+                                Intente con otra fecha.
                             </p>
                         </div>
                     ) : (

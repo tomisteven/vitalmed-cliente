@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { TurnosApi } from "../../api/Turnos";
 import { PacienteApi } from "../../api/Paciente";
 import { EstudiosApi } from "../../api/Estudios";
 import { formatearFechaHora } from "../../utils/dateHelpers";
+import { resolverEspecialistaUnico, nombreEspecialista } from "../../utils/especialista";
 import toast, { Toaster } from "react-hot-toast";
 import { FaCalendarAlt, FaUserMd, FaCheck, FaTimes, FaUpload, FaFilePdf, FaFileImage, FaTrash, FaPrint } from "react-icons/fa";
 import "./ReservarSinRegistro.css";
@@ -12,15 +14,17 @@ const pacienteApi = new PacienteApi();
 const estudiosApi = new EstudiosApi();
 
 export default function ReservarSinRegistro() {
+    const [searchParams] = useSearchParams();
+    const estudioParam = searchParams.get("estudio") || "";
+
     // Estados para búsqueda
-    const [doctores, setDoctores] = useState([]);
+    const [especialista, setEspecialista] = useState(null);
+    const [loadingEspecialista, setLoadingEspecialista] = useState(true);
     const [estudios, setEstudios] = useState([]);
     const [turnos, setTurnos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [busquedaRealizada, setBusquedaRealizada] = useState(false);
     const [filtros, setFiltros] = useState({
-        especialidad: "",
-        doctorId: "",
         fecha: "",
     });
 
@@ -37,7 +41,7 @@ export default function ReservarSinRegistro() {
         nombre: "",
         telefono: "",
         motivoConsulta: "",
-        estudioId: "",
+        estudioId: estudioParam,
     });
 
     // Archivo adjunto
@@ -45,18 +49,28 @@ export default function ReservarSinRegistro() {
     const [archivoSubido, setArchivoSubido] = useState(null);
 
     useEffect(() => {
-        cargarDoctores();
+        cargarEspecialista();
         cargarEstudios();
     }, []);
 
-    const cargarDoctores = async () => {
+    const cargarEspecialista = async () => {
+        setLoadingEspecialista(true);
         try {
             const response = await pacienteApi.getDoctoresList();
-            if (response && response.doctores) {
-                setDoctores(response.doctores);
+            const lista = response?.doctores || [];
+            const fija = resolverEspecialistaUnico(lista);
+
+            if (!fija) {
+                toast.error("No se encontró la especialista configurada");
+                return;
             }
+
+            setEspecialista(fija);
         } catch (error) {
-            console.error("Error al cargar doctores:", error);
+            console.error("Error al cargar la especialista:", error);
+            toast.error("Error al cargar la especialista");
+        } finally {
+            setLoadingEspecialista(false);
         }
     };
 
@@ -77,7 +91,6 @@ export default function ReservarSinRegistro() {
         setFiltros({
             ...filtros,
             [name]: value,
-            ...(name === "especialidad" && { doctorId: "" }),
         });
     };
 
@@ -91,12 +104,19 @@ export default function ReservarSinRegistro() {
 
     const buscarTurnos = async (e) => {
         e.preventDefault();
+
+        if (!especialista?._id) {
+            toast.error("No se encontró la especialista configurada");
+            return;
+        }
+
         setLoading(true);
         setBusquedaRealizada(true);
 
         try {
             const filtrosAPI = {
                 estado: "disponible",
+                doctorId: especialista._id,
                 ...filtros,
             };
 
@@ -246,7 +266,7 @@ export default function ReservarSinRegistro() {
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     body { 
-                        font-family: Arial, sans-serif; 
+                        font-family: Cambria, Georgia, "Times New Roman", serif; 
                         padding: 40px; 
                         color: #333;
                         max-width: 600px;
@@ -425,16 +445,6 @@ export default function ReservarSinRegistro() {
         }, 250);
     };
 
-    // Obtener especialidades únicas
-    const especialidades = [
-        ...new Set(doctores.map((d) => d.especialidad).filter(Boolean)),
-    ];
-
-    // Filtrar doctores por especialidad seleccionada
-    const doctoresFiltrados = filtros.especialidad
-        ? doctores.filter((d) => d.especialidad === filtros.especialidad)
-        : doctores;
-
     return (
         <div className="reservar-sin-registro-page">
             <Toaster position="top-right" />
@@ -468,45 +478,13 @@ export default function ReservarSinRegistro() {
                     <div className="section-card">
                         <h2><FaCalendarAlt /> Buscar Turnos Disponibles</h2>
                         <p className="section-description">
-                            Seleccione la especialidad y/o médico para ver los turnos disponibles.
+                            {loadingEspecialista
+                                ? "Cargando especialista..."
+                                : `Turnos disponibles de ${nombreEspecialista(especialista)}. Seleccione una fecha si lo desea.`}
                         </p>
 
                         <form onSubmit={buscarTurnos} className="search-form">
                             <div className="form-row-guest">
-                                <div className="form-group-guest">
-                                    <label htmlFor="especialidad">Especialidad</label>
-                                    <select
-                                        id="especialidad"
-                                        name="especialidad"
-                                        value={filtros.especialidad}
-                                        onChange={handleChangeFiltros}
-                                    >
-                                        <option value="">Todas las especialidades</option>
-                                        {especialidades.map((esp) => (
-                                            <option key={esp} value={esp}>
-                                                {esp}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* <div className="form-group-guest">
-                                    <label htmlFor="doctorId">Médico (opcional)</label>
-                                    <select
-                                        id="doctorId"
-                                        name="doctorId"
-                                        value={filtros.doctorId}
-                                        onChange={handleChangeFiltros}
-                                    >
-                                        <option value="">Todos los médicos</option>
-                                        {doctoresFiltrados.map((doctor) => (
-                                            <option key={doctor._id} value={doctor._id}>
-                                                {doctor.nombre}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div> */}
-
                                 <div className="form-group-guest">
                                     <label htmlFor="fecha">Fecha</label>
                                     <input
@@ -534,7 +512,7 @@ export default function ReservarSinRegistro() {
                         turnos.length === 0 ? (
                             <div className="empty-message-guest">
                                 <p>No se encontraron turnos disponibles con los filtros seleccionados.</p>
-                                <p className="empty-hint">Intente con otra especialidad o fecha.</p>
+                                <p className="empty-hint">Intente con otra fecha.</p>
                             </div>
                         ) : (
                             <div className="results-section">

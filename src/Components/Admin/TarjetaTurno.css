@@ -184,7 +184,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     resize: vertical;
 }
 
@@ -206,7 +206,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     background: white;
     cursor: pointer;
 }

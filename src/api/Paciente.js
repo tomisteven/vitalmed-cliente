@@ -345,4 +345,47 @@ export class PacienteApi {
       console.log(error);
     }
   }
+
+  async renombrarCarpeta(id, nombreActual, nombreNuevo) {
+    try {
+      const response = await fetch(
+        this.url + `secretaria/${id}/carpeta/renombrar`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "vitalmed0258525",
+          },
+          body: JSON.stringify({ nombreActual, nombreNuevo }),
+        }
+      );
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async eliminarCarpeta(id, nombreCarpeta) {
+    try {
+      const response = await fetch(this.url + `secretaria/${id}/carpeta`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify({ nombreCarpeta }),
+      });
+      const result = await response.json();
+      if (response.status !== 200) {
+        console.log(result.message);
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

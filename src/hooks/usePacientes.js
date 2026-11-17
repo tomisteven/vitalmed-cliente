@@ -58,8 +58,8 @@ export const usePacientes = ({ notificacion }) => {
     }
     const search = state.pacientes.filter((paciente) => {
       return (
-        paciente.nombre.toLowerCase().includes(valor.toLowerCase()) ||
-        paciente.dni.toString().includes(valor)
+        (paciente.nombre || "").toLowerCase().includes(valor.toLowerCase()) ||
+        String(paciente.dni || "").includes(valor)
       );
     });
 

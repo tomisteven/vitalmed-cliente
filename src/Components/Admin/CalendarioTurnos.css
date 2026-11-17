@@ -88,7 +88,7 @@
 
 /* Override react-big-calendar styles */
 .rbc-calendar {
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
 }
 
 .rbc-header {

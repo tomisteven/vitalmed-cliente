@@ -1,44 +1,27 @@
 import React, { useState } from "react";
-import CrearDisponibilidadForm from "../../Components/Admin/CrearDisponibilidadForm";
 import ListaTurnosAdmin from "../../Components/Admin/ListaTurnosAdmin";
-import GestionEstudios from "../../Components/Admin/GestionEstudios";
 import CalendarioTurnos from "../../Components/Admin/CalendarioTurnos";
-
-// En tu componente o página:
-
 import "./Turnos.css";
 
 export default function Turnos() {
-    const [tabActiva, setTabActiva] = useState("crear");
+    const [tabActiva, setTabActiva] = useState("ver");
 
     return (
         <div className="turnos-page">
             <div className="page-header">
-                <h2 style={{ color: "#ffffff" }}>Gestión de Turnos</h2>
+                <h2 style={{ color: "#ffffff" }}>Turnos</h2>
                 <p style={{ color: "#ffffff" }} className="page-description">
-                    Administre la disponibilidad de turnos y visualice todas las reservas
+                    Consulte las reservas y visualice la agenda de la especialista
                 </p>
             </div>
 
             {/* Tabs */}
             <div className="tabs-container">
                 <button
-                    className={`tab ${tabActiva === "crear" ? "tab-active" : ""}`}
-                    onClick={() => setTabActiva("crear")}
-                >
-                    Crear Disponibilidad
-                </button>
-                <button
                     className={`tab ${tabActiva === "ver" ? "tab-active" : ""}`}
                     onClick={() => setTabActiva("ver")}
                 >
                     Ver Turnos
-                </button>
-                <button
-                    className={`tab ${tabActiva === "estudios" ? "tab-active" : ""}`}
-                    onClick={() => setTabActiva("estudios")}
-                >
-                    Estudios
                 </button>
                 <button
                     className={`tab ${tabActiva === "calendario" ? "tab-active" : ""}`}
@@ -50,12 +33,9 @@ export default function Turnos() {
 
             {/* Contenido */}
             <div className="tab-content">
-                {tabActiva === "crear" && <CrearDisponibilidadForm />}
                 {tabActiva === "ver" && <ListaTurnosAdmin />}
-                {tabActiva === "estudios" && <GestionEstudios />}
                 {tabActiva === "calendario" && <CalendarioTurnos />}
             </div>
         </div>
     );
 }
-

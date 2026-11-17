@@ -1,10 +1,10 @@
 .crear-disponibilidad-form {
   background: #fff;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 22px;
+  box-shadow: 0 18px 46px rgba(20, 10, 25, 0.14);
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 1.5rem auto;
 }
 
 .crear-disponibilidad-form h3 {
@@ -610,4 +610,65 @@
 
 .doctor-selected-badge strong {
   color: #155724;
+}
+/* Especialista única (fija) */
+.especialista-fija-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(90deg, #f3e8f1 0%, #fdf2fa 100%);
+  border: 1px solid #653057;
+  border-radius: 8px;
+}
+
+.especialista-fija-nombre {
+  font-weight: 700;
+  color: #653057;
+}
+
+.especialista-fija-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #653057;
+  background: #ffffff;
+  border: 1px solid #d9b8d2;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
+/* Formularios auxiliares (Crear Estudio) */
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.checkbox-estudio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.checkbox-estudio input[type="checkbox"] {
+  width: auto;
+  margin: 0;
 }

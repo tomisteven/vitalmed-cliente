@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaInstagram, FaWhatsapp, FaMapMarkerAlt, FaComment, FaFileAlt, FaClipboardList, FaSearchPlus, FaCalendarPlus } from "react-icons/fa";
+import { FaUser, FaInstagram, FaWhatsapp, FaMapMarkerAlt, FaComment, FaFileAlt, FaClipboardList, FaSearchPlus, FaCalendarPlus, FaImages } from "react-icons/fa";
 import "./LandingPage.css";
 import jer from "../assets/vitalmed/jer.png";
 import logo from "../assets/vitalmed/LogoJGIcon.png";
@@ -26,6 +26,10 @@ export default function LandingPage() {
 
     const handleAgendarSinRegistro = () => {
         navigate("/reservar-sin-registro");
+    };
+
+    const handleGaleria = () => {
+        navigate("/servicios");
     };
 
     const medicalSchema = {
@@ -194,6 +198,10 @@ export default function LandingPage() {
                     <button className="btn-action btn-cursos" onClick={handleCursos}>
                         <span>cursos VIP</span>
                         <img src={iconcurso} alt="Icono cursos médicos" />
+                    </button>
+                    <button className="btn-action btn-galeria" onClick={handleGaleria}>
+                        <span>galería</span>
+                        <FaImages className="btn-icon" />
                     </button>
 
                     <nav className="mobile-booking-section registered">

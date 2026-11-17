@@ -1,0 +1,9 @@
+html,
+body,
+#root,
+button,
+input,
+select,
+textarea {
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+}

@@ -2,15 +2,34 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FaEye, FaEyeSlash, FaUser, FaLock, FaWhatsapp, FaInstagram } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaCalendarCheck,
+  FaCheckCircle,
+  FaClock,
+  FaExclamationCircle,
+  FaEye,
+  FaEyeSlash,
+  FaFileMedicalAlt,
+  FaHome,
+  FaInstagram,
+  FaLock,
+  FaShieldAlt,
+  FaUser,
+  FaWhatsapp,
+} from "react-icons/fa";
 import "./Auth.css";
-import doctora from "../../../assets/vitalmed/Dra.Imag.png";
-import doctoraMovil from "../../../assets/vitalmed/doctoraMovil.png";
-import textlogo from "../../../assets/vitalmed/Logotext.png";
+import SEO from "../../../Components/SEO";
+import logo from "../../../assets/vitalmed/LogoJGIcon.png";
 import { AuthAPI } from "../../../api/auth";
 import ToastMessage from "../../../utils/ToastMessage";
 
 const AuthController = new AuthAPI();
+
+const WHATSAPP =
+  "https://api.whatsapp.com/send?phone=584244664961&text=Hola%2C+soy+la+Asistente+de+la+Dra+Jeremmy+G+en+que+podemos+ayudarte";
+const INSTAGRAM = "https://www.instagram.com/doctoraecos/";
 
 export function Auth() {
   const navigate = useNavigate();
@@ -18,6 +37,9 @@ export function Auth() {
   const [toast, setToast] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [rememberedUser] = useState(
+    () => localStorage.getItem("rememberedUser") || ""
+  );
 
   const showToast = (message, type) => {
     setToast({ message, type });
@@ -25,9 +47,9 @@ export function Auth() {
 
   const formik = useFormik({
     initialValues: {
-      usuario: "",
+      usuario: rememberedUser,
       password: "",
-      remember: false,
+      remember: Boolean(rememberedUser),
     },
     validationSchema: Yup.object({
       usuario: Yup.string()
@@ -37,21 +59,12 @@ export function Auth() {
         .min(4, "La contraseña debe tener al menos 4 caracteres")
         .required("El campo contraseña es requerido"),
     }),
-    validateOnChange: false,
-    validateOnBlur: false,
+    validateOnChange: true,
+    validateOnBlur: true,
     onSubmit: async (values, { setSubmitting }) => {
-      // Limpiar error previo
       setFormError("");
-
-      // Validar campos
-      const errors = await formik.validateForm(values);
-      if (Object.keys(errors).length > 0) {
-        setFormError("Por favor, completa todos los campos correctamente");
-        setSubmitting(false);
-        return;
-      }
-
       setIsLoading(true);
+
       try {
         const res = await AuthController.loginForm({
           usuario: values.usuario,
@@ -67,7 +80,6 @@ export function Auth() {
         const { usuario, rol } = res;
         const user = { usuario, rol };
 
-        // Guardar en localStorage
         localStorage.setItem("userLog", JSON.stringify(user));
 
         if (values.remember) {
@@ -78,9 +90,7 @@ export function Auth() {
 
         showToast("¡Inicio de sesión exitoso!", "success");
 
-        // Pequeño delay para mostrar el toast
         setTimeout(() => {
-          // Redirección basada en rol
           if (rol === "paciente" && usuario?._id) {
             navigate(`/admin/pacientes/${usuario._id}`, { replace: true });
           } else {
@@ -90,7 +100,9 @@ export function Auth() {
         }, 1000);
       } catch (err) {
         console.error("Error en login:", err);
-        setFormError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
+        setFormError(
+          "Ocurrió un error inesperado. Por favor, intentá nuevamente."
+        );
         setIsLoading(false);
       } finally {
         setSubmitting(false);
@@ -98,151 +110,340 @@ export function Auth() {
     },
   });
 
-  const width = window.innerWidth;
+  const errorUsuario =
+    (formik.touched.usuario || formik.submitCount > 0) &&
+    formik.errors.usuario;
+  const errorPassword =
+    (formik.touched.password || formik.submitCount > 0) &&
+    formik.errors.password;
 
-  // Cargar usuario recordado al montar
-  React.useEffect(() => {
-    const rememberedUser = localStorage.getItem("rememberedUser");
-    if (rememberedUser) {
-      formik.setFieldValue("usuario", rememberedUser);
-      formik.setFieldValue("remember", true);
-    }
-  }, []);
+  const limpiarErrorGeneral = () => {
+    if (formError) setFormError("");
+  };
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
-        {/* Sección Izquierda - Imagen */}
-        <div className="auth-left">
-          <div className="auth-logo-section">
-            <img src={textlogo} alt="VitalMed Logo" className="auth-logo" />
-          </div>
-          <div className="auth-image-wrapper">
-            <img
-              src={width < 768 ? doctoraMovil : doctora}
-              alt="Dra. Jeremmy Gutierrez"
-              className="auth-image"
-            />
-          </div>
-          <div className="auth-welcome-text">
-            <h2>Sistema de Gestión Médica</h2>
-            <p>Dra. Jeremmy Gutierrez</p>
-          </div>
-        </div>
+      <SEO
+        title="Ingresar"
+        description="Accedé a tu cuenta de DoctoraEcos para gestionar turnos, informes y datos personales."
+        canonical="https://doctoraecos.com/#/admin/auth"
+      />
 
-        {/* Sección Derecha - Formulario */}
-        <div className="auth-right">
-          <div className="auth-form-container">
-            <div className="auth-header">
-              <h1>Bienvenido</h1>
-              <p>Ingresa tus credenciales para acceder</p>
-            </div>
+      <div className="auth-shell">
+        <aside className="auth-visual">
+          <div className="auth-visual-top">
+            <button
+              type="button"
+              className="auth-brand"
+              onClick={() => navigate("/")}
+            >
+              <img src={logo} alt="DoctoraEcos" className="auth-brand-logo" />
+              <span className="auth-brand-text">
+                <strong>DoctoraEcos</strong>
+                <small>Ultrasonografía diagnóstica</small>
+              </span>
+            </button>
+            <span className="auth-pill">
+              <span className="auth-pill-dot" /> Portal médico
+            </span>
+          </div>
 
-            <form className="auth-form" onSubmit={formik.handleSubmit}>
-              {/* Campo Usuario */}
-              <div className="form-group">
-                <label htmlFor="usuario">Usuario</label>
-                <div className="input-wrapper">
-                  <FaUser className="input-icon" />
-                  <input
-                    id="usuario"
-                    type="text"
-                    placeholder="Ingresa tu usuario"
-                    {...formik.getFieldProps("usuario")}
-                    className="form-input"
-                  />
+          <div className="auth-visual-copy">
+            <h1>
+              Tu salud, <em>clara</em> y cerca.
+            </h1>
+            <p>
+              Accedé a tus turnos, informes y datos de tu cuenta en un solo
+              lugar.
+            </p>
+          </div>
+
+          <div className="auth-visual-art">
+            <span className="auth-art-ring" />
+            <span className="auth-art-glow" />
+
+            <div className="auth-portal-card">
+              <div className="auth-portal-top">
+                <div className="auth-portal-brand">
+                  <img src={logo} alt="" />
+                  <span>
+                    <strong>Portal del paciente</strong>
+                    <small>DoctoraEcos</small>
+                  </span>
+                </div>
+                <span className="auth-portal-status">
+                  <span className="auth-portal-dot" /> En línea
+                </span>
+              </div>
+
+              <div className="auth-portal-welcome">
+                <span>Tu espacio de salud</span>
+                <strong>
+                  Todo lo que necesitás,
+                  <br />
+                  en un solo lugar.
+                </strong>
+              </div>
+
+              <div className="auth-portal-list">
+                <div className="auth-portal-item">
+                  <span className="auth-portal-icon">
+                    <FaCalendarCheck />
+                  </span>
+                  <div className="auth-portal-info">
+                    <strong>Próximo turno</strong>
+                    <small>Ecografía abdominal</small>
+                  </div>
+                  <span className="auth-portal-badge">Mañana · 09:00</span>
+                </div>
+
+                <div className="auth-portal-item">
+                  <span className="auth-portal-icon">
+                    <FaFileMedicalAlt />
+                  </span>
+                  <div className="auth-portal-info">
+                    <strong>Informes</strong>
+                    <small>Resultados digitales</small>
+                  </div>
+                  <span className="auth-portal-badge">2 disponibles</span>
+                </div>
+
+                <div className="auth-portal-item">
+                  <span className="auth-portal-icon">
+                    <FaShieldAlt />
+                  </span>
+                  <div className="auth-portal-info">
+                    <strong>Datos protegidos</strong>
+                    <small>Acceso seguro</small>
+                  </div>
+                  <span className="auth-portal-badge auth-portal-badge--ok">
+                    <FaCheckCircle /> Verificado
+                  </span>
                 </div>
               </div>
 
-              {/* Campo Contraseña */}
-              <div className="form-group">
+              <div className="auth-portal-foot">
+                <span>
+                  <FaClock /> Actualizado hoy
+                </span>
+                <span>Dra. Jeremmy Gutierrez</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="auth-visual-foot">
+            <div>
+              <strong>+18</strong>
+              <span>años de experiencia</span>
+            </div>
+            <div>
+              <strong>100%</strong>
+              <span>diagnóstico por imagen</span>
+            </div>
+            <div>
+              <strong>La Viña</strong>
+              <span>Consultorio 102</span>
+            </div>
+          </div>
+        </aside>
+
+        <main className="auth-panel">
+          <div className="auth-panel-top">
+            <button
+              type="button"
+              className="auth-back"
+              onClick={() => navigate("/")}
+            >
+              <FaArrowLeft /> Volver al inicio
+            </button>
+            <span className="auth-secure">
+              <FaShieldAlt /> Acceso seguro
+            </span>
+          </div>
+
+          <div className="auth-form-wrap">
+            <button
+              type="button"
+              className="auth-mobile-brand"
+              onClick={() => navigate("/")}
+            >
+              <img src={logo} alt="DoctoraEcos" />
+              <span>
+                <strong>DoctoraEcos</strong>
+                <small>Portal médico</small>
+              </span>
+            </button>
+
+            <header className="auth-header">
+              <span className="auth-eyebrow">Bienvenido de nuevo</span>
+              <h2>Ingresá a tu cuenta</h2>
+              <p>
+                Gestioná tus turnos, informes y datos de forma simple y segura.
+              </p>
+            </header>
+
+            <form className="auth-form" onSubmit={formik.handleSubmit} noValidate>
+              <div className="auth-field">
+                <label htmlFor="usuario">Usuario</label>
+                <div
+                  className={`auth-input ${
+                    errorUsuario ? "auth-input--error" : ""
+                  }`}
+                >
+                  <FaUser className="auth-input-icon" />
+                  <input
+                    id="usuario"
+                    type="text"
+                    placeholder="Tu usuario"
+                    autoComplete="username"
+                    autoFocus
+                    {...formik.getFieldProps("usuario")}
+                    onChange={(event) => {
+                      formik.handleChange(event);
+                      limpiarErrorGeneral();
+                    }}
+                    className="auth-input-field"
+                    aria-invalid={Boolean(errorUsuario)}
+                  />
+                </div>
+                {errorUsuario && (
+                  <small className="auth-field-error">{errorUsuario}</small>
+                )}
+              </div>
+
+              <div className="auth-field">
                 <label htmlFor="password">Contraseña</label>
-                <div className="input-wrapper">
-                  <FaLock className="input-icon" />
+                <div
+                  className={`auth-input ${
+                    errorPassword ? "auth-input--error" : ""
+                  }`}
+                >
+                  <FaLock className="auth-input-icon" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Ingresa tu contraseña"
+                    placeholder="Tu contraseña"
+                    autoComplete="current-password"
                     {...formik.getFieldProps("password")}
-                    className="form-input"
+                    onChange={(event) => {
+                      formik.handleChange(event);
+                      limpiarErrorGeneral();
+                    }}
+                    className="auth-input-field"
+                    aria-invalid={Boolean(errorPassword)}
                   />
                   <button
                     type="button"
-                    className="toggle-password"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    className="auth-password-toggle"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    aria-label={
+                      showPassword
+                        ? "Ocultar contraseña"
+                        : "Mostrar contraseña"
+                    }
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+                {errorPassword && (
+                  <small className="auth-field-error">{errorPassword}</small>
+                )}
               </div>
 
-              {/* Recordar contraseña */}
-              <div className="form-options">
-                <label className="checkbox-label">
+              <div className="auth-options">
+                <label className="auth-checkbox">
                   <input
                     type="checkbox"
-                    {...formik.getFieldProps("remember")}
+                    name="remember"
                     checked={formik.values.remember}
+                    onChange={formik.handleChange}
                   />
                   <span>Recordar usuario</span>
                 </label>
+                <a
+                  className="auth-help"
+                  href={WHATSAPP}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  ¿Necesitás ayuda?
+                </a>
               </div>
 
-              {/* Mensaje de Error General */}
               {formError && (
-                <div className="form-error-message">
-                  <span>⚠</span>
+                <div className="auth-alert" role="alert">
+                  <FaExclamationCircle />
                   <span>{formError}</span>
                 </div>
               )}
 
-              {/* Botón de Login */}
               <button
                 type="submit"
-                className="btn-login"
+                className="auth-submit"
                 disabled={formik.isSubmitting || isLoading}
               >
                 {isLoading ? (
                   <>
-                    <span className="spinner"></span>
-                    <span>Iniciando sesión...</span>
+                    <span className="auth-spinner" />
+                    <span>Ingresando...</span>
                   </>
                 ) : (
-                  "Iniciar Sesión"
+                  <>
+                    <span>Ingresar</span>
+                    <FaArrowRight />
+                  </>
                 )}
               </button>
             </form>
 
-            {/* Redes Sociales */}
+            <div className="auth-divider">
+              <span>o</span>
+            </div>
+
+            <div className="auth-secondary">
+              <button
+                type="button"
+                className="auth-secondary-btn"
+                onClick={() => navigate("/reservar-sin-registro")}
+              >
+                <FaCalendarCheck /> Agendar una cita
+              </button>
+              <button
+                type="button"
+                className="auth-secondary-btn"
+                onClick={() => navigate("/")}
+              >
+                <FaHome /> Ir al inicio
+              </button>
+            </div>
+
             <div className="auth-social">
-              <p>Síguenos en nuestras redes</p>
-              <div className="social-links">
+              <span>¿Dudas? Escribinos</span>
+              <div className="auth-social-links">
                 <a
-                  href="https://wa.me/qr/NGJUQHKJKLDWC1"
+                  href={WHATSAPP}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-link whatsapp"
-                  aria-label="WhatsApp"
                 >
-                  <FaWhatsapp />
+                  <FaWhatsapp /> WhatsApp
                 </a>
                 <a
-                  href="https://www.instagram.com/doctoraecos?igsh=MXVnbGZzaXg3YzJxdQ=="
+                  href={INSTAGRAM}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-link instagram"
-                  aria-label="Instagram"
                 >
-                  <FaInstagram />
+                  <FaInstagram /> Instagram
                 </a>
               </div>
             </div>
+
+            <p className="auth-legal">
+              © {new Date().getFullYear()} DoctoraEcos · Dra. Jeremmy Gutierrez
+            </p>
           </div>
-        </div>
+        </main>
       </div>
 
-      {/* Toast Messages */}
       {toast && (
         <ToastMessage
           message={toast.message}

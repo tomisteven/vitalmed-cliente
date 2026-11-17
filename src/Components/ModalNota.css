@@ -6,7 +6,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,7 +28,7 @@
 /* Modal Container */
 .modal-nota-container {
     background: white;
-    border-radius: 16px;
+    border-radius: 22px;
     max-width: 550px;
     width: 100%;
     max-height: 90vh;
@@ -51,13 +51,13 @@
 
 /* Modal Header */
 .modal-nota-header {
-    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    background: linear-gradient(135deg, #3b1f35 0%, #653057 55%, #a8518a 100%);
     color: white;
     padding: 1.75rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 16px 16px 0 0;
+    border-radius: 22px 22px 0 0;
 }
 
 .modal-nota-header h3 {
@@ -93,14 +93,14 @@
     margin-bottom: 1.25rem;
     transition: all 0.3s ease;
     box-sizing: border-box;
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
 }
 
 .modal-nota-input:focus,
 .modal-nota-textarea:focus {
     outline: none;
-    border-color: #ffc107;
-    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+    border-color: #a8518a;
+    box-shadow: 0 0 0 4px rgba(168, 81, 138, 0.12);
 }
 
 .modal-nota-textarea {
@@ -112,7 +112,7 @@
 .modal-nota-btn-submit {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    background: linear-gradient(135deg, #3b1f35 0%, #653057 55%, #a8518a 100%);
     color: white;
     border: none;
     border-radius: 10px;
@@ -120,7 +120,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    box-shadow: 0 4px 12px rgba(101, 48, 87, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,7 +129,7 @@
 
 .modal-nota-btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+    box-shadow: 0 6px 20px rgba(101, 48, 87, 0.4);
 }
 
 .modal-nota-btn-submit:disabled {

@@ -40,6 +40,20 @@ function reducer(state, action) {
       return { ...state, documentos: [...state.documentos, ...action.payload] };
     case "SET_DOCUMENTOS":
       return { ...state, documentos: action.payload };
+    case "SET_PACIENTE_DOCUMENTOS":
+      return {
+        ...state,
+        paciente: state.paciente
+          ? { ...state.paciente, documentos: action.payload }
+          : state.paciente,
+      };
+    case "SET_PACIENTE_EMAIL":
+      return {
+        ...state,
+        paciente: state.paciente
+          ? { ...state.paciente, email: action.payload }
+          : state.paciente,
+      };
     case "SET_DOCTORES":
       return { ...state, doctores: action.payload };
     // dentro del reducer
@@ -159,6 +173,107 @@ export function usePaciente({ showToast }) {
     } catch (error) {
       console.error("Error al eliminar el archivo", error);
       showToast("Error al eliminar el archivo", "error");
+    }
+  };
+
+  const renombrarCarpeta = async (nombreActual, nombreNuevo) => {
+    if (!nombreActual || !nombreNuevo) {
+      showToast("Debe indicar el nombre de la carpeta", "error");
+      return false;
+    }
+
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    try {
+      const response = await PacienteController.renombrarCarpeta(
+        id,
+        nombreActual,
+        nombreNuevo
+      );
+
+      if (response?.ok) {
+        dispatch({
+          type: "SET_DOCUMENTOS",
+          payload: state.documentos.map((doc) =>
+            doc.nombreArchivo === nombreActual
+              ? { ...doc, nombreArchivo: nombreNuevo }
+              : doc
+          ),
+        });
+
+        dispatch({
+          type: "SET_PACIENTE_DOCUMENTOS",
+          payload: (state.paciente?.documentos || []).map((doc) =>
+            doc.nombreArchivo === nombreActual
+              ? { ...doc, nombreArchivo: nombreNuevo }
+              : doc
+          ),
+        });
+
+        showToast("Carpeta renombrada correctamente", "success");
+        return true;
+      }
+
+      showToast(
+        response?.message || "Error al renombrar la carpeta",
+        "error"
+      );
+      return false;
+    } catch (error) {
+      console.error("Error al renombrar la carpeta", error);
+      showToast("Error al renombrar la carpeta", "error");
+      return false;
+    } finally {
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
+    }
+  };
+
+  const eliminarCarpeta = async (nombreCarpeta) => {
+    if (!nombreCarpeta) {
+      showToast("Debe indicar la carpeta a eliminar", "error");
+      return false;
+    }
+
+    dispatch({ type: "SET_LOADING_GLOBAL", payload: true });
+    try {
+      const response = await PacienteController.eliminarCarpeta(
+        id,
+        nombreCarpeta
+      );
+
+      if (response?.ok) {
+        dispatch({
+          type: "SET_DOCUMENTOS",
+          payload: state.documentos.filter(
+            (doc) => doc.nombreArchivo !== nombreCarpeta
+          ),
+        });
+
+        dispatch({
+          type: "SET_PACIENTE_DOCUMENTOS",
+          payload: (state.paciente?.documentos || []).filter(
+            (doc) => doc.nombreArchivo !== nombreCarpeta
+          ),
+        });
+
+        if (response.erroresS3 > 0) {
+          showToast(
+            "Carpeta eliminada, pero algunos archivos no se pudieron borrar del almacenamiento",
+            "error"
+          );
+        } else {
+          showToast("Carpeta eliminada correctamente", "success");
+        }
+        return true;
+      }
+
+      showToast(response?.message || "Error al eliminar la carpeta", "error");
+      return false;
+    } catch (error) {
+      console.error("Error al eliminar la carpeta", error);
+      showToast("Error al eliminar la carpeta", "error");
+      return false;
+    } finally {
+      dispatch({ type: "SET_LOADING_GLOBAL", payload: false });
     }
   };
 
@@ -282,6 +397,10 @@ export function usePaciente({ showToast }) {
     console.log(archivos);
   };
 
+  const actualizarEmailPaciente = (email) => {
+    dispatch({ type: "SET_PACIENTE_EMAIL", payload: email });
+  };
+
   const handleUpload = useCallback(async () => {
     if (!state.nombreArchivo || state.archivos.length === 0) {
       showToast("Debe seleccionar un archivo y un nombre", "error");
@@ -340,5 +459,8 @@ export function usePaciente({ showToast }) {
     fetchDoctoresList,
     fetchDoctores: fetchDoctoresList,
     eliminarArchivo,
+    renombrarCarpeta,
+    eliminarCarpeta,
+    actualizarEmailPaciente,
   };
 }

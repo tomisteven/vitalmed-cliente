@@ -1,20 +1,22 @@
 @import "../../scss/index.scss";
 
-$widthLeftMenuCollapsed: 70px;
-$widthLeftMenuExpanded: 200px;
+$widthLeftMenu: 72px;
 
 .admin-layout {
   overflow-x: hidden;
   display: flex;
   min-height: 100vh;
   max-height: auto;
-  background: linear-gradient(180deg, #7f436f 0%, #c267a2 100%);
-  color: white;
+  background:
+    radial-gradient(circle at 88% 6%, rgba(224, 139, 194, 0.16), transparent 30%),
+    radial-gradient(circle at 6% 94%, rgba(45, 212, 191, 0.1), transparent 30%),
+    linear-gradient(135deg, #170f20 0%, #2b1328 55%, #3a1736 100%);
+  color: #f8f4fa;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
 
   &__left {
-    width: $widthLeftMenuCollapsed;
-    min-width: $widthLeftMenuCollapsed;
-    background: linear-gradient(180deg, rgba(6, 0, 61, 0.95) 0%, rgba(15, 10, 80, 0.95) 100%);
+    width: $widthLeftMenu;
+    min-width: $widthLeftMenu;
     overflow: hidden;
     height: 100vh;
     position: fixed;
@@ -22,46 +24,18 @@ $widthLeftMenuExpanded: 200px;
     top: 0;
     display: flex;
     flex-direction: column;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
-
-    &:hover {
-      width: $widthLeftMenuExpanded;
-    }
   }
 
   .icon {
     color: white;
   }
 
-  .logo {
-    position: relative;
-    top: 0;
-    left: 0;
-    margin: 20px auto 10px;
-    height: 50px;
-    width: 50px;
-    object-fit: contain;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 12px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  &__left:hover .logo {
-    height: 70px;
-    width: 70px;
-    margin: 25px auto 15px;
-  }
-
   &__right {
-    width: calc(100% - #{$widthLeftMenuCollapsed});
-    margin-left: $widthLeftMenuCollapsed;
+    width: calc(100% - #{$widthLeftMenu});
+    margin-left: $widthLeftMenu;
     overflow-x: hidden;
     z-index: 1;
-    transition: margin-left 0.3s ease, width 0.3s ease;
 
     &-header {
       height: 90px;
@@ -102,12 +76,6 @@ $widthLeftMenuExpanded: 200px;
 @media (max-width: 560px) {
   .admin-layout {
     flex-direction: column;
-
-    .logo {
-      width: 13%;
-      height: 70px;
-      margin: 20px auto;
-    }
 
     &__right {
       width: 100%;

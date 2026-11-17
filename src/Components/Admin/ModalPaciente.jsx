@@ -99,7 +99,7 @@ export default function ModalPaciente({ open, onClose, selectedPaciente, onSave,
     };
 
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay paciente-modal-overlay">
             <div className="modal-container-paciente">
                 <h3 className="paciente-crear-titulo">
                     {selectedPaciente ? "Editar Paciente" : "Crear Nuevo Paciente"}

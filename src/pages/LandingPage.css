@@ -7,7 +7,7 @@
     margin: auto;
     background: linear-gradient(180deg, #B38EC5 10%, #7d5491);
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -174,7 +174,7 @@
     border-radius: 30px;
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     text-transform: uppercase;
     cursor: pointer;
     display: flex;
@@ -235,7 +235,7 @@
     /* Adjusted size */
     color: #653057;
     font-weight: 900;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     display: block;
     margin-top: -8px;
     margin-left: -2px;
@@ -312,8 +312,12 @@
     order: 3;
 }
 
-.guest-cta-wrapper {
+.btn-galeria {
     order: 4;
+}
+
+.guest-cta-wrapper {
+    order: 5;
 }
 
 .btn-action {
@@ -324,7 +328,7 @@
     border-radius: 25px;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     letter-spacing: 0.3px;
     text-transform: uppercase;
     cursor: pointer;

@@ -6,10 +6,15 @@ export class EstudiosApi {
     /**
      * Obtener todos los estudios
      * @param {boolean} soloActivos - Si true, solo retorna estudios activos
+     * @param {boolean} incluirInactivos - Si true, incluye activos e inactivos (histórico)
      */
-    async getEstudios(soloActivos = false) {
+    async getEstudios(soloActivos = false, incluirInactivos = false) {
         try {
-            const queryParams = soloActivos ? "?activo=true" : "";
+            const queryParams = soloActivos
+                ? "?activo=true"
+                : incluirInactivos
+                    ? "?activo=todos"
+                    : "";
             const response = await fetch(this.url + "estudios" + queryParams, {
                 method: "GET",
                 headers: {

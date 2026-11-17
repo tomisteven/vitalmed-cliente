@@ -1,5 +1,27 @@
 import { ENV } from "../utils/constants";
 
+const leerJson = async (response, mensajeError) => {
+  const contentType = response.headers.get("content-type") || "";
+
+  if (!contentType.includes("application/json")) {
+    if (response.status === 404) {
+      throw new Error(
+        "El servidor no tiene disponible este módulo. Actualizá y desplegá la última versión del backend."
+      );
+    }
+    throw new Error(
+      mensajeError || "El servidor devolvió una respuesta inválida."
+    );
+  }
+
+  const result = await response.json();
+  if (!response.ok) {
+    throw new Error(result.message || mensajeError || "Error en la solicitud");
+  }
+
+  return result;
+};
+
 export class TurnosApi {
   url = ENV.URL + "/api/";
 
@@ -355,6 +377,55 @@ export class TurnosApi {
       return result;
     } catch (error) {
       console.error("Error en limpiarTurnosMasivo:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtener la bandeja de pacientes del día (citas de hoy + informes pendientes)
+   */
+  async obtenerBandejaDelDia() {
+    try {
+      const response = await fetch(this.url + "turnos/bandeja-hoy", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+
+      return await leerJson(response, "Error al obtener la bandeja del día");
+    } catch (error) {
+      console.error("Error en obtenerBandejaDelDia:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Actualizar el estado de atención de una cita
+   * @param {string} turnoId - ID del turno/cita
+   * @param {string} estadoAtencion - agendado | en_consulta | pendiente_informe | informe_completado
+   */
+  async actualizarEstadoAtencion(turnoId, estadoAtencion) {
+    try {
+      const response = await fetch(
+        this.url + `turnos/${turnoId}/estado-atencion`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "vitalmed0258525",
+          },
+          body: JSON.stringify({ estadoAtencion }),
+        }
+      );
+
+      return await leerJson(
+        response,
+        "Error al actualizar el estado de atención"
+      );
+    } catch (error) {
+      console.error("Error en actualizarEstadoAtencion:", error);
       throw error;
     }
   }

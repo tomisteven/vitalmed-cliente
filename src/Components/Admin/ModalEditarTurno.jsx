@@ -14,11 +14,10 @@ const estudiosApi = new EstudiosApi();
  * Modal para editar un turno ya agendado (reservado o disponible).
  * Props:
  *   - turno: objeto del turno a editar
- *   - doctores: array de doctores disponibles
  *   - onClose: función para cerrar el modal
  *   - onEditado: función que se llama cuando el turno fue editado exitosamente
  */
-export default function ModalEditarTurno({ turno, doctores = [], onClose, onEditado }) {
+export default function ModalEditarTurno({ turno, onClose, onEditado }) {
     const [loading, setLoading] = useState(false);
     const [loadingEstudios, setLoadingEstudios] = useState(true);
     const [loadingPacientes, setLoadingPacientes] = useState(true);
@@ -247,37 +246,18 @@ export default function ModalEditarTurno({ turno, doctores = [], onClose, onEdit
                         {/* Sección: Doctor y Estudio */}
                         <div className="met-section">
                             <h4 className="met-section-title">
-                                <FaUserMd /> Doctor y Estudio
+                                <FaUserMd /> Estudio
                             </h4>
-                            <div className="met-grid-2">
-                                <div className="met-field">
-                                    <label htmlFor="met-doctor">Doctor</label>
-                                    <select
-                                        id="met-doctor"
-                                        name="doctorId"
-                                        value={formData.doctorId}
-                                        onChange={handleChange}
-                                        disabled={loading}
-                                    >
-                                        <option value="">-- Sin doctor --</option>
-                                        {doctores.map(d => (
-                                            <option key={d._id} value={d._id}>
-                                                {d.nombre} {d.especialidad ? `(${d.especialidad})` : ""}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="met-field">
-                                    <label>Buscar Estudio</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Filtrar estudios..."
-                                        value={busquedaEstudio}
-                                        onChange={e => setBusquedaEstudio(e.target.value)}
-                                        disabled={loading || loadingEstudios}
-                                        className="met-search"
-                                    />
-                                </div>
+                            <div className="met-field">
+                                <label>Buscar Estudio</label>
+                                <input
+                                    type="text"
+                                    placeholder="Filtrar estudios..."
+                                    value={busquedaEstudio}
+                                    onChange={e => setBusquedaEstudio(e.target.value)}
+                                    disabled={loading || loadingEstudios}
+                                    className="met-search"
+                                />
                             </div>
                             <div className="met-field">
                                 <label htmlFor="met-estudio">Estudio</label>

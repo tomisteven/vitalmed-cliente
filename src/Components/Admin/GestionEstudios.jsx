@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { EstudiosApi } from "../../api/Estudios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -7,6 +8,7 @@ import "./GestionEstudios.css";
 const estudiosApi = new EstudiosApi();
 
 export default function GestionEstudios() {
+    const navigate = useNavigate();
     const [estudios, setEstudios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -19,6 +21,7 @@ export default function GestionEstudios() {
     });
     const [submitting, setSubmitting] = useState(false);
     const [busqueda, setBusqueda] = useState("");
+    const [estadoFiltro, setEstadoFiltro] = useState("todos");
 
     useEffect(() => {
         cargarEstudios();
@@ -27,7 +30,7 @@ export default function GestionEstudios() {
     const cargarEstudios = async () => {
         setLoading(true);
         try {
-            const response = await estudiosApi.getEstudios();
+            const response = await estudiosApi.getEstudios(false, true);
             // Handle different response structures
             const listaEstudios = Array.isArray(response)
                 ? response
@@ -42,16 +45,25 @@ export default function GestionEstudios() {
     };
 
     const estudiosFiltrados = useMemo(() => {
-        if (!busqueda.trim()) {
-            return estudios;
+        let lista = estudios;
+
+        if (estadoFiltro === "activos") {
+            lista = lista.filter((estudio) => estudio.activo);
+        } else if (estadoFiltro === "inactivos") {
+            lista = lista.filter((estudio) => !estudio.activo);
         }
+
+        if (!busqueda.trim()) {
+            return lista;
+        }
+
         const busquedaLower = busqueda.toLowerCase();
-        return estudios.filter((estudio) => {
+        return lista.filter((estudio) => {
             const tipo = estudio.tipo?.toLowerCase() || "";
             const aclaraciones = estudio.aclaraciones?.toLowerCase() || "";
             return tipo.includes(busquedaLower) || aclaraciones.includes(busquedaLower);
         });
-    }, [estudios, busqueda]);
+    }, [estudios, busqueda, estadoFiltro]);
 
     const handleOpenModal = (estudio = null) => {
         if (estudio) {
@@ -156,8 +168,17 @@ export default function GestionEstudios() {
     return (
         <div className="gestion-estudios">
             <div className="estudios-header">
-                <h3 className="text-white-gestion">Gestión de Estudios</h3>
+                <h3 className="text-white-gestion">Ver Estudios</h3>
                 <div className="header-actions">
+                    <select
+                        className="select-estado-gestion"
+                        value={estadoFiltro}
+                        onChange={(e) => setEstadoFiltro(e.target.value)}
+                    >
+                        <option value="todos">Todos</option>
+                        <option value="activos">Activos</option>
+                        <option value="inactivos">Inactivos</option>
+                    </select>
                     <input
                         type="text"
                         placeholder="Buscar estudio..."
@@ -165,9 +186,9 @@ export default function GestionEstudios() {
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}
                     />
-                    <button className="btn-agregar" onClick={() => handleOpenModal()}>
+                    <button className="btn-agregar" onClick={() => navigate("/admin/estudios/crear")}>
                         <span className="btn-icon">+</span>
-                        Agregar Estudio
+                        Crear Estudio
                     </button>
                 </div>
             </div>

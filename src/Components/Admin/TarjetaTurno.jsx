@@ -129,7 +129,7 @@ export default function TarjetaTurno({ turno, onReservado }) {
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     body { 
-                        font-family: Arial, sans-serif; 
+                        font-family: Cambria, Georgia, "Times New Roman", serif; 
                         padding: 40px; 
                         color: #333;
                         max-width: 600px;

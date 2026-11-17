@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUserCircle, FaEnvelope, FaIdCard, FaSignOutAlt, FaUsers, FaUserMd, FaCalendarAlt, FaStethoscope, FaClipboardList, FaChartLine, FaChartPie, FaCalendarCheck, FaUserPlus, FaClock, FaExclamationTriangle, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaUserCircle, FaEnvelope, FaIdCard, FaSignOutAlt, FaUsers, FaUserMd, FaCalendarAlt, FaStethoscope, FaClipboardList, FaChartLine, FaChartPie, FaCalendarCheck, FaUserPlus, FaClock, FaExclamationTriangle, FaChevronDown, FaChevronUp, FaPlusCircle, FaRedo, FaImages } from "react-icons/fa";
 import "./UsuarioLogueado.css";
 import { LoaderIcon } from "react-hot-toast";
 import { AuthAPI } from "../../api/auth";
@@ -14,7 +14,7 @@ function PerfilUsuario({ userProfile, userRole, handleLogout }) {
   const rol = userRole || userProfile?.rol;
 
   return (
-    <div className="perfil-page">
+    <div className="perfil-page admin-page">
       <div className="perfil-container">
         <div className="perfil-header">
           <div className="perfil-avatar">
@@ -124,19 +124,30 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
 
   if (loading) {
     return (
-      <div className="dashboard-loading">
-        <LoaderIcon style={{ width: "50px", height: "50px", color: "#653057" }} />
-        <p style={{ color: "white" }}>Cargando estadísticas...</p>
+      <div className="dashboard-page admin-page">
+        <div className="dashboard-loading adm-loading">
+          <div className="adm-spinner" />
+          <p>Cargando estadísticas...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="dashboard-error">
-        <FaExclamationTriangle style={{ color: "white" }} />
-        <p>{error}</p>
-        <button onClick={cargarEstadisticas}>Reintentar</button>
+      <div className="dashboard-page admin-page">
+        <div className="dashboard-error adm-empty">
+          <FaExclamationTriangle />
+          <h3>No se pudieron cargar las estadísticas</h3>
+          <p>{error}</p>
+          <button
+            type="button"
+            className="adm-btn adm-btn-primary"
+            onClick={cargarEstadisticas}
+          >
+            <FaRedo /> Reintentar
+          </button>
+        </div>
       </div>
     );
   }
@@ -144,17 +155,27 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
   const { contadores, turnos, pacientes, estudios, tendencias } = stats || {};
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page admin-page">
       {/* Header */}
-      <div className="dashboard-header">
-        <div className="dashboard-title">
-          <h1>📊 Dashboard</h1>
-          <p>Bienvenido/a, {userProfile?.nombre}</p>
+      <header className="admin-page-header dashboard-header">
+        <div>
+          <span className="admin-page-eyebrow">Panel de administración</span>
+          <h1 className="admin-page-title">Dashboard</h1>
+          <p className="admin-page-subtitle">
+            Bienvenido/a, {userProfile?.nombre}. Este es el resumen de tu
+            consultorio.
+          </p>
         </div>
-        <button className="btn-logout-dashboard" onClick={handleLogout}>
-          <FaSignOutAlt /> Cerrar Sesión
-        </button>
-      </div>
+        <div className="admin-page-actions">
+          <button
+            type="button"
+            className="adm-btn adm-btn-ghost"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt /> Cerrar sesión
+          </button>
+        </div>
+      </header>
 
       {/* Modal de Detalle de Turno */}
       {turnoSeleccionado && (
@@ -268,6 +289,45 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
             <span className="stat-label">Estudios</span>
           </div>
         </div>
+      </div>
+
+      {/* Accesos rápidos de administración */}
+      <div className="admin-quick-access">
+        <button
+          className="quick-access-card"
+          onClick={() => navigate('/admin/bandeja-del-dia')}
+        >
+          <FaClipboardList />
+          <span>Bandeja del Día</span>
+        </button>
+        <button
+          className="quick-access-card"
+          onClick={() => navigate('/admin/disponibilidad')}
+        >
+          <FaClock />
+          <span>Gestionar Disponibilidad</span>
+        </button>
+        <button
+          className="quick-access-card"
+          onClick={() => navigate('/admin/estudios')}
+        >
+          <FaStethoscope />
+          <span>Ver Estudios</span>
+        </button>
+        <button
+          className="quick-access-card"
+          onClick={() => navigate('/admin/estudios/crear')}
+        >
+          <FaPlusCircle />
+          <span>Crear Estudio</span>
+        </button>
+        <button
+          className="quick-access-card"
+          onClick={() => navigate('/admin/galeria')}
+        >
+          <FaImages />
+          <span>Galería</span>
+        </button>
       </div>
 
       {/* Sección de turnos */}
@@ -546,9 +606,16 @@ function Dashboard({ userProfile, handleLogout, navigate }) {
 
       {/* Footer con última actualización */}
       <div className="dashboard-footer">
-        <p>Última actualización: {new Date(stats?.timestamp).toLocaleString('es-ES')}</p>
-        <button className="btn-refresh" onClick={cargarEstadisticas}>
-          🔄 Actualizar Datos
+        <p>
+          Última actualización:{" "}
+          {new Date(stats?.timestamp).toLocaleString("es-ES")}
+        </p>
+        <button
+          type="button"
+          className="adm-btn adm-btn-ghost"
+          onClick={cargarEstadisticas}
+        >
+          <FaRedo /> Actualizar datos
         </button>
       </div>
     </div>

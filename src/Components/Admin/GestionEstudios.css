@@ -1,8 +1,10 @@
 .gestion-estudios {
+    max-width: 1400px;
+    margin: 1.5rem auto;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 22px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 18px 46px rgba(20, 10, 25, 0.14);
 }
 
 .estudios-header {
@@ -16,7 +18,7 @@
 
 .estudios-header h3 {
     margin: 0;
-    color: white;
+    color: #653057;
     font-size: 1.25rem;
 }
 
@@ -53,23 +55,23 @@
 
 .input-busqueda-gestion {
     padding: 0.75rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #d9d9d9;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: #f8f9fa;
+    color: #333;
     font-size: 0.95rem;
     min-width: 250px;
     transition: all 0.3s;
 }
 
 .input-busqueda-gestion::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: #999;
 }
 
 .input-busqueda-gestion:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
+    background: #ffffff;
+    border-color: #653057;
     width: 300px;
 }
 
@@ -307,7 +309,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -432,4 +434,25 @@
     .btn-guardar-modal {
         width: 100%;
     }
+}
+/* Filtro de estado (histórico) */
+.select-estado-gestion {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #333;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.select-estado-gestion:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #653057;
+}
+
+.select-estado-gestion option {
+    color: #333;
+    background: #ffffff;
 }

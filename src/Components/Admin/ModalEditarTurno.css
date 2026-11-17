@@ -191,7 +191,7 @@
     transition: border-color 0.2s, box-shadow 0.2s;
     width: 100%;
     box-sizing: border-box;
-    font-family: inherit;
+    font-family: Cambria, Georgia, "Times New Roman", serif;
 }
 
 .met-field input:focus,

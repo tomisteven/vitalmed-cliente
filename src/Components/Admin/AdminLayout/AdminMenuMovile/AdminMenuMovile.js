@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiUser, FiUsers, FiUserCheck, FiAlertTriangle, FiFileText } from "react-icons/fi";
-import { FaUserDoctor, FaHouseUser, FaCalendar, FaClipboard, FaClock } from "react-icons/fa6";
+import { FiUser, FiUsers, FiUserCheck, FiAlertTriangle, FiFileText, FiFolder, FiPlusCircle, FiSettings, FiInbox, FiImage, FiSliders } from "react-icons/fi";
+import { FaHouseUser, FaCalendar, FaClipboard, FaClock, FaUserDoctor } from "react-icons/fa6";
 import "./AdminMenuMobile.css";
 
 export default function AdminMenuMobile() {
   const user = JSON.parse(localStorage.getItem("userLog"));
   const userRole = user ? user.rol : "";
-  const location = useLocation().pathname.split("/")[2];
-  const [activeItem, setActiveItem] = useState(location);
+  const location = useLocation().pathname;
 
-  useEffect(() => {
-    setActiveItem(location);
-  }, [location]);
+  const isActive = (path) => {
+    if (location === path) return true;
+    if (path === "/" || path === "/admin/estudios") return false;
+    return location.startsWith(path + "/");
+  };
 
   const menuItems = [
     {
@@ -28,15 +29,21 @@ export default function AdminMenuMobile() {
       roles: ["doctor", "secretaria"],
     },
     {
-      key: "/admin/secretarias",
-      path: "/admin/secretarias",
-      icon: <FiUserCheck />,
-      roles: ["doctor", "secretaria"],
-    },
-    {
       key: "/admin/doctores",
       path: "/admin/doctores",
       icon: <FaUserDoctor />,
+      roles: ["secretaria"],
+    },
+    {
+      key: "/admin/bandeja-del-dia",
+      path: "/admin/bandeja-del-dia",
+      icon: <FiInbox />,
+      roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/secretarias",
+      path: "/admin/secretarias",
+      icon: <FiUserCheck />,
       roles: ["doctor", "secretaria"],
     },
     {
@@ -50,6 +57,30 @@ export default function AdminMenuMobile() {
       path: "/admin/turnos",
       icon: <FaCalendar />,
       roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/disponibilidad",
+      path: "/admin/disponibilidad",
+      icon: <FiSettings />,
+      roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/estudios",
+      path: "/admin/estudios",
+      icon: <FiFolder />,
+      roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/estudios/crear",
+      path: "/admin/estudios/crear",
+      icon: <FiPlusCircle />,
+      roles: ["doctor", "secretaria"],
+    },
+    {
+      key: "/admin/galeria",
+      path: "/admin/galeria",
+      icon: <FiImage />,
+      roles: ["secretaria"],
     },
     {
       key: "/admin/mis-turnos",
@@ -75,6 +106,12 @@ export default function AdminMenuMobile() {
       icon: <FiFileText />,
       roles: ["secretaria"],
     },
+    {
+      key: "/admin/configuracion",
+      path: "/admin/configuracion",
+      icon: <FiSliders />,
+      roles: ["secretaria"],
+    },
   ];
 
   const filteredMenuItems = menuItems.filter((item) =>
@@ -88,12 +125,7 @@ export default function AdminMenuMobile() {
           <Link
             key={key}
             to={path}
-            onClick={() => setActiveItem(key.split("/")[2])}
-            className={
-              activeItem === key.split("/")[2]
-                ? "menu-item active"
-                : "menu-item"
-            }
+            className={`menu-item ${isActive(path) ? "active" : ""}`}
           >
             {icon}
           </Link>

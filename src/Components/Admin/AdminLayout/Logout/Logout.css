@@ -1,39 +1,48 @@
-.btn-logout-left {
-  position: fixed;
-  bottom: 0px;
-  left: 10px;
-  z-index: 1000;
-  border-radius: 10px;
+.sidebar-logout {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
-  height: 30px;
-  width: auto;
-  background-color: rgba(255, 0, 0, 0.331);
-  margin: 5px;
-  border: none;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    padding 0.28s ease, gap 0.28s ease;
 }
 
+.admin-layout__left:hover .sidebar-logout {
+  justify-content: flex-start;
+  gap: 0.55rem;
+  padding: 0.6rem 0.7rem;
+}
 
+.sidebar-logout svg {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+}
 
-@media only screen and (min-width: 320px) and (max-width: 480px) {
-  .btn-logout {
-    position: fixed;
-    bottom: 0px;
-    left: 10px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 35px;
-    width: 35px;
-    background-color: rgba(15, 90, 15, 0.408);
-    margin: 10px;
-    border: none;
-    cursor: pointer;
-    z-index: 1000;
-  }
+.sidebar-logout span {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  transition: max-width 0.26s ease, opacity 0.18s ease;
+}
+
+.admin-layout__left:hover .sidebar-logout span {
+  max-width: 110px;
+  opacity: 1;
+}
+
+.sidebar-logout:hover {
+  border-color: rgba(248, 113, 113, 0.38);
+  background: rgba(220, 38, 38, 0.18);
+  color: #fecaca;
 }

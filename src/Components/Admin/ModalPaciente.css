@@ -1,178 +1,178 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    backdrop-filter: blur(4px);
+.modal-overlay.paciente-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(20, 10, 24, 0.55);
+  backdrop-filter: blur(8px);
+  animation: admFadeIn 0.25s ease both;
 }
 
 .modal-container-paciente {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    /* Custom scrollbar for better look */
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e0 transparent;
-}
-
-.modal-container-paciente::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-container-paciente::-webkit-scrollbar-thumb {
-    background-color: #cbd5e0;
-    border-radius: 3px;
-}
-
-@keyframes modalAppear {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 0;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  animation: admModalIn 0.3s ease both;
 }
 
 .paciente-crear-titulo {
-    color: #653057;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: 700;
+  margin: 0;
+  padding: 1.4rem 1.6rem;
+  border-radius: 22px 22px 0 0;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.16), transparent 36%),
+    linear-gradient(135deg, #3b1f35 0%, #653057 55%, #a8518a 100%);
+  color: #ffffff;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: left;
 }
 
 .form-paciente {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 1.6rem 1.6rem;
 }
 
 .form-group-paciente {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .form-row-paciente {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .label-paciente {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #4a5568;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  color: #3b2a38;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .form-paciente input,
 .form-paciente select {
-    padding: 0.75rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s;
-    background: #f8fafc;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid #ece2ef;
+  border-radius: 12px;
+  background: #fcfafd;
+  color: #1c1424;
+  font-size: 0.88rem;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .form-paciente input:focus,
 .form-paciente select:focus {
-    outline: none;
-    border-color: #653057;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(101, 48, 87, 0.1);
+  background: #ffffff;
+  border-color: #e08bc2;
+  box-shadow: 0 0 0 4px rgba(168, 81, 138, 0.12);
 }
 
 .birthday-selector {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1.5fr;
-    gap: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr;
+  gap: 0.6rem;
 }
 
 .divisor-modal {
-    height: 1px;
-    background: #e2e8f0;
-    margin: 0.5rem 0;
+  display: block;
+  height: 1px;
+  margin: 0.5rem 0;
+  background: #f1e8f4;
 }
 
 .modal-actions-paciente {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
 
 .btn-guardar-paciente,
 .btn-cancelar-paciente {
-    flex: 1;
-    padding: 0.85rem;
-    border-radius: 8px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .btn-guardar-paciente {
-    background: #28a745;
-    color: white;
+  background: linear-gradient(135deg, #b45a9a, #e08bc2);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(180, 90, 154, 0.28);
 }
 
-.btn-guardar-paciente:hover {
-    background: #218838;
+.btn-guardar-paciente:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(180, 90, 154, 0.4);
+}
+
+.btn-guardar-paciente:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-cancelar-paciente {
-    background: #edf2f7;
-    color: #4a5568;
+  background: #ffffff;
+  border-color: #ece2ef;
+  color: #1c1424;
 }
 
 .btn-cancelar-paciente:hover {
-    background: #e2e8f0;
+  border-color: rgba(180, 90, 154, 0.4);
+  color: #b45a9a;
 }
 
-@media (max-width: 768px) {
-    .modal-container-paciente {
-        padding: 1.5rem;
-        width: 95%;
-        margin: 1rem;
-    }
+@media (max-width: 640px) {
+  .modal-container-paciente {
+    max-height: 92vh;
+  }
 
-    .paciente-crear-titulo {
-        font-size: 1.25rem;
-        margin-bottom: 1.25rem;
-    }
+  .paciente-crear-titulo {
+    padding: 1.2rem 1.2rem;
+    font-size: 1.2rem;
+  }
 
-    .form-row-paciente {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
+  .form-paciente {
+    padding: 1.2rem;
+  }
 
-    .birthday-selector {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
+  .form-row-paciente,
+  .birthday-selector {
+    grid-template-columns: 1fr;
+  }
 
-    .modal-actions-paciente {
-        flex-direction: column-reverse;
-    }
+  .modal-actions-paciente {
+    flex-direction: column-reverse;
+  }
 
-    .btn-guardar-paciente,
-    .btn-cancelar-paciente {
-        width: 100%;
-        padding: 1rem;
-    }
+  .btn-guardar-paciente,
+  .btn-cancelar-paciente {
+    width: 100%;
+  }
 }
