@@ -3,6 +3,7 @@ import "./AdminLayout.scss";
 import "./AdminLayout.css";
 import "../../pages/admin/adminTheme.css";
 import AdminMenuMovile from "../../Components/Admin/AdminLayout/AdminMenuMovile/AdminMenuMovile.js";
+import FontSizeControl from "../../Components/Admin/FontSizeControl";
 
 import Logo from "../../assets/vitalmed/LogoJGIcon.png";
 
@@ -32,6 +33,7 @@ export function AdminLayout(props) {
 
       <AdminMenuMovile />
       <main className="admin-layout__right-content">{children}</main>
+      <FontSizeControl />
     </div>
   );
 }

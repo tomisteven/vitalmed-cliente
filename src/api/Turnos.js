@@ -402,6 +402,54 @@ export class TurnosApi {
   }
 
   /**
+   * Registrar una visita sin turno para un paciente ya registrado
+   * @param {Object} datos - pacienteId, estudioId, doctorId, motivoConsulta, estadoAtencion
+   */
+  async crearVisitaSinTurno(datos) {
+    try {
+      const response = await fetch(this.url + "turnos/visita-sin-turno", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+        body: JSON.stringify(datos),
+      });
+
+      return await leerJson(
+        response,
+        "Error al registrar la visita sin turno"
+      );
+    } catch (error) {
+      console.error("Error en crearVisitaSinTurno:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtener la bandeja paralela de pacientes que concurrieron a una cita
+   */
+  async obtenerBandejaAtendidos() {
+    try {
+      const response = await fetch(this.url + "turnos/bandeja-atendidos", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "vitalmed0258525",
+        },
+      });
+
+      return await leerJson(
+        response,
+        "Error al obtener la bandeja de pacientes atendidos"
+      );
+    } catch (error) {
+      console.error("Error en obtenerBandejaAtendidos:", error);
+      throw error;
+    }
+  }
+
+  /**
    * Actualizar el estado de atención de una cita
    * @param {string} turnoId - ID del turno/cita
    * @param {string} estadoAtencion - agendado | en_consulta | pendiente_informe | informe_completado

@@ -1,0 +1,89 @@
+.admin-font-control {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.35rem;
+  border: 1px solid #ece2ef;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 30px rgba(35, 15, 40, 0.16);
+  backdrop-filter: blur(10px);
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+}
+
+.admin-font-control__icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: #b45a9a;
+  font-size: 0.85rem;
+}
+
+.admin-font-control__btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex-shrink: 0;
+  border: 1px solid #f0e3f2;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3b2a38;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-font-control__btn:hover:not(:disabled) {
+  border-color: #e6c9df;
+  background: #f8eef6;
+  color: #b45a9a;
+  transform: translateY(-1px);
+}
+
+.admin-font-control__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.admin-font-control__value {
+  min-width: 44px;
+  padding: 0 0.15rem;
+  border: none;
+  background: transparent;
+  color: #3b2a38;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.admin-font-control__value:hover {
+  color: #b45a9a;
+}
+
+.admin-font-control__value:focus-visible,
+.admin-font-control__btn:focus-visible {
+  outline: 2px solid #e08bc2;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .admin-font-control {
+    right: 0.6rem;
+    bottom: 0.6rem;
+  }
+
+  .admin-font-control__icon {
+    display: none;
+  }
+}

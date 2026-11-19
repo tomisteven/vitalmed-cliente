@@ -521,3 +521,217 @@
   color: #ffffff;
   transform: translateY(-1px);
 }
+
+/* =========================================================
+   BANDEJAS PARALELAS: HOY + ATENDIDOS
+   ========================================================= */
+.resumen-card.hoy .resumen-numero {
+  color: #0f766e;
+}
+
+.resumen-card.atendidos .resumen-numero {
+  color: #b45a9a;
+}
+
+.bandeja-seccion {
+  margin-bottom: 1.6rem;
+  scroll-margin-top: 1rem;
+}
+
+.bandeja-seccion-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.bandeja-seccion-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.2rem;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.bandeja-seccion-head h2 svg {
+  color: #f5c6df;
+  font-size: 0.95rem;
+}
+
+.bandeja-seccion-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+}
+
+.bandeja-seccion-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 30px;
+  padding: 0 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.bandeja-seccion-alerta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #f3c74f;
+  border-left: 5px solid #f59e0b;
+  border-radius: 10px;
+  background: #fff4d6;
+  color: #7c4a03;
+  font-size: 0.88rem;
+}
+
+.bandeja-seccion-alerta svg {
+  flex-shrink: 0;
+}
+
+.badge-historico {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Selector de estado dentro de la tabla */
+.estado-editor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.estado-editor:hover {
+  transform: translateY(-1px);
+}
+
+.estado-editor:focus-within {
+  box-shadow: 0 0 0 3px rgba(180, 90, 154, 0.18);
+}
+
+.estado-editor-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+
+.estado-editor-select {
+  max-width: 165px;
+  padding: 0 1rem 0 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.estado-editor-select:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.estado-editor-select option {
+  background: #ffffff;
+  color: #2f2938;
+}
+
+.estado-editor-chevron {
+  position: absolute;
+  right: 0.48rem;
+  font-size: 0.55rem;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .bandeja-seccion-head {
+    align-items: flex-start;
+  }
+
+  .bandeja-seccion-head h2 {
+    font-size: 1.05rem;
+  }
+}
+
+/* Botón para registrar una visita sin turno */
+.bandeja-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.btn-visita-sin-turno {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #653057;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-visita-sin-turno:hover {
+  background: #f3e8f1;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(35, 15, 40, 0.18);
+}
+
+.badge-sin-turno {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: #fdf2f8;
+  color: #9d3f7d;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+@media (max-width: 900px) {
+  .bandeja-header-actions {
+    width: 100%;
+  }
+
+  .btn-visita-sin-turno {
+    flex: 1;
+    justify-content: center;
+  }
+}
